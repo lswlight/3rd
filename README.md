@@ -6,6 +6,7 @@
 skills/naver-blog-writer/
 ├── SKILL.md                      # 스킬 본체 (작업 순서, 출력 형식)
 ├── scripts/market_data.py        # 시세 수집 + 볼린저 밴드·RSI·이동평균 계산 (표준 라이브러리만 사용)
+├── scripts/make_card.js          # 연예 글용 표지·요약 카드 PNG 생성 (Playwright)
 └── references/
     ├── naver-seo.md              # 네이버 검색 노출 규칙, 저품질 회피
     ├── bollinger-guide.md        # 볼린저 밴드 해석 표현
