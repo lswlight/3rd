@@ -3,7 +3,7 @@
 // card.json 예:
 // {"date":"2026.11.07","category":"연예뉴스","headline":"도상우 ♥ 박지혜\n내년 2월 결혼","sub":"소속사 공식 발표",
 //  "points":["11월 6일 소속사 공식 발표","2027년 2월 비공개 예식","상대는 모델 박지혜"],
-//  "footer":"오늘의 연예뉴스","theme":"rose"}
+//  "theme":"rose"}   (footer·source 는 쓰지 않음: 왼쪽 아래는 BRAND 고정, 오른쪽 아래는 비움)
 // 결과: cover.png(대표 이미지), summary.png(핵심 요약)
 const fs = require('fs');
 const path = require('path');
@@ -15,6 +15,9 @@ const THEMES = {
   mint:   { bg1: '#0f2a26', bg2: '#1d4d45', accent: '#6ff0c8', text: '#f0fffa', sub: '#b8e6d9', card: '#f0fffa', ink: '#0f2a26' },
   sunset: { bg1: '#2a160d', bg2: '#6b2f12', accent: '#ffb35c', text: '#fff8f0', sub: '#f5d2b0', card: '#fff8f0', ink: '#2a160d' },
 };
+
+// 모든 카드 왼쪽 아래에 고정으로 들어가는 블로그 이름. 오른쪽 아래는 비워 둔다.
+const BRAND = '이라도시| 아빠의 제태크생활';
 
 const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const br = (s) => esc(s).replace(/\n/g, '<br>');
@@ -44,7 +47,7 @@ function cover(c, t) {
     <div style="font-size:${c.headline && c.headline.length > 22 ? 80 : 96}px;font-weight:800;line-height:1.22">${br(c.headline)}</div>
     <div style="margin-top:44px;font-size:40px;color:${t.sub};line-height:1.4">${br(c.sub)}</div>
   </div>
-  <div class="foot"><span>${esc(c.footer || '')}</span><span>요약 카드</span></div>`);
+  <div class="foot"><span>${esc(BRAND)}</span><span></span></div>`);
 }
 
 function summary(c, t) {
@@ -57,7 +60,7 @@ function summary(c, t) {
   <div class="top"><span class="badge">핵심 요약</span><span class="date">${esc(c.date)}</span></div>
   <div style="position:absolute;left:80px;right:80px;top:180px;font-size:50px;font-weight:800;line-height:1.3">${br((c.headline || '').replace(/\n/g, ' '))}</div>
   <div style="position:absolute;left:64px;right:64px;top:330px;max-height:600px;background:${t.card};border-radius:36px;padding:64px 56px">${pts}</div>
-  <div class="foot"><span>${esc(c.footer || '')}</span><span>${esc(c.source || '')}</span></div>`);
+  <div class="foot"><span>${esc(BRAND)}</span><span></span></div>`);
 }
 
 (async () => {
