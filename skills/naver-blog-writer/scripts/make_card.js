@@ -40,13 +40,21 @@ function base(t, body) {
 }
 
 function cover(c, t) {
+  // stats: [["6위","빌보드 200"], ...] 최대 3개. 있으면 표지 아래쪽에 큰 숫자 박스로 넣는다.
+  const stats = (c.stats || []).slice(0, 3);
+  const statsHtml = stats.length ? `
+  <div style="position:absolute;left:80px;right:80px;top:660px;display:flex;gap:24px">
+    ${stats.map(([v, l]) => `<div style="flex:1;background:rgba(255,255,255,.1);border:2px solid ${t.accent};border-radius:28px;padding:30px 18px;text-align:center">
+      <div style="font-size:${String(v).length > 4 ? 50 : 62}px;font-weight:800;color:${t.accent};line-height:1.1;white-space:nowrap">${esc(v)}</div>
+      <div style="margin-top:14px;font-size:27px;color:${t.text};line-height:1.3">${br(l)}</div></div>`).join('')}
+  </div>` : '';
   return base(t, `
   <div class="top"><span class="badge">${esc(c.category || '연예뉴스')}</span><span class="date">${esc(c.date)}</span></div>
-  <div style="position:absolute;left:80px;right:80px;top:300px">
+  <div style="position:absolute;left:80px;right:80px;top:${stats.length ? 190 : 300}px">
     <div class="bar"></div>
     <div style="font-size:${c.headline && c.headline.length > 22 ? 80 : 96}px;font-weight:800;line-height:1.22">${br(c.headline)}</div>
-    <div style="margin-top:44px;font-size:40px;color:${t.sub};line-height:1.4">${br(c.sub)}</div>
-  </div>
+    <div style="margin-top:${stats.length ? 30 : 44}px;font-size:40px;color:${t.sub};line-height:1.4">${br(c.sub)}</div>
+  </div>${statsHtml}
   <div class="foot"><span>${esc(BRAND)}</span><span></span></div>`);
 }
 
