@@ -6,6 +6,7 @@
 skills/naver-blog-writer/
 ├── SKILL.md                      # 스킬 본체 (작업 순서, 출력 형식)
 ├── scripts/market_data.py        # 시세 수집 + 볼린저 밴드·RSI·이동평균 계산 (표준 라이브러리만 사용)
+├── scripts/yt_gemini.py          # Gemini로 유튜브 영상 검색·요약 (화면 속 차트까지, 표준 라이브러리만 사용)
 ├── scripts/make_card.js          # 연예 글용 표지·요약 카드 PNG 생성 (Playwright)
 └── references/
     ├── naver-seo.md              # 네이버 검색 노출 규칙, 저품질 회피
@@ -44,6 +45,19 @@ python3 skills/naver-blog-writer/scripts/market_data.py 005930.KS --json
 
 claude.ai에서 `NETWORK_BLOCKED` 가 나오면 Settings → Capabilities 의 코드 실행 네트워크 설정에서
 `api.upbit.com`, `query1.finance.yahoo.com` 을 허용합니다. 허용하지 않으면 연결된 CoinGecko나 미국 주식 커넥터의 데이터로 대신 계산합니다.
+
+## 유튜브 참고 (Gemini)
+
+시황 글에서 유튜브 영상을 참고할 때 vidIQ(검색·조회수·자막)와 Gemini(영상 화면까지 분석)를 나눠 씁니다.
+
+```bash
+python3 skills/naver-blog-writer/scripts/yt_gemini.py watch https://www.youtube.com/watch?v=XXXXXXXXXXX
+python3 skills/naver-blog-writer/scripts/yt_gemini.py search "비트코인 시황" --days 3
+python3 skills/naver-blog-writer/scripts/yt_gemini.py models
+```
+
+API 키는 Google AI Studio에서 발급합니다. 로컬에서는 환경 변수 `GEMINI_API_KEY` 로, Claude Code 클라우드 환경에서는
+환경 설정의 Network secrets에 호스트 `generativelanguage.googleapis.com`, 헤더 `x-goog-api-key` 로 넣습니다.
 
 ## 설치
 

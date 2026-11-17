@@ -51,6 +51,25 @@ description: 네이버 블로그에 바로 복사·붙여넣기 할 수 있는 �
 
 웹 검색 도구가 있으면 최근 1주일 뉴스를 확인한다: 금리·환율·달러 지수, 미국 지수와 반도체, 관련 테마, 코인이면 ETF 자금 흐름과 규제 이슈. 확인한 사실만 날짜와 함께 쓴다. 검색이 안 되면 이 섹션은 짧게 쓰고 "최신 뉴스 확인 필요"라고 적는다.
 
+### B-2-1. 유튜브 참고 (선택)
+
+역할을 나눠 쓴다. 영상 내용은 글의 참고 자료일 뿐이고, 숫자는 B-1 데이터만 쓴다.
+
+| 할 일 | 도구 |
+|---|---|
+| 지금 뜨는 영상·테마 찾기 (조회수, 급상승, 트렌드) | vidIQ (`vidiq_youtube_search`, `vidiq_trending_videos`, `vidiq_outliers`) |
+| 자막(말한 내용) 읽기 | vidIQ `vidiq_video_transcript` |
+| 영상 화면까지 보기 (유튜버가 띄운 차트, 지지·저항선, 화면 자막) | Gemini: `scripts/yt_gemini.py` |
+
+```bash
+python3 <이 스킬 폴더>/scripts/yt_gemini.py watch https://www.youtube.com/watch?v=XXXXXXXXXXX
+python3 <이 스킬 폴더>/scripts/yt_gemini.py search "비트코인 시황 볼린저 밴드" --days 3
+```
+
+- 보통 vidIQ로 영상 2~3개를 고르고, 차트 화면이 중요한 영상만 Gemini `watch` 로 본다.
+- `AUTH_ERROR` 나 `NETWORK_BLOCKED` 가 나오면 Gemini API 키(환경 변수 `GEMINI_API_KEY`, 또는 클라우드 환경의 네트워크 시크릿 `x-goog-api-key`)가 필요하다고 안내하고 vidIQ 자막만으로 진행한다.
+- 본문에 유튜버 이름이나 영상 문장을 그대로 옮기지 않는다. 확인된 사실이나 시장 분위기("유튜브 시황 채널들도 밴드 상단 돌파 여부에 주목하는 분위기예요") 정도로만 녹인다. 참고한 영상 링크는 본문 밖 "발행 전 체크"에 적는다.
+
 ### B-3. 작성
 
 - `references/post-templates.md` 의 **B 템플릿** 구조를 따른다.
