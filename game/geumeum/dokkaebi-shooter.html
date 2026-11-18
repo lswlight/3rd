@@ -1414,25 +1414,25 @@ function updatePlayer(dt) {
   }
   let dx = keys.right - keys.left, dy = keys.down - keys.up;
   if (dx && dy) { dx *= 0.7071; dy *= 0.7071; }
-  const sp = CH[P.ch].speed * (1 + eqStat(P.ch).spd / 100); P.x += dx * sp * dt; P.y += dy * sp * dt;
+  const sp = CH[P.ch].speed * (1 + eqStat(P.ch).spd / 100) * (keys.charge ? 0.7 : 1); // 기를 모으는 동안은 70% 빠르기 P.x += dx * sp * dt; P.y += dy * sp * dt;
   if (G.wind > 0) { P.x -= 52 * dt; if (Math.random() < 0.6) parts.push({ x: W + 4, y: rnd(10, GY), vx: -rnd(320, 460), vy: rnd(-10, 10), life: 1.6, max: 1.6, col: 'rgba(230,240,255,.7)', r: 1.4 }); } // 맞바람
   if (G.cur > 0) P.y += G.curV * Math.min(1, G.cur) * dt; // 해류
   P.x = Math.max(32, Math.min(W - 24, P.x)); P.y = Math.max(26, Math.min(GY - 20, P.y));
   P.tilt = (P.tilt || 0) + (dy * 0.16 - (P.tilt || 0)) * Math.min(1, dt * 10);
-  P.inv -= dt; P.fcd -= dt; P.famcd -= dt; P.muz = (P.muz || 0) - dt;
-  if ((keys.fire || touch.down || touch.auto) && P.fcd <= 0) fire();
+  P.inv -= dt; P.fcd -= dt; P.famcd -= dt; if (P.graze > 0) P.graze -= dt; P.muz = (P.muz || 0) - dt;
+  if ((keys.fire || touch.down || touch.auto) && !keys.charge && P.fcd <= 0) fire(); // 기를 모으는 동안은 기본 공격을 멈춘다
   // 따라다니는 도깨비불
   const nf = P.power >= 4 ? 2 : P.power >= 2 ? 1 : 0;
   while (P.fam.length < nf) P.fam.push({ x: P.x, y: P.y });
   P.fam.length = nf;
   P.fam.forEach((f, i) => { const ty = P.y + (nf === 1 ? -24 : i ? 24 : -24); f.x += (P.x - 18 - f.x) * Math.min(1, dt * 9); f.y += (ty - f.y) * Math.min(1, dt * 9); });
-  if ((keys.fire || touch.down || touch.auto) && P.famcd <= 0 && nf) { P.famcd = 0.18; for (const f of P.fam) ps(f.x + 6, f.y, 520, 0, 2.5, 0.8, 3); }
+  if ((keys.fire || touch.down || touch.auto) && !keys.charge && P.famcd <= 0 && nf) { P.famcd = 0.18; for (const f of P.fam) ps(f.x + 6, f.y, 520, 0, 2.5, 0.8, 3); }
   // 기 모으기
   if (keys.charge) {
-    const b = P.charge, CG = chgT(); P.charge = Math.min(CG + 0.6, P.charge + dt); if (b < CG && P.charge >= CG) sfx.ready();
+    const b = P.charge, CG = chgT(); P.charge = Math.min(CG + 0.6, P.charge + dt); if (b < CG && P.charge >= CG) { sfx.ready(); parts.push({ x: P.x, y: P.y, vx: 0, vy: 0, life: 0.3, max: 0.3, ring: 34, col: CH[P.ch].spark || CH[P.ch].robe, r: 0 }); G.shake = Math.max(G.shake, 0.05); } // 다 모이면 고리가 번쩍
     if (Math.random() < 0.7) { const a = rnd(0, TAU), d = rnd(30, 48); parts.push({ x: P.x + Math.cos(a) * d, y: P.y + Math.sin(a) * d, vx: -Math.cos(a) * d * 3.3, vy: -Math.sin(a) * d * 3.3, life: 0.28, max: 0.28, col: P.charge >= CG ? '#fff3b0' : CH[P.ch].robe, r: 2.2 }); }
   }
-  else if (P.charge > 0) { if (P.charge >= chgT()) releaseCharge(); P.charge = 0; }
+  else if (P.charge > 0) { if (P.charge >= chgT()) { releaseCharge(); P.fcd = Math.max(P.fcd, 0.15); } P.charge = 0; } // 쏜 뒤 0.15초는 기본 공격을 쉬어 모으기 탄이 묻히지 않게
   // 폭탄
   if (G.arc) bombReq = false;
   if (bombReq && P.bombs > 0 && G.bombT <= 0) { tipDone('bomb'); G.bombUsed = true; P.bombs--; mis('bomb'); G.bombT = BD; G.bfx = 0; P.inv = Math.max(P.inv, BD + 1.2); G.flash = 0; G.cut = { t: 0 }; G.bombHit = false; sfx.bomb(); }
@@ -1486,7 +1486,7 @@ function update(dt) {
     e.t += dt; e.flash -= dt; ET[e.type].up(e, dt);
     if (e.type === 'mini' || e.type === 'mid' || e.type === 'boss') { const hb = SPH[e.type] * (e.type === 'boss' ? SZ.b : SZ.e) * 0.42; e.y = Math.max(hb, Math.min(GY - hb * 0.7, e.y)); } // 커진 적이 위아래로 잘리지 않게
     if (e.x < -60 || e.y < -80 || e.y > H + 80) e.gone = true;
-    if (!e.dead && !e.inv && P.deadT <= 0 && Math.hypot(e.x - P.x, e.y - P.y) < e.r * 0.7 + 3) playerHit();
+    if (!e.dead && !e.inv && P.deadT <= 0 && (ehb(e) ? hitE(e, P.x, P.y, 6, 0.75) : Math.hypot(e.x - P.x, e.y - P.y) < e.r * 0.7 + 3)) playerHit();
   }
   // 내 탄
   for (const s of shots) {
@@ -1498,7 +1498,7 @@ function update(dt) {
     if (s.kind === 12 && s.y > GY) { explode(s.x, s.y, s.boom, s.dmg); s.dead = true; continue; }
     for (const e of enemies) {
       if (e.dead || e.inv || e.x > W + 20) continue;
-      if (Math.hypot(e.x - s.x, e.y - s.y) > e.r + s.r) continue;
+      if (!hitE(e, s.x, s.y, s.r)) continue;
       if (s.pierce) { const last = s.hit.get(e); if (last === undefined || G.time - last > s.cd) { s.hit.set(e, G.time); damage(e, s.dmg); burst(s.x, e.y, 2, '#fff', 60); } }
       else if (s.boom) { explode(s.x, s.y, s.boom, s.dmg); s.dead = true; break; }
       else { damage(e, s.dmg); s.dead = true; hitFx(s); break; }
@@ -1508,7 +1508,7 @@ function update(dt) {
   for (const b of bullets) {
     const bs = G.slow > 0 ? 0.4 : 1; if (b.up) { b.up(b, dt * bs); if (b.dead) continue; } b.x += b.vx * dt * bs; b.y += b.vy * dt * bs; if (G.cur > 0) b.y += G.curV * 0.8 * Math.min(1, G.cur) * dt;
     if (b.x < -12 || b.x > W + 14 || b.y < -12 || b.y > H + 12) b.dead = true;
-    else if (P.deadT <= 0 && Math.hypot(b.x - P.x, b.y - P.y) < b.r * 0.6 + 2.5) { b.dead = true; playerHit(); }
+    else if (P.deadT <= 0) { const d = Math.hypot(b.x - P.x, b.y - P.y), R = meR(b); if (d < R) { b.dead = true; playerHit(); } else if (!b.gz && d < R + HIT.graze) { b.gz = 1; P.graze = 0.25; } } // 스치면 흰 점이 잠깐 커진다
   }
   // 아이템
   for (const it of items) {
@@ -1614,10 +1614,20 @@ function mobSkin(t, S) { // 잔챙이 그림: 4층부터는 도깨비불·연·�
   const f = 'f' + STAGES.indexOf(S) + '_' + t; if (ok(IMG[f])) return f;
   const m = 'mw_' + t; return ok(IMG[m]) ? m : t;
 }
+function enemyImg(e) { const SS = STAGES[G.stage]; return e.def && e.def.mirror ? look(P.ch).img : e.img ? e.img : e.type !== 'boss' ? mobSkin(e.type, SS) : (e.p3 && ok(IMG[SS.bossImg3]) ? SS.bossImg3 : e.p2 && ok(IMG[SS.bossImg2]) ? SS.bossImg2 : SS.bossImg); }
+/* 기획 7 3번: 판정. 대장·수문장·문지기는 그림 크기에 맞춘 타원, 내 캐릭터는 탄 반지름 × meK + me */
+const HIT = { me: 4.5, meK: 0.7, bossX: 0.36, bossY: 0.40, graze: 18 };
+const SHOWHIT = TEST_UNLOCK && /[?&]hit=1/.test(location.search);
+function ehb(e) { if (e.type !== 'boss' && e.type !== 'mid' && e.type !== 'mini') return null;
+  const nm = enemyImg(e); if (e._hb && e._hbn === nm) return e._hb; const im = IMG[nm], h = SPH[e.type] * (e.type === 'boss' ? SZ.b : SZ.e), w = ok(im) ? h * im.naturalWidth / im.naturalHeight : h;
+  const o = (e.type === 'boss' && STAGES[G.stage].hbox) || {}; e._hbn = nm; return (e._hb = { rx: o.rx || w * HIT.bossX, ry: o.ry || h * HIT.bossY, ox: o.ox || 0, oy: o.oy || 0 }); }
+function hitE(e, x, y, r, k = 1) { const b = ehb(e); if (!b) return Math.hypot(e.x - x, e.y - y) < (e.r + r) * k;
+  const dx = (x - e.x - b.ox) / (b.rx * k + r), dy = (y - e.y - b.oy) / (b.ry * k + r); return dx * dx + dy * dy < 1; }
+const meR = b => b.r * HIT.meK + HIT.me;
 function drawEnemy(e) {
   if (e.type === 'illu') { ctx.globalAlpha = 0.55 * Math.min(1, e.t * 3, (9 - e.t) * 2); glow('purple', e.x, e.y, 70, 0.5); spr(e.img, e.x, e.y, SPH.illu); ctx.globalAlpha = 1; if (e.flash > 0) spr(e.img, e.x, e.y, SPH.illu, { add: 1, alpha: 0.6 }); return; }
   const mir = e.def && e.def.mirror;
-  const x = e.x, y = e.y, SS = STAGES[G.stage], name = mir ? look(P.ch).img : e.img ? e.img : e.type !== 'boss' ? mobSkin(e.type, SS) : (e.p3 && ok(IMG[SS.bossImg3]) ? SS.bossImg3 : e.p2 && ok(IMG[SS.bossImg2]) ? SS.bossImg2 : SS.bossImg);
+  const x = e.x, y = e.y, name = enemyImg(e);
   if (ok(IMG[name])) {
     const h = (mir ? CH[P.ch].h * 1.7 : SPH[e.type]) * (e.type === 'boss' ? SZ.b : SZ.e), fl = mir ? !CH[P.ch].flip : 0; let rot = 0, yy = y;
     if (mir) glow('purple', x, y, 80, 0.6);
@@ -2000,7 +2010,7 @@ function draw() {
     }
     if (!(P.inv > 0 && Math.floor(G.time * 16) % 2)) drawPlayer(P.x, P.y, P.ch);
     if (P.muz > 0) { ctx.globalCompositeOperation = 'lighter'; glow(CH[P.ch].glow, P.x + 24, P.y, 14 + P.muz * 220, 0.9); ctx.globalCompositeOperation = 'source-over'; }
-    ctx.fillStyle = '#fff'; circ(P.x, P.y, 2.5); ctx.strokeStyle = '#d8483a'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(P.x, P.y, 3.2, 0, TAU); ctx.stroke();
+    { const g = Math.max(0, P.graze || 0) / 0.25, r = 5.5 + g * 3; ctx.fillStyle = '#fff'; circ(P.x, P.y, r - 1.6); ctx.strokeStyle = CH[P.ch].robe; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(P.x, P.y, r, 0, TAU); ctx.stroke(); } // 맞는 곳(흰 점)
     if (P.charge > 0.12) { const full = P.charge >= chgT(); ctx.globalCompositeOperation = 'lighter'; glow(CH[P.ch].glow, P.x, P.y, 24 + P.charge * 34, 0.55); ctx.globalCompositeOperation = 'source-over'; ctx.strokeStyle = full ? '#ffe27a' : 'rgba(255,255,255,.7)'; ctx.lineWidth = full ? 3 : 2; ctx.beginPath(); ctx.arc(P.x, P.y, full ? 20 + Math.sin(G.time * 20) * 2 : 30 - P.charge * 16, -Math.PI / 2, -Math.PI / 2 + TAU * Math.min(1, P.charge / 0.6)); ctx.stroke(); }
   }
   if (G.bombT > 0) drawBomb();
@@ -2009,6 +2019,7 @@ function draw() {
   for (const b of bullets) { if (b.tl) { ctx.strokeStyle = 'rgba(255,240,200,' + (0.35 + 0.35 * Math.sin(G.time * 30)) + ')'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(b.x, b.y); ctx.lineTo(P.x, P.y); ctx.stroke(); } // 꺾이기 전 예고선
     glow(b.kind ? 'orange' : 'pink', b.x, b.y, b.r * 3.2); ctx.fillStyle = b.col || (b.kind ? '#ff8a1c' : '#ff2f7b'); circ(b.x, b.y, b.r + 1.2); ctx.fillStyle = '#fff'; circ(b.x, b.y, b.r * 0.6); }
   drawCoFx(); drawHz(); drawDark();
+  if (SHOWHIT && G.mode === 'play') { ctx.strokeStyle = '#00ff88'; ctx.lineWidth = 1; for (const e of enemies) { const b = ehb(e); ctx.beginPath(); if (b) ctx.ellipse(e.x + b.ox, e.y + b.oy, b.rx, b.ry, 0, 0, TAU); else ctx.arc(e.x, e.y, e.r, 0, TAU); ctx.stroke(); } ctx.strokeStyle = '#ff0'; ctx.beginPath(); ctx.arc(P.x, P.y, meR({ r: 4 }), 0, TAU); ctx.stroke(); } // 개발판 ?hit=1: 판정 보기
   for (const p of parts) {
     if (p.delay > 0) continue;
     ctx.globalAlpha = Math.max(0, p.life / p.max);
@@ -2384,7 +2395,7 @@ function tutTick(dt) {
   if (items.some(it => it.type !== 'C' && it.x < W - 10)) tipShow('item');
   if (enemies.some(e => e.type === 'mini' && !e.dead && e.x < W - 20)) tipShow('charge');
   if (enemies.some(e => e.type === 'mid' && !e.dead && e.x < W - 20) || bullets.length > 40) tipShow('bomb');
-  if (first && G.part === 1 && P.deadT <= 0 && bullets.some(b => Math.hypot(b.x - P.x, b.y - P.y) < (b.r * 0.6 + 2.5) * 3)) tipShow('hitbox');
+  if (first && G.part === 1 && P.deadT <= 0 && bullets.some(b => Math.hypot(b.x - P.x, b.y - P.y) < meR(b) * 3)) tipShow('hitbox');
   if (first && G.boss) tipShow('boss');
   if (P.co >= 0 && G.st > 1.5 && (G.stage > 0 || G.endless)) tipShow('swap'); // 교대는 1층을 익힌 뒤(2층부터) 알려 준다
 }
