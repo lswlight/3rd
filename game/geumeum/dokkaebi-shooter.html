@@ -173,7 +173,7 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .card .tag{font-size:max(9px,1.2cqw);color:#ffb0a0}
 .shop-note{font-size:max(9px,1.25cqw)!important;color:var(--muted)!important}
 .eq-body{display:flex;gap:1.4cqw;width:100%;flex:1;min-height:0}
-.eq-art{width:34%;height:100%;min-height:0;object-fit:cover;object-position:30% 12%;border-radius:8px;border:1px solid var(--line);filter:drop-shadow(0 0 1.4cqw rgba(0,0,0,.7))}
+.eq-art{width:34%;height:100%;min-height:0;object-fit:cover;object-position:30% 12%;border-radius:8px;border:1px solid var(--line);filter:drop-shadow(0 0 1.4cqw rgba(0,0,0,.7))}.eq-art.wide{object-fit:contain;object-position:center;background:rgba(5,6,14,.6)}
 .eq-slots{display:flex;flex-direction:column;gap:.8cqw;width:28%}
 .sel-eq{position:absolute;left:46cqw;top:9cqw;z-index:2;display:flex;flex-direction:column;gap:.8cqw}
 .sel-eq button{position:relative;width:max(40px,7cqw);height:max(40px,7cqw);padding:0;background:rgba(14,17,30,.88);border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center}
@@ -452,7 +452,7 @@ const FONT = '"Black Han Sans","Apple SD Gothic Neo","Malgun Gothic",sans-serif'
 
 /* ---------- 그림 ---------- */
 const IMG = {};
-for (const n of ['hp0', 'hp1', 'hp2', 'mh0', 'mh1', 'mh2', 'mh3', 'mh4', 'mh5', 'mh6', 'mh7', 'mh8', 'mh9', 'mw_wisp', 'mw_kite', 'mw_drum', 'mw_jar', 'mw_lantern', 'mw_dasher', 'mw_carp', 'mw_fox', 'f3_wisp', 'f3_kite', 'f3_dasher', 'f4_wisp', 'f4_kite', 'f4_dasher', 'f5_wisp', 'f5_kite', 'f5_dasher', 'f6_wisp', 'f6_kite', 'f6_dasher', 'f7_wisp', 'f7_kite', 'f7_dasher', 'f8_wisp', 'f8_kite', 'f8_dasher', 'f9_wisp', 'f9_kite', 'f9_dasher', 'wisp', 'kite', 'drum', 'jar', 'lantern', 'dasher', 'bz0c', 'bz0d', 'bz1a', 'bz8b', 'fg0', 'mini0a', 'mini0b', 'mini0c', 'mid0a', 'mid0b', 'p3', 'cut3x', 'p4', 'cut4x', 'carp', 'mini1a', 'mini1b', 'mini1c', 'mid1a', 'mid1b', 'bz1b', 'fg1', 'ironfx', 'p5', 'cut5x', 'fox', 'mini2a', 'mini2c', 'mid2a', 'boss3', 'bz2b', 'fg3', 'ch3', 'ch5', 'ch6', 'ch7', 'ch8', 'ch9', 'ch10', 'ch11', 'ch12', 'p6','cut6x','p7','cut7x','p8','cut8x','p9','cut9x','p10','cut10x','p11','cut11x','p12','cut12x','zk3','mini3a','mini3b','mini3c','mid3a','mid3b','bossH3','bz3b','zk4','mini4a','mini4b','mini4c','mid4a','mid4b','bossH4','bz4b','zk5','mini5a','mini5b','mini5c','mid5a','mid5b','bossH5','bz5b','zk6','mini6a','mini6b','mini6c','mid6a','mid6b','bossH6','bz6b','zk7','mini7a','mini7b','mini7c','mid7a','mid7b','bossH7','bz7b','zk8','mini8a','mini8b','mini8c','mid8a','mid8b','bossH8','zk9','mini9a','mini9b','mini9c','mid9a','mid9b','bossH9','bz9b', 'hc0x', 'hc2x', 'hp1_o0', 'hc1_o0', 'hc1y', 'forgeAnvil', 'forgeHammer', 'tornado', 'arrowfx', 'hammerfx', 'talisman']) { const im = new Image(); im.src = 'assets/' + n + '.webp'; IMG[n] = im; }
+for (const n of ['hp0', 'hp1', 'hp2', 'mh0', 'mh1', 'mh2', 'mh3', 'mh4', 'mh5', 'mh6', 'mh7', 'mh8', 'mh9', 'mw_wisp', 'mw_kite', 'mw_drum', 'mw_jar', 'mw_lantern', 'mw_dasher', 'mw_carp', 'mw_fox', 'f3_wisp', 'f3_kite', 'f3_dasher', 'f4_wisp', 'f4_kite', 'f4_dasher', 'f5_wisp', 'f5_kite', 'f5_dasher', 'f6_wisp', 'f6_kite', 'f6_dasher', 'f7_wisp', 'f7_kite', 'f7_dasher', 'f8_wisp', 'f8_kite', 'f8_dasher', 'f9_wisp', 'f9_kite', 'f9_dasher', 'wisp', 'kite', 'drum', 'jar', 'lantern', 'dasher', 'bz0c', 'bz0d', 'bz1a', 'bz8b', 'fg0', 'mini0a', 'mini0b', 'mini0c', 'mid0a', 'mid0b', 'p3', 'cut3x', 'p4', 'cut4x', 'carp', 'mini1a', 'mini1b', 'mini1c', 'mid1a', 'mid1b', 'bz1b', 'fg1', 'ironfx', 'p5', 'cut5x', 'fox', 'mini2a', 'mini2c', 'mid2a', 'boss3', 'bz2b', 'fg3', 'ch3', 'ch5', 'ch6', 'ch7', 'ch8', 'ch9', 'ch10', 'ch11', 'ch12', 'p6','cut6x','p7','cut7x','p8','cut8x','p9','cut9x','p10','cut10x','p11','cut11x','p12','cut12x','zk3','mini3a','mini3b','mini3c','mid3a','mid3b','bossH3','bz3b','zk4','mini4a','mini4b','mini4c','mid4a','mid4b','bossH4','bz4b','zk5','mini5a','mini5b','mini5c','mid5a','mid5b','bossH5','bz5b','zk6','mini6a','mini6b','mini6c','mid6a','mid6b','bossH6','bz6b','zk7','mini7a','mini7b','mini7c','mid7a','mid7b','bossH7','bz7b','zk8','mini8a','mini8b','mini8c','mid8a','mid8b','bossH8','zk9','mini9a','mini9b','mini9c','mid9a','mid9b','bossH9','bz9b', 'hc0x', 'hc2x', 'hp1_o0', 'hc1_o0', 'hc1z', 'forgeAnvil', 'forgeHammer', 'tornado', 'arrowfx', 'hammerfx', 'talisman']) { const im = new Image(); im.src = 'assets/' + n + '.webp'; IMG[n] = im; }
 { const im = new Image(); im.src = 'assets/ch12m.webp'; IMG.ch12 = im; }
 { const im = new Image(); im.src = 'assets/tower10.webp'; IMG.tower10 = im; } // 층 시작 때 보여 주는 탑 그림 // 여왕의 기: 달 구슬(새 그림)
 for (const n of ['bg0', 'bg1', 'bg2', 'bg3', 'bgS4', 'bgS5', 'bgS6', 'bgS7', 'bgS8', 'bgS10', 'bg0h', 'bg1h', 'bg2h', 'bg3h', 'bgS4h', 'bgS5h', 'bgS6h', 'bgS7h', 'bgS8h', 'bgS10h']) { const im = new Image(); im.src = 'assets/' + n + '.jpg'; IMG[n] = im; }
@@ -489,7 +489,7 @@ function glow(g, x, y, r, a) { const pa = ctx.globalAlpha; ctx.globalAlpha = pa 
 
 const CH = [
   { name: '한별', robe: '#3fae9a', speed: 185, img: 'hp0', h: 66, cut: 'hc0x', glow: 'jade', spark: '#bffff0', tint: 'rgba(63,200,170,', bomb: '월광풍', cutv: 'cutvh0x', line: '통행세는 부채 바람으로 치르지.' },
-  { name: '달래', robe: '#d8483a', speed: 225, img: 'hp1', h: 66, cut: 'hc1y', glow: 'gold', spark: '#ffe9b0', tint: 'rgba(255,200,80,', bomb: '백야의 화살', cutv: 'cutvh1y', line: '화살 한 대면 충분하겠네.' },
+  { name: '달래', robe: '#d8483a', speed: 225, img: 'hp1', h: 66, cut: 'hc1z', glow: 'gold', spark: '#ffe9b0', tint: 'rgba(255,200,80,', bomb: '백야의 화살', cutv: 'cutvh1z', line: '화살 한 대면 충분하겠네.' },
   { name: '무쇠', robe: '#5b6fd6', speed: 160, img: 'hp2', h: 68, cut: 'hc2x', glow: 'fire', spark: '#ffb060', tint: 'rgba(255,110,40,', bomb: '천둥망치', cutv: 'cutvh2x', line: '망치 맛부터 보고 얘기하자고!' },
   // 층 대장을 이긴 뒤 골드로 사는 동료. from: 어느 층 대장인지
   { name: '탈 도깨비', robe: '#c23b2e', speed: 175, img: 'p3', h: 60, cut: 'cut3x', glow: 'blue', spark: '#9fd8ff', tint: 'rgba(80,150,255,', bomb: '도깨비불 잔치', cutv: 'cutv3x', line: '이 탑은 내가 잘 알지. 길을 비켜라!', from: 0,
@@ -646,7 +646,7 @@ if (!Array.isArray(SAVE.tried)) SAVE.tried = []; if (!Number.isInteger(SAVE.tria
 if (!Array.isArray(SAVE.owned)) SAVE.owned = []; if (!Array.isArray(SAVE.beaten)) SAVE.beaten = []; SAVE.gold = +SAVE.gold || 0;
 if (!Number.isInteger(SAVE.diff)) SAVE.diff = SAVE.hard ? 1 : 0; SAVE.moon = +SAVE.moon || 0; for (const k of ['eq', 'eqd', 'look']) if (!SAVE[k] || typeof SAVE[k] !== 'object') SAVE[k] = {}; for (const k of ['mfirst', 'tx']) if (!Array.isArray(SAVE[k])) SAVE[k] = []; SAVE.tower = +SAVE.tower || 0; if (!SAVE.tut || typeof SAVE.tut !== 'object') SAVE.tut = {}; SAVE.mstar = +SAVE.mstar || 0; SAVE.eq.o0 = 1; if (!Array.isArray(SAVE.outQ)) SAVE.outQ = [];
 /* 겉모습(외형): 주인공 3명은 입은 옷이나 고른 외형에 따라 그림이 바뀐다. 그림이 없는 옷은 기본옷(o0) 그림 */
-const LOOKS = { 1: { o0: { img: 'hp1_o0', cut: 'hc1_o0', cutv: 'cutvh1_o0' }, o3: { img: 'hp1', cut: 'hc1y', cutv: 'cutvh1y' } } };
+const LOOKS = { 1: { o0: { img: 'hp1_o0', cut: 'hc1_o0', cutv: 'cutvh1_o0' }, o3: { img: 'hp1', cut: 'hc1z', cutv: 'cutvh1z' } } };
 const hasLook = ch => ch >= 0 && ch <= 2; // 외형이 바뀌는 주인공
 function lookId(ch) { const L = LOOKS[ch]; if (!L) return 'o0'; const s = SAVE.look[ch]; if (s && L[s] && SAVE.eq[s]) return s; const o = (SAVE.eqd[ch] || {}).o; return o && L[o] && SAVE.eq[o] ? o : 'o0'; }
 function look(ch) { const c = CH[ch]; if (!c) return {}; const L = LOOKS[ch] && LOOKS[ch][lookId(ch)]; return L || c; }
@@ -2134,7 +2134,7 @@ function renderSelEq() { // 캐릭터 그림 옆 장비 세 칸
 }
 $('selEq').addEventListener('click', ev => { const b = ev.target.closest('[data-sl]'); if (b) openEq(b.dataset.sl); });
 function renderEq() {
-  const ch = sel, d = SAVE.eqd[ch] || {}, st = eqStat(ch); $('eqArt').src = 'assets/' + look(ch).cut + '.webp'; $('eqArt').style.transform = CH[ch].flip ? 'scaleX(-1)' : '';
+  const ch = sel, d = SAVE.eqd[ch] || {}, st = eqStat(ch); { const ea = $('eqArt'); ea.onload = () => { ea.classList.toggle('wide', ea.naturalWidth > ea.naturalHeight * 1.15); }; ea.src = 'assets/' + look(ch).cut + '.webp'; } $('eqArt').style.transform = CH[ch].flip ? 'scaleX(-1)' : '';
   $('eqTitle').textContent = CH[ch].name + ' · 장비'; $('eqSum').textContent = '골드 ' + SAVE.gold.toLocaleString() + ' · 달조각 ' + SAVE.moon.toLocaleString() + ' | ' + (eqDesc({ atk: st.atk, bomb: st.bomb, bombs: st.bombs, lives: st.lives, shield: st.shield, gold: st.gold, spd: st.spd, chg: st.chg }) || '장비 없음');
   $('eqSlots').innerHTML = [...'wtao'].map(sl => { const e = eqOf(ch, sl), lv = e ? SAVE.eq[e.id] : 0;
     return '<button type="button" class="eq-slot' + (sl === eqSlot ? ' on' : '') + '" data-slot="' + sl + '"><img src="assets/eq/' + (e ? e.id : sl + '1') + '.webp" alt=""' + (e ? '' : ' style="opacity:.25"') + '><span><b>' + SLOT[sl] + (e ? ' · ' + e.name + (e.base ? '' : ' Lv' + lv) : ' · 비어 있음') + '</b><em>' + (e ? eqDesc(e, lv) : '눌러서 고르기') + '</em></span></button>'; }).join('');
