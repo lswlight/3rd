@@ -310,6 +310,25 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
 .arc-go{font-family:var(--display);font-size:max(14px,2.4cqw);padding:max(6px,1cqw) max(28px,6cqw);border-radius:1cqw;background:linear-gradient(180deg,#e8613f,#c23b2e);border:1px solid #ff8a6a;color:#fff;box-shadow:0 .5cqw 0 #7a1f17}
 #ovTitle .sel-menu .arc b{position:absolute;right:4%;top:-.9cqw;font-family:var(--body);font-weight:400;font-size:max(8px,1cqw);color:#1a1408;background:#ffd24a;border-radius:.4cqw;padding:0 .4cqw;white-space:nowrap}
 @media (max-height:400px){.arc-lead,.arc-foot{font-size:10px}.arc-sil{height:11cqw}}
+
+/* 짝 맞추기 (무한의 탑 대신) */
+.memv{z-index:6;justify-content:flex-start;gap:.8cqw;padding:2cqw 3cqw;background:linear-gradient(180deg,rgba(14,10,30,.94),rgba(8,8,18,.96)),url(assets/bg2.jpg) center/cover}
+.mem-head{display:flex;align-items:center;gap:1.4cqw;width:100%}.mem-head h2{font-size:max(16px,3cqw);color:var(--gold);margin-right:auto}
+.mem-head button{font-family:var(--display);font-size:max(11px,1.6cqw);padding:max(3px,.5cqw) max(10px,1.4cqw)}
+.mem-lv{display:flex;gap:.8cqw}.mem-lv button{font-size:max(10px,1.4cqw);padding:max(3px,.5cqw) max(8px,1.2cqw)}.mem-lv button.on{border-color:var(--gold);color:var(--gold);background:rgba(232,184,74,.14)}
+.mem-info{margin:0;font-size:max(10px,1.45cqw);color:var(--muted);width:100%;text-align:left}
+.mem-grid{flex:1;min-height:0;width:100%;display:grid;gap:1cqw;align-content:center;justify-content:center}
+.mc{position:relative;padding:0;border:0;background:none;perspective:60cqw;cursor:pointer;aspect-ratio:3/4;height:100%;max-height:100%}
+.mc>span{position:absolute;inset:0;transition:transform .32s;transform-style:preserve-3d}
+.mc.open>span,.mc.done>span{transform:rotateY(180deg)}
+.mc i,.mc em{position:absolute;inset:0;border-radius:.9cqw;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;align-items:center;justify-content:center}
+.mc i{background:radial-gradient(circle at 50% 42%,#ffe9a8 0 12%,transparent 13%),repeating-linear-gradient(45deg,#3a2a66 0 .8cqw,#2a1d4c .8cqw 1.6cqw);border:1px solid rgba(232,184,74,.6);box-shadow:inset 0 0 0 .4cqw rgba(232,184,74,.18)}
+.mc em{transform:rotateY(180deg);background:linear-gradient(180deg,#2c3456,#141a2e);border:1px solid rgba(255,255,255,.25);overflow:hidden}
+.mc em img{max-width:92%;max-height:92%;object-fit:contain}
+.mc.done em{border-color:var(--gold);box-shadow:0 0 1.2cqw rgba(232,184,74,.6)}
+.mc.miss em{border-color:#ff6a5a}
+.mem-res{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(10,12,22,.96);border:1px solid var(--gold);border-radius:1.4cqw;padding:2cqw 4cqw;display:flex;flex-direction:column;align-items:center;gap:.6cqw;text-align:center}
+.mem-res b{font-family:var(--display);font-weight:400;font-size:max(18px,3.4cqw);color:var(--gold)}.mem-res span{font-size:max(18px,3cqw);color:var(--gold);letter-spacing:.2em}.mem-res span i{font-style:normal;color:#4a5070}.mem-res p{margin:0;font-size:max(11px,1.6cqw)}
 </style>
 
 <main class="wrap">
@@ -402,7 +421,7 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
         <div class="sel-menu">
           <button type="button" id="btnMap"><i>🗺️</i><span>탑 지도</span></button>
           <button type="button" id="btnMis"><i>📜</i><span id="misTxt">임무</span></button>
-          <button type="button" id="btnTower"><i>🗼</i><span id="towerTxt">무한의 탑</span></button>
+          <button type="button" id="btnMem"><i>🃏</i><span id="memTxt">짝 맞추기</span></button>
           <button type="button" id="btnChar"><i>👥</i><span>캐릭터</span></button>
           <button type="button" class="arc" id="btnArcade"><i>🕹️</i><span>오락실</span><b>제작 중</b></button>
           <button type="button" class="shop" id="btnShop"><i>🏮</i><span>상점</span></button>
@@ -421,6 +440,12 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
       </div>
       <p class="arc-foot">새 오락기는 업데이트로 찾아옵니다 · 그동안 모은 엽전·의상·동료는 새 오락기에서도 그대로 씁니다</p>
       <button type="button" class="arc-go" id="btnArcadeX">탑 오르러 가기</button>
+    </div>
+    <div class="overlay memv" id="ovMem" hidden>
+      <div class="mem-head"><h2>짝 맞추기</h2><div class="mem-lv" id="memLv"></div><button type="button" id="btnMemX">닫기</button></div>
+      <p class="mem-info" id="memInfo"></p>
+      <div class="mem-grid" id="memGrid"></div>
+      <div class="mem-res" id="memRes" hidden><b id="memResT"></b><span id="memResS"></span><p id="memResG"></p><div class="offer-btns"><button type="button" class="buy" id="btnMemAgain">다시 하기</button><button type="button" id="btnMemNext">다음 단계</button></div></div>
     </div>
     <div class="overlay pick" id="ovPick" hidden>
       <div class="pk-box">
@@ -527,8 +552,8 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
         <li><b>동료</b>를 한 명 데려가면 옆에서 지원 사격을 하고, 교대 버튼으로 자리를 바꿔 직접 조종할 수 있습니다.</li>
         <li>엽전을 주우면 <b>골드</b>가 쌓입니다. 층 대장을 이기면 골드로 그 대장을 동료로 삼아 직접 조종할 수 있습니다. 값은 1층 대장이 1만 골드이고 층마다 3천 골드씩 오릅니다.</li>
         <li>10층을 깨면 <b>어려움</b>, 어려움 10층을 깨면 <b>악몽</b> 난이도가 열립니다. 적이 단단해지고 탄이 빨라지는 대신 골드를 1.5배·2배 받고, 별도 따로 모읍니다.</li>
-        <li>10층을 깨면 <b>무한의 탑</b>이 열립니다. 층마다 대장 한 명과 싸우고, 오를수록 대장이 강해집니다. 5층마다 달조각을 받고 최고 기록이 남습니다.</li>
-        <li><b>달조각</b>은 오늘의 임무를 모두 채울 때, 별을 30개 모을 때마다, 무한의 탑 5층마다 받습니다. 상점에서 살 수도 있습니다.</li>
+        <li><b>짝 맞추기</b>: 카드 두 장을 뒤집어 같은 캐릭터를 찾는 놀이입니다. 적게 뒤집을수록 별이 많고, 깰 때마다 골드(하루 5판까지), 단계마다 처음 깨면 달조각을 받습니다.</li>
+        <li><b>달조각</b>은 오늘의 임무를 모두 채울 때, 별을 30개 모을 때마다, 짝 맞추기 단계를 처음 깰 때 받습니다. 상점에서 살 수도 있습니다.</li>
         <li>달조각으로는 장비 사기·고급 강화, 동료 바로 데려오기, 쓰러진 자리에서 <b>이어 하기</b>를 할 수 있습니다. 뽑기는 없고, 모든 것은 값을 보고 직접 삽니다.</li>
         <li><b>장비</b>는 캐릭터마다 무기(화력), 부적(필살기 피해·시작 부적), 장신구(목숨·방패·골드)를 하나씩 낍니다. 한 번 산 장비는 모든 캐릭터가 함께 씁니다.</li>
         <li>부적 폭탄은 화면의 탄을 모두 지웁니다. 맞기 직전에 쓰세요.</li>
@@ -2213,7 +2238,7 @@ function refreshShop() { // 골드와 잠긴 동료 표시
   { if (!diffOpen(G.diff)) G.diff = 0; let h = ''; // 난이도 칩: 보통 · 어려움 · 악몽 (잠긴 것은 하나만 자물쇠로 보여 준다)
     for (let d = 0; d < 3; d++) { const op = diffOpen(d); if (d === 2 && !diffOpen(1)) break; h += '<button type="button" class="chip' + (G.diff === d ? ' on' : '') + '" data-d="' + d + '"' + (op ? '' : ' disabled title="' + (d * 10) + '층 대장을 ' + DN[d - 1] + '으로 이기면 열립니다"') + '>' + DN[d] + (op ? '' : ' 🔒') + '</button>'; if (!op) break; }
     $('diffChips').innerHTML = h;
-    const t = $('btnTower'); t.disabled = !towerOpen(); $('towerTxt').textContent = towerOpen() ? '무한의 탑' + (SAVE.tower ? ' ' + SAVE.tower + '층' : '') : '무한의 탑 🔒'; }
+    $('memTxt').textContent = '짝 맞추기' + (memStars() ? ' ★' + memStars() : ''); }
   { const D = daily(), n = D.ids.filter(i => D.paid[i]).length; $('misTxt').textContent = '임무 ' + n + '/3'; $('btnMis').classList.toggle('dot', n < 3); }
   const locked = !owns(sel), beaten = locked && SAVE.beaten.includes(CH[sel].from);
   for (const b of picks) { const c = +b.dataset.ch, l = !owns(c); b.classList.toggle('locked', l); const sm = b.querySelector('small'); if (sm) sm.textContent = SAVE.trial === c && !SAVE.owned.includes(c) ? '체험 1판' : l ? (CH[c].from + 1) + '층' + (SAVE.beaten.includes(CH[c].from) ? ' · ' + won(priceOf(c)) : ' 대장') : 'Lv' + lvOf(c) + ' · ' + (c < 3 ? INFO[c].role : (CH[c].from + 1) + '층 대장'); }
@@ -2241,7 +2266,7 @@ const EQ = [ // 장비: 무기(화력), 부적(필살기 피해·시작 부적),
   { id: 't3', slot: 't', g: 1, name: '청룡 부적', bomb: 18, bombs: 1, cost: { moon: 110 } },
   { id: 't4', slot: 't', g: 1, name: '봉황 깃 부적', bomb: 22, bombs: 1, need: '어려움 5층 대장 처치', cond: () => SAVE.mfirst.includes('1-4') },
   { id: 't5', slot: 't', g: 2, name: '일월 부적', bomb: 30, bombs: 1, cost: { moon: 380 } },
-  { id: 't6', slot: 't', g: 2, name: '그믐 부적', bomb: 36, bombs: 2, need: '무한의 탑 30층 돌파', cond: () => SAVE.tower >= 30 },
+  { id: 't6', slot: 't', g: 2, name: '그믐 부적', bomb: 36, bombs: 2, need: '악몽 3층 대장 처치', cond: () => SAVE.mfirst.includes('2-2') },
   { id: 'a1', slot: 'a', g: 0, name: '비단 복주머니', gold: 10, cost: { gold: 3000 } },
   { id: 'a2', slot: 'a', g: 0, name: '나무 염주', shield: 1, gold: 3, cost: { gold: 5000 } },
   { id: 'a3', slot: 'a', g: 1, name: '옥가락지', lives: 1, gold: 5, cost: { moon: 110 } },
@@ -2255,7 +2280,7 @@ const EQ = [ // 장비: 무기(화력), 부적(필살기 피해·시작 부적),
   { id: 'o3', slot: 'o', g: 1, name: '붉은 무희 궁수복', spd: 6, chg: 8, need: '5층 대장 처치', cond: () => SAVE.mfirst.includes('0-4'), show: 1 },
   { id: 'o4', slot: 'o', g: 2, name: '용궁 비늘 갑옷', spd: 8, chg: 15, cost: { moon: 380 }, need: '또는 어려움 7층 대장 처치', cond: () => SAVE.mfirst.includes('1-6') },
   { id: 'o6', slot: 'o', g: 1, name: '은하수 물놀이 옷', spd: 6, chg: 8, need: '6층 대장 처치', cond: () => SAVE.mfirst.includes('0-5'), show: 1 }, // 나린 여름 옷
-  { id: 'o5', slot: 'o', g: 2, name: '그믐밤 무희복', spd: 10, chg: 18, need: '어려움 10층 대장 처치 또는 무한의 탑 20층', cond: () => SAVE.mfirst.includes('1-9') || SAVE.tower >= 20 },
+  { id: 'o5', slot: 'o', g: 2, name: '그믐밤 무희복', spd: 10, chg: 18, need: '어려움 10층 대장 처치 또는 짝 맞추기 3단계 별 셋', cond: () => SAVE.mfirst.includes('1-9') || (SAVE.mem && SAVE.mem.st && SAVE.mem.st[3] >= 3) },
 ];
 const EQMAX = 10, eqById = id => EQ.find(e => e.id === id), eqMax = e => e.base ? 1 : EQMAX, eqK = lv => 1 + 0.12 * (lv - 1); // 강화 1단계마다 % 효과 +12%
 const eqUpCost = e => { const lv = SAVE.eq[e.id] || 1; return lv < 5 ? { gold: [800, 1500, 2500][e.g] * lv } : { moon: [6, 10, 15][e.g] * (lv - 4) }; }; // 5단계부터는 달조각
@@ -2290,7 +2315,6 @@ function towerNext() {
   const ready = STAGES.map((s, i) => s.ready ? i : -1).filter(i => i >= 0);
   G.loop = towerLoop(G.tf); startStage(ready[(G.tf - 1) % ready.length], 2); G.arcDone = true; P.bombs = Math.max(P.bombs, 2);
 }
-$('btnTower').addEventListener('click', () => { if (!towerOpen()) return; if (!owns(sel)) { toast('먼저 이 캐릭터를 동료로 삼아야 합니다'); return; } audioInit(); newGame(sel, true); if (document.activeElement) document.activeElement.blur(); });
 /* 이어 하기: 달조각으로 그 자리에서 다시 일어선다(한 판에 세 번까지, 할 때마다 비싸진다) */
 const reviveCost = () => 30 * (1 + (G.revives || 0));
 function reviveUI() { const c = reviveCost(); $('btnRevive').hidden = (G.revives || 0) >= 3; $('reviveCost').textContent = '달조각 ' + c + '개 · 가진 ' + SAVE.moon; }
@@ -2351,7 +2375,7 @@ function renderShop() {
   if (shopTab === 'moon') {
     for (const p of PRODUCTS) { if (p.once && SAVE.starter) continue;
       h += card(p.once ? 'g2' : p.bonus ? 'g1' : '', 'assets/eq/' + p.img + '.webp', p.name, '달조각 ' + p.moon.toLocaleString() + (p.bonus ? ' + 덤 ' + p.bonus : '') + (p.eq ? '<br>+ ' + eqById(p.eq).name + ' (희귀 무기)<br><span class="tag">한 번만 살 수 있음</span>' : ''), '<button type="button" data-buy="' + p.id + '">' + Billing.price(p) + '</button>'); }
-    note = (Billing.native ? '' : window.Capacitor && Capacitor.isNativePlatform && Capacitor.isNativePlatform() ? '결제를 불러오는 중입니다. ' : '') + (Billing.native || (window.Capacitor && Capacitor.isNativePlatform && Capacitor.isNativePlatform()) ? '결제는 Google Play로 처리됩니다. 쓰지 않은 달조각은 구매 후 7일 안에 환불을 요청할 수 있습니다.' : '시험 모드: 실제 결제가 되지 않습니다.') + ' 달조각은 오늘의 임무, 별 모으기, 무한의 탑에서도 얻습니다.';
+    note = (Billing.native ? '' : window.Capacitor && Capacitor.isNativePlatform && Capacitor.isNativePlatform() ? '결제를 불러오는 중입니다. ' : '') + (Billing.native || (window.Capacitor && Capacitor.isNativePlatform && Capacitor.isNativePlatform()) ? '결제는 Google Play로 처리됩니다. 쓰지 않은 달조각은 구매 후 7일 안에 환불을 요청할 수 있습니다.' : '시험 모드: 실제 결제가 되지 않습니다.') + ' 달조각은 오늘의 임무, 별 모으기, 짝 맞추기에서도 얻습니다.';
   } else if (shopTab === 'eq') {
     for (const e of EQ) { if (e.base) continue; const own = SAVE.eq[e.id], btn = own ? '<button type="button" disabled>가짐 · Lv ' + own + '</button>' : e.need && !e.cost ? '<button type="button" disabled>' + e.need + '</button>' : '<button type="button" data-eq="' + e.id + '"' + (canPay(e.cost) ? '' : ' disabled') + '>' + costTxt(e.cost) + '</button>';
       h += card('g' + e.g, 'assets/eq/' + e.id + '.webp', e.name, SLOT[e.slot] + ' · ' + GN[e.g] + '<br>' + eqDesc(e, own || 1) + (!own && e.need && e.cost ? '<br><span class="tag">' + e.need + '</span>' : ''), btn); }
@@ -2415,6 +2439,47 @@ $('eqList').addEventListener('click', ev => {
 });
 $('btnEqX').addEventListener('click', () => { $('ovEq').hidden = true; refreshShop(); });
 Billing.init(); checkRewards();
+
+
+/* ---------- 짝 맞추기: 카드 두 장을 뒤집어 같은 캐릭터를 찾는다 (무한의 탑 대신) ---------- */
+const MEMLV = [null, { pairs: 6, cols: 4, gold: 150, moon: 10 }, { pairs: 8, cols: 4, gold: 250, moon: 15 }, { pairs: 12, cols: 6, gold: 400, moon: 20 }];
+const mem = { lv: 1, cards: [], open: [], done: 0, moves: 0, t0: 0, lock: false, timer: 0 };
+const memS = () => { SAVE.mem = SAVE.mem || {}; SAVE.mem.st = SAVE.mem.st || {}; SAVE.mem.best = SAVE.mem.best || {}; return SAVE.mem; };
+const memStars = () => { const m = memS(); return [1, 2, 3].reduce((a, l) => a + (m.st[l] || 0), 0); };
+const memOpenLv = l => l === 1 || TEST_UNLOCK || !!memS().st[l - 1];
+function openMem(lv) { $('ovMem').hidden = false; memStart(lv || mem.lv); }
+function memStart(lv) {
+  const L = MEMLV[lv]; mem.lv = lv; mem.open = []; mem.done = 0; mem.moves = 0; mem.lock = false; mem.t0 = performance.now(); $('memRes').hidden = true;
+  const chars = shuffle(CH.map((c, i) => i)).slice(0, L.pairs), deck = shuffle(chars.concat(chars)); mem.cards = deck;
+  const g = $('memGrid'), rows = Math.ceil(deck.length / L.cols); g.style.gridTemplateColumns = 'repeat(' + L.cols + ',auto)'; g.style.gridTemplateRows = 'repeat(' + rows + ',minmax(0,1fr))';
+  g.innerHTML = deck.map((c, i) => '<button type="button" class="mc" data-i="' + i + '" aria-label="카드"><span><i></i><em><img src="assets/' + look(c).img + '.webp" alt=""></em></span></button>').join('');
+  $('memLv').innerHTML = [1, 2, 3].map(l => '<button type="button" data-l="' + l + '" class="' + (l === lv ? 'on' : '') + '"' + (memOpenLv(l) ? '' : ' disabled') + '>' + l + '단계 ' + (memS().st[l] ? '★'.repeat(memS().st[l]) : memOpenLv(l) ? '' : '🔒') + '</button>').join('');
+  clearInterval(mem.timer); mem.timer = setInterval(memInfo, 500); memInfo();
+}
+function memInfo() { const sec = Math.floor((performance.now() - mem.t0) / 1000), b = memS().best[mem.lv]; $('memInfo').textContent = '뒤집기 ' + mem.moves + '번 · ' + sec + '초 · 남은 짝 ' + (MEMLV[mem.lv].pairs - mem.done) + (b ? ' · 최고 ' + b + '번' : ''); }
+$('memGrid').addEventListener('click', ev => {
+  const b = ev.target.closest('.mc'); if (!b || mem.lock || b.classList.contains('open') || b.classList.contains('done')) return;
+  audioInit(); b.classList.add('open'); mem.open.push(b); tone(700 + mem.open.length * 120, 0.05, 'triangle', 0.04);
+  if (mem.open.length < 2) return;
+  mem.moves++; const [a, c] = mem.open; mem.open = [];
+  if (mem.cards[+a.dataset.i] === mem.cards[+c.dataset.i]) { setTimeout(() => { a.classList.add('done'); c.classList.add('done'); }, 250); mem.done++; sfx.item(); memInfo(); if (mem.done === MEMLV[mem.lv].pairs) setTimeout(memWin, 650); }
+  else { mem.lock = true; a.classList.add('miss'); c.classList.add('miss'); setTimeout(() => { a.classList.remove('open', 'miss'); c.classList.remove('open', 'miss'); mem.lock = false; }, 750); memInfo(); }
+});
+function memWin() {
+  clearInterval(mem.timer); const L = MEMLV[mem.lv], m = memS(), st = mem.moves <= L.pairs + 2 ? 3 : mem.moves <= Math.round(L.pairs * 1.6) ? 2 : 1, first = !m.st[mem.lv];
+  m.st[mem.lv] = Math.max(m.st[mem.lv] || 0, st); m.best[mem.lv] = Math.min(m.best[mem.lv] || 999, mem.moves);
+  const day = new Date().toDateString(); if (m.day !== day) { m.day = day; m.cnt = 0; }
+  let txt = '';
+  if (m.cnt < 5) { m.cnt++; const g = L.gold + st * 50; addGold(g); txt = '골드 +' + g.toLocaleString() + ' (오늘 ' + m.cnt + '/5판)'; } else txt = '오늘 골드 보상은 다 받았습니다 (하루 5판)';
+  saveGame(); if (first) { addMoon(L.moon, '짝 맞추기 ' + mem.lv + '단계 처음 성공'); txt += ' · 달조각 +' + L.moon; }
+  checkRewards(); sfx.life();
+  $('memResT').textContent = mem.lv + '단계 성공!'; $('memResS').innerHTML = '★'.repeat(st) + '<i>' + '★'.repeat(3 - st) + '</i>'; $('memResG').textContent = '뒤집기 ' + mem.moves + '번 · ' + txt;
+  $('btnMemNext').hidden = mem.lv >= 3; $('memRes').hidden = false; refreshShop();
+}
+$('memLv').addEventListener('click', ev => { const b = ev.target.closest('[data-l]'); if (b && !b.disabled) memStart(+b.dataset.l); });
+$('btnMemAgain').addEventListener('click', () => memStart(mem.lv)); $('btnMemNext').addEventListener('click', () => memStart(Math.min(3, mem.lv + 1)));
+$('btnMemX').addEventListener('click', () => { clearInterval(mem.timer); $('ovMem').hidden = true; refreshShop(); });
+$('btnMem').addEventListener('click', () => openMem());
 
 /* ---------- 탑 지도: 층마다 이름·별을 보여 주고, 층을 깨면 캐릭터가 다음 층으로 올라간다 ---------- */
 const reachedFloor = () => { let r = 0; for (let i = 0; i < STAGES.length; i++) if (STAGES[i].ready && segOpen(i * 3)) r = i; return r; };
@@ -2489,11 +2554,11 @@ function tutReset() { SAVE.tut = {}; saveGame(); tipHide(); toast('처음 하는
 const UNLOCKS = [ // [키, 열리는 조건, 열릴 때 한 줄 안내]
   ['pick', () => !!SAVE.stars[0], '세 사람은 빠르기·화력·범위가 다릅니다. 골라서 출발해 보세요'],
   ['co', () => !!SAVE.stars[2], '쓰러뜨린 대장은 골드로 동료가 됩니다. 동료와 「교대」하며 싸울 수 있습니다'],
-  ['up', () => !!SAVE.stars[5], '골드로 캐릭터를 강하게 만들 수 있습니다. 오늘의 임무도 열렸습니다'],
+  ['up', () => !!SAVE.stars[5], '골드로 캐릭터를 강하게 만들 수 있습니다. 오늘의 임무와 짝 맞추기도 열렸습니다'],
   ['eq', () => !!SAVE.stars[8] || Object.keys(SAVE.eq).some(k => k !== 'o0'), // 기본옷은 처음부터 있으므로 빼고 센다
     '장비는 모든 캐릭터가 함께 씁니다'],
   ['moon', () => !!SAVE.moonSeen || SAVE.moon > 0, '달조각으로 동료를 바로 데려올 수 있습니다'],
-  ['hard', () => !!SAVE.stars[29], '어려움 난이도와 무한의 탑이 열렸습니다'],
+  ['hard', () => !!SAVE.stars[29], '어려움 난이도가 열렸습니다'],
 ];
 const uiOpen = k => { if (TEST_UNLOCK) return true; const u = UNLOCKS.find(x => x[0] === k); return !!(u && u[1]()); };
 function applyUnlocks() { // 첫 화면에서 열린 것만 보이게 하고, 처음 열린 것은 금색으로 깜빡인다
@@ -2505,13 +2570,13 @@ function applyUnlocks() { // 첫 화면에서 열린 것만 보이게 하고, �
   show($('coRow'), o.co); show($('btnMap'), o.co); show($('btnArcade'), o.co); // 오락실 칸은 1층 대장을 깬 뒤부터 show($('stRec'), o.co);
   show($('btnUp'), o.up); show($('btnMis'), o.up);
   show($('eqCard'), o.eq); show($('btnShop'), o.moon); show($('selMoon'), o.moon);
-  show($('diffChips'), o.hard); show($('btnTower'), o.hard);
+  show($('diffChips'), o.hard); show($('btnMem'), o.up); // 짝 맞추기는 2층을 깬 뒤(임무와 함께) 열린다
   if (!o.pick && sel !== 0) select(0);
   if (!o.co) { G.co = -1; coRender(); }
   if (TEST_UNLOCK) return;
   SAVE.uiSeen = SAVE.uiSeen || {}; const fresh = UNLOCKS.filter(([k]) => o[k] && !SAVE.uiSeen[k]);
   if (!fresh.length || G.mode !== 'title') return;
-  const els = { pick: ['#btnChar', '#stNext'], co: ['#coRow', '#btnMap'], up: ['#btnUp', '#btnMis'], eq: ['#eqCard'], moon: ['#btnShop'], hard: ['#diffChips', '#btnTower'] };
+  const els = { pick: ['#btnChar', '#stNext'], co: ['#coRow', '#btnMap'], up: ['#btnUp', '#btnMis', '#btnMem'], eq: ['#eqCard'], moon: ['#btnShop'], hard: ['#diffChips'] };
   for (const [k, , msg] of fresh) { SAVE.uiSeen[k] = 1; for (const q of els[k]) { const el = document.querySelector(q); if (el) { el.classList.remove('ui-new'); void el.offsetWidth; el.classList.add('ui-new'); setTimeout(() => el.classList.remove('ui-new'), 6000); } } }
   // 처음 실행이 아니라면(이미 진행한 기록) 안내 문구 없이 표시만
   toast(fresh[fresh.length - 1][2]); saveGame();
@@ -2687,7 +2752,7 @@ function start() {
   if (window.ResizeObserver) new ResizeObserver(() => resize()).observe(cv); else addEventListener('resize', () => resize());
   requestAnimationFrame(frame);
 }
-window.__game = { openArcade, get shots() { return shots; }, releaseCharge: () => releaseCharge(), openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
+window.__game = { openMem, mem, openArcade, get shots() { return shots; }, releaseCharge: () => releaseCharge(), openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
 if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start); else start();
 })();
 </script>
