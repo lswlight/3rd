@@ -732,6 +732,8 @@ const ET = {
   mini: { hp: 110, r: 30, score: 3000, coins: 4, up(e, dt) { // 문지기: 잡거나 시간이 지나야 다음으로 넘어간다
     if (e.t < 1.2) { e.x += (W - 120 - e.x) * Math.min(1, dt * 3); return; }
     if (e.t > 24) { e.x += 170 * dt; if (e.x > W + 80) e.gone = true; return; }
+    if (G.diff >= 2 && !e.p2 && e.hp < e.mhp * 0.5) { e.p2 = 1; e.flash = 0.3; float('성났다!', e.x, e.y - 40, '#ff9a8a'); for (let i = 0; i < 14; i++) shootB(e.x, e.y, i * TAU / 14, 100); } // 악몽: 문지기도 2단계
+    if (e.p2) dt *= 1.35;
     const v = e.def.pat; e.cd -= dt;
     if (v === 0) { // 외눈 도깨비: 조준 부채탄 세 번 뒤 원형탄
       e.y = GY / 2 + Math.sin(e.t * 1.3) * 90;
@@ -768,9 +770,15 @@ const ET = {
         for (let i = 0; i < 5; i++) fireball(e.x + rnd(-50, 50), e.y + rnd(-50, 50), rnd(30, 50), i * 0.1);
         banner(S.phase || '본색을 드러냈다!', S.phaseSub || '', 1.8);
       }
+      if (G.diff >= 2 && !S.pats3 && !G.endless && e.p2 && !e.p3n && e.hp < e.mhp * 0.33) { // 악몽: 모든 대장이 3단계, 앞 층 대장의 기술을 빌려 쓴다
+        const pv = STAGES[(G.stage + STAGES.length - 1) % STAGES.length]; e.p3n = true; e.pi = 0; e.pc = -1.5; e.cd = 0.3; bullets = []; G.flash = 0.5; G.shake = 0.7; sfx.big(); e.nmP = [pv.sig, ...(S.pats2 || S.pats)];
+        for (let i = 0; i < 5; i++) fireball(e.x + rnd(-50, 50), e.y + rnd(-50, 50), rnd(30, 50), i * 0.1); banner('악몽의 힘!', pv.boss + '의 기술을 빌렸다', 1.8);
+      }
       if (e.p2) dt *= 1.2;
-      const pats = e.p3 ? S.pats3 : e.p2 && S.pats2 ? S.pats2 : S.pats; e.pc += dt;
+      const pats = e.p3 ? S.pats3 : e.p3n ? e.nmP : e.p2 && S.pats2 ? S.pats2 : S.pats; e.pc += dt;
       if (e.pc >= 0 && e.pc < 4) pats[e.pi % pats.length](e, dt);
+      if (G.diff >= 1 && e.p2 && !e.p3 && S.sig && e.pc >= 0 && e.pc < 4 && pats[e.pi % pats.length] !== S.sig) { // 어려움부터: 2단계에 고유 기술이 두 겹으로
+        const o = e.sg || (e.sg = { cd: 0.8, sa: 0, k: 0, r: e.r, p2: 1 }); o.x = e.x; o.y = e.y; o.pi = e.pi; o.t = e.t; S.sig(o, dt * 0.85); }
       else if (e.pc > 5) { e.pc = 0; e.pi++; e.cd = 0.3; }
     } },
 };
@@ -843,15 +851,20 @@ MN(8, ['그림자 무사', 2], ['등롱 귀신', 1], ['달 나방', 0]); MD(8, [
 STAGES[8].pats = [patEclipse, patSpiral]; STAGES[8].pats2 = [patEclipse, patRing, patTails];
 MN(9, ['금 도깨비 근위병', 0], ['방망이 쌍둥이', 2], ['보물 상자 요괴', 1]); MD(9, ['도깨비 대신', [patWall, patRing]], ['근위대장', [patIron, patBurst]]);
 STAGES[9].pats = [patFan, patRing]; STAGES[9].pats2 = [patTails, patSpiral, patStream]; STAGES[9].pats3 = [patMolten, patClone, patSnow, patTails, patBlade, patIron]; // 3단계: 앞선 대장들의 힘(쇠·환영·눈보라·꼬리·물 칼날)을 빌려 쓴다
+// 기획 5 4번: 대장마다 고유 기술. 어려움은 2단계에 겹쳐 쓰고, 악몽은 3단계에서 앞 층 대장 기술을 빌린다
+[patWall, patIron, patFoxfire, patTotem, patSnow, patWave, patCrescent, patSwords, patEclipse, patTails].forEach((f, i) => { STAGES[i].sig = f; });
 ['지우산 처녀', '버들 물귀신', '대숲 무녀', '엿장수 처녀', '설녀의 시녀', '바다 해녀', '용궁 시녀', '풀무 아가씨', '등롱 궁녀', '도깨비 궁 무희'].forEach((nm, i) => { const m = STAGES[i].minis[1]; m.name = nm; m.img = 'mh' + i; }); // 층마다 두 번째 문지기는 여성 인간형 요괴
 
 const BOSS_K = 0.17; // 대장 체력이 층마다 오르는 폭 (기획 5: 0.25 → 0.17, 측정 뒤 다시 맞춘다)
 /* 층별 추천 동료(기획 5 3-5): 안 데려가도 깰 수 있지만 데려가면 편하다. 목록 앞쪽부터 가진 동료를 고른다 */
 const REC = [null, [2, '방패로 쇠공을 한 번 막음'], [1, '노려 쏘기가 진짜 구미호를 노림'], [3, '세 갈래 도깨비불로 넓게 정리'], [4, '곁에 온 눈 탄을 먹어 치움'], [7, '빠른 물줄기를 느리게 얼림'], [6, '장승 기둥으로 탄을 막음'], [9, '물결 방어막으로 칼비를 막음'], [[11, '어둠을 걷어 냄'], [5, '분신 사격으로 화력 보충']], null];
+const REC2 = [null, [6, '장승 기둥으로 쇠공을 막음'], [8, '번개가 진짜를 알아서 침'], [10, '쫓아가는 칼날로 정리'], [0, '부채 바람으로 눈 탄 지우기'], [6, '기둥으로 파도를 막음'], [10, '공격력 +30%'], [2, '방패로 한 번 막음'], [8, '번개로 화력 보충'], null]; // 어려움·악몽에서 하나 더
 function recOf(i) { const r = REC[i]; if (!r) return null; const L = Array.isArray(r[0]) ? r : [r]; const o = L.find(x => owns(x[0])); return o ? { ch: o[0], why: o[1], own: true } : { ch: L[L.length - 1][0], why: L[L.length - 1][1], own: false }; }
-function recText(i, short) { const r = recOf(i); if (!r) return ''; const c = CH[r.ch];
-  if (!r.own) return '아직 없는 동료 · ' + (c.from + 1) + '층 대장을 이기면 데려올 수 있습니다';
-  return short ? '추천 ' + c.name : '추천 동료 · ' + c.name + ' (' + r.why + ')'; }
+function recText(i, short) { const r = recOf(i); if (!r) return ''; const c = CH[r.ch], r2 = G.diff >= 1 && REC2[i] && REC2[i][0] !== r.ch ? REC2[i] : null;
+  if (!r.own && !r2) return '아직 없는 동료 · ' + (c.from + 1) + '층 대장을 이기면 데려올 수 있습니다';
+  const a = r.own ? [[r.ch, r.why]] : []; if (r2) a.push(r2);
+  if (short) return '추천 ' + a.map(x => CH[x[0]].name).join('·');
+  return '추천 동료 · ' + a.map(x => CH[x[0]].name + ' (' + x[1] + ')' + (owns(x[0]) ? '' : ' · 아직 없음')).join(' / '); }
 const lossKey = () => G.diff + '-' + (G.stage * 3 + G.part), lossN = () => (SAVE.loss && SAVE.loss[lossKey()]) || 0;
 function lossAdd() { if (G.endless) return; SAVE.loss = SAVE.loss || {}; SAVE.loss[lossKey()] = lossN() + 1; devLog('lose', G.stage + 1, G.part + 1, DN[G.diff], G.deaths || 0, lossN()); }
 function lossClear() { if (SAVE.loss) delete SAVE.loss[lossKey()]; }
