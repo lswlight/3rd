@@ -306,7 +306,7 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
   <div class="stage">
     <canvas id="cv" aria-label="게임 화면"></canvas>
     <div class="overlay cover" id="ovCover" role="button" tabindex="0" aria-label="게임 시작">
-      <img src="assets/cover5.jpg" alt="">
+      <img src="assets/cover6.jpg" alt="">
       <div class="cover-txt">
         <h2>그믐 <span>달을 훔친 자</span></h2>
       </div>
@@ -398,7 +398,7 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
         <div class="sel-row pk-grid">
           <button type="button" data-ch="0" id="pick0"><img src="assets/hp0.webp" alt="">한별<small></small></button>
           <button type="button" data-ch="1" id="pick1"><img src="assets/hp1_o0.webp" alt="">달래<small></small></button>
-          <button type="button" data-ch="2" id="pick2"><img src="assets/hp2.webp" alt="">무쇠<small></small></button>
+          <button type="button" data-ch="2" id="pick2"><img src="assets/hp2n.webp" alt="">나린<small></small></button>
           <button type="button" data-ch="3" id="pick3"><img src="assets/p3.webp" alt="">탈 도깨비<small id="lock3"></small></button>
           <button type="button" data-ch="4" id="pick4"><img src="assets/p4.webp" alt="">불가사리<small id="lock4"></small></button>
           <button type="button" data-ch="5" id="pick5"><img src="assets/p5.webp" alt="">구미호<small id="lock5"></small></button>
@@ -478,7 +478,7 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
       <ul class="crew">
         <li><img src="assets/hp0.webp" alt=""><span><b>한별</b> 부채 바람이 넓게 퍼집니다. 기를 모으면 적을 뚫고 지나가는 회오리를 보냅니다.</span></li>
         <li><img src="assets/hp1_o0.webp" alt=""><span><b>달래</b> 가장 빠릅니다. 화살이 곧게 나가고, 기를 모으면 관통 화살 세 발을 쏩니다.</span></li>
-        <li><img src="assets/hp2.webp" alt=""><span><b>무쇠</b> 느리지만 한 방이 셉니다. 기를 모으면 터지는 쇠망치를 던지고, 터진 자리의 탄도 지웁니다.</span></li>
+        <li><img src="assets/hp2n.webp" alt=""><span><b>나린</b> 하늘에서 내려온 선녀. 느리지만 은하수 물구슬이 묵직합니다. 기를 모으면 터지는 큰 물구슬을 던지고, 터진 자리의 탄도 씻어 냅니다.</span></li>
       </ul>
     </div>
     <div>
@@ -519,7 +519,7 @@ const FONT = '"Black Han Sans","Apple SD Gothic Neo","Malgun Gothic",sans-serif'
 
 /* ---------- 그림 ---------- */
 const IMG = {};
-for (const n of ['hp0', 'hp1', 'hp2', 'mh0', 'mh1', 'mh2', 'mh3', 'mh4', 'mh5', 'mh6', 'mh7', 'mh8', 'mh9', 'mw_wisp', 'mw_kite', 'mw_drum', 'mw_jar', 'mw_lantern', 'mw_dasher', 'mw_carp', 'mw_fox', 'f3_wisp', 'f3_kite', 'f3_dasher', 'f4_wisp', 'f4_kite', 'f4_dasher', 'f5_wisp', 'f5_kite', 'f5_dasher', 'f6_wisp', 'f6_kite', 'f6_dasher', 'f7_wisp', 'f7_kite', 'f7_dasher', 'f8_wisp', 'f8_kite', 'f8_dasher', 'f9_wisp', 'f9_kite', 'f9_dasher', 'wisp', 'kite', 'drum', 'jar', 'lantern', 'dasher', 'bz0c', 'bz0d', 'bz1a', 'bz8b', 'fg0', 'mini0a', 'mini0b', 'mini0c', 'mid0a', 'mid0b', 'p3', 'cut3x', 'p4', 'cut4x', 'carp', 'mini1a', 'mini1b', 'mini1c', 'mid1a', 'mid1b', 'bz1b', 'fg1', 'ironfx', 'p5', 'cut5x', 'fox', 'mini2a', 'mini2c', 'mid2a', 'boss3', 'bz2b', 'fg3', 'ch3', 'ch5', 'ch6', 'ch7', 'ch8', 'ch9', 'ch10', 'ch11', 'ch12', 'p6','cut6x','p7','cut7x','p8','cut8x','p9','cut9x','p10','cut10x','p11','cut11x','p12','cut12x','zk3','mini3a','mini3b','mini3c','mid3a','mid3b','bossH3','bz3b','zk4','mini4a','mini4b','mini4c','mid4a','mid4b','bossH4','bz4b','zk5','mini5a','mini5b','mini5c','mid5a','mid5b','bossH5','bz5b','zk6','mini6a','mini6b','mini6c','mid6a','mid6b','bossH6','bz6b','zk7','mini7a','mini7b','mini7c','mid7a','mid7b','bossH7','bz7b','zk8','mini8a','mini8b','mini8c','mid8a','mid8b','bossH8','zk9','mini9a','mini9b','mini9c','mid9a','mid9b','bossH9','bz9b', 'hc0x', 'hc2x', 'hp1_o0', 'hc1_o0', 'hc1w', 'forgeAnvil', 'forgeHammer', 'tornado', 'arrowfx', 'hammerfx', 'talisman']) { const im = new Image(); im.src = 'assets/' + n + '.webp'; IMG[n] = im; }
+for (const n of ['hp0', 'hp1', 'hp2n', 'hp2s', 'hc2n', 'hc2s', 'mh0', 'mh1', 'mh2', 'mh3', 'mh4', 'mh5', 'mh6', 'mh7', 'mh8', 'mh9', 'mw_wisp', 'mw_kite', 'mw_drum', 'mw_jar', 'mw_lantern', 'mw_dasher', 'mw_carp', 'mw_fox', 'f3_wisp', 'f3_kite', 'f3_dasher', 'f4_wisp', 'f4_kite', 'f4_dasher', 'f5_wisp', 'f5_kite', 'f5_dasher', 'f6_wisp', 'f6_kite', 'f6_dasher', 'f7_wisp', 'f7_kite', 'f7_dasher', 'f8_wisp', 'f8_kite', 'f8_dasher', 'f9_wisp', 'f9_kite', 'f9_dasher', 'wisp', 'kite', 'drum', 'jar', 'lantern', 'dasher', 'bz0c', 'bz0d', 'bz1a', 'bz8b', 'fg0', 'mini0a', 'mini0b', 'mini0c', 'mid0a', 'mid0b', 'p3', 'cut3x', 'p4', 'cut4x', 'carp', 'mini1a', 'mini1b', 'mini1c', 'mid1a', 'mid1b', 'bz1b', 'fg1', 'ironfx', 'p5', 'cut5x', 'fox', 'mini2a', 'mini2c', 'mid2a', 'boss3', 'bz2b', 'fg3', 'ch3', 'ch5', 'ch6', 'ch7', 'ch8', 'ch9', 'ch10', 'ch11', 'ch12', 'p6','cut6x','p7b','cut7x','p8b','cut8x','p9b','cut9x','p10','cut10x','p11b','cut11x','p12','cut12x','zk3','mini3a','mini3b','mini3c','mid3a','mid3b','bossH3','bz3b','zk4','mini4a','mini4b','mini4c','mid4a','mid4b','bossH4','bz4b','zk5','mini5a','mini5b','mini5c','mid5a','mid5b','bossH5','bz5b','zk6','mini6a','mini6b','mini6c','mid6a','mid6b','bossH6','bz6b','zk7','mini7a','mini7b','mini7c','mid7a','mid7b','bossH7','bz7b','zk8','mini8a','mini8b','mini8c','mid8a','mid8b','bossH8','zk9','mini9a','mini9b','mini9c','mid9a','mid9b','bossH9','bz9b', 'hc0x', 'hp1_o0', 'hc1_o0', 'hc1w', 'forgeAnvil', 'forgeHammer', 'tornado', 'arrowfx', 'hammerfx', 'talisman']) { const im = new Image(); im.src = 'assets/' + n + '.webp'; IMG[n] = im; }
 { const im = new Image(); im.src = 'assets/ch12m.webp'; IMG.ch12 = im; }
 { const im = new Image(); im.src = 'assets/tower10.webp'; IMG.tower10 = im; } // 층 시작 때 보여 주는 탑 그림 // 여왕의 기: 달 구슬(새 그림)
 for (const n of ['bg0', 'bg1', 'bg2', 'bg3', 'bgS4', 'bgS5', 'bgS6', 'bgS7', 'bgS8', 'bgS10', 'bg0h', 'bg1h', 'bg2h', 'bg3h', 'bgS4h', 'bgS5h', 'bgS6h', 'bgS7h', 'bgS8h', 'bgS10h']) { const im = new Image(); im.src = 'assets/' + n + '.jpg'; IMG[n] = im; }
@@ -557,7 +557,7 @@ function glow(g, x, y, r, a) { const pa = ctx.globalAlpha; ctx.globalAlpha = pa 
 const CH = [
   { name: '한별', robe: '#3fae9a', speed: 185, img: 'hp0', h: 66, cut: 'hc0x', glow: 'jade', spark: '#bffff0', tint: 'rgba(63,200,170,', bomb: '월광풍', cutv: 'cutvh0x', line: '통행세는 부채 바람으로 치르지.' },
   { name: '달래', robe: '#d8483a', speed: 225, img: 'hp1', h: 66, cut: 'hc1w', glow: 'gold', spark: '#ffe9b0', tint: 'rgba(255,200,80,', bomb: '백야의 화살', cutv: 'cutvh1w', line: '화살 한 대면 충분하겠네.' },
-  { name: '무쇠', robe: '#5b6fd6', speed: 160, img: 'hp2', h: 68, cut: 'hc2x', glow: 'fire', spark: '#ffb060', tint: 'rgba(255,110,40,', bomb: '천둥망치', cutv: 'cutvh2x', line: '망치 맛부터 보고 얘기하자고!' },
+  { name: '나린', robe: '#6fb8e8', speed: 165, img: 'hp2n', h: 70, cut: 'hc2n', glow: 'blue', spark: '#cfefff', tint: 'rgba(110,190,255,', bomb: '은하수 폭포', cutv: 'cutvh2n', line: '하늘의 물로 깨끗이 씻어 드릴게요.' },
   // 층 대장을 이긴 뒤 골드로 사는 동료. from: 어느 층 대장인지
   { name: '탈 도깨비', robe: '#c23b2e', speed: 175, img: 'p3', h: 60, cut: 'cut3x', glow: 'blue', spark: '#9fd8ff', tint: 'rgba(80,150,255,', bomb: '도깨비불 잔치', cutv: 'cutv3x', line: '이 탑은 내가 잘 알지. 길을 비켜라!', from: 0,
     join: '어…? 내가 왜 여기서 사람들을 막고 있었지? 이 탑은 내가 좀 알지. 같이 올라가자. 그런데 공짜로 따라가라는 건 아니겠지?' },
@@ -569,19 +569,19 @@ const CH = [
   { name: '장승 자매', robe: '#3fae6a', speed: 170, img: 'p6', h: 72, cut: 'cut6x', cutv: 'cutv6x', glow: 'green', spark: '#b8ffb0', tint: 'rgba(80,220,120,', bomb: '수호 장승진', line: '마을 문은 우리가 지킨다. 길도 우리가 연다.', from: 3,
     join: '우리가 지키려던 마을을 우리 손으로 가두었구나. 용서를 바라진 않는다. 대신 그 왕에게 가는 길을 우리가 열겠다. 길삯은 새 장승 세우는 데 쓰마.',
     kit: { shot: 'heavy', shape: 'log', c: '#b07a3a', dmg: 2.4, rate: 0.18, sp: 430, charge: 'boom', bomb: 'rain', co: 'totem', sf: 150 }, col: '#7be08a', codesc: '장승 기둥 세우기', info: { role: '4층 대장 · 동료', st: [45, 85, 60], desc: '언니의 장승 몽둥이가 묵직하게 날아갑니다. 모으기는 터지는 장승 기둥, 필살기는 수호 장승진.' } },
-  { name: '설녀', robe: '#9fd0ff', speed: 195, img: 'p7', h: 74, cut: 'cut7x', cutv: 'cutv7x', glow: 'blue', spark: '#e0f4ff', tint: 'rgba(150,210,255,', bomb: '만년설 눈보라', line: '이 눈이 녹는 날을, 나도 기다렸어.', from: 4,
+  { name: '설녀', robe: '#9fd0ff', speed: 195, img: 'p7b', h: 76, cut: 'cut7x', cutv: 'cutv7x', glow: 'blue', spark: '#e0f4ff', tint: 'rgba(150,210,255,', bomb: '만년설 눈보라', line: '이 눈이 녹는 날을, 나도 기다렸어.', from: 4,
     join: '나도 이 눈을 녹이고 싶었어. 달빛이 돌아오지 않으면 내 산은 영영 겨울이야. 같이 가게 해 줘. 길삯은… 눈 녹은 물로는 안 되겠지?',
     kit: { shot: 'fan', shape: 'shard', c: '#bfe6ff', dmg: 1, rate: 0.11, sp: 560, charge: 'pierce', bomb: 'spiral', co: 'freeze', sf: 1200 }, col: '#bfe6ff', codesc: '탄을 느리게 얼리기', info: { role: '5층 대장 · 동료', st: [70, 55, 95], desc: '얼음 조각이 넓게 퍼집니다. 모으기는 뚫고 지나가는 눈보라, 필살기는 만년설 눈보라.' } },
-  { name: '이무기', robe: '#1f8f86', speed: 205, img: 'p8', h: 78, cut: 'cut8x', cutv: 'cutv8x', glow: 'teal', spark: '#9ff5e6', tint: 'rgba(40,190,170,', bomb: '승천하지 못한 파도', line: '여의주만 있으면 나도 용이야. 비켜.', from: 5,
+  { name: '이무기', robe: '#1f8f86', speed: 205, img: 'p8b', h: 78, cut: 'cut8x', cutv: 'cutv8x', glow: 'teal', spark: '#9ff5e6', tint: 'rgba(40,190,170,', bomb: '승천하지 못한 파도', line: '여의주만 있으면 나도 용이야. 비켜.', from: 5,
     join: '달빛을 모은 게 아니라… 훔치고 있었던 거야? 그 왕이 날 속였어. 갚아 줘야겠네. 용이 되는 건 그다음이야.',
     kit: { shot: 'line', shape: 'blade', c: '#7ff0e0', dmg: 1.5, rate: 0.09, sp: 760, charge: 'multi', bomb: 'sweep', co: 'zap', sf: 700 }, col: '#5fe0d0', codesc: '번개 내리치기', info: { role: '6층 대장 · 동료', st: [85, 70, 45], desc: '물 칼날이 곧고 빠르게 나갑니다. 모으기는 다섯 갈래 물줄기, 필살기는 승천하지 못한 파도.' } },
-  { name: '용왕의 장수', robe: '#7fd6e6', speed: 180, img: 'p9', h: 78, cut: 'cut9x', cutv: 'cutv9x', glow: 'blue', spark: '#d8fbff', tint: 'rgba(110,220,235,', bomb: '용궁 월도 해일', line: '용궁의 이름으로, 길을 연다.', from: 6,
+  { name: '용왕의 장수', robe: '#7fd6e6', speed: 180, img: 'p9b', h: 78, cut: 'cut9x', cutv: 'cutv9x', glow: 'blue', spark: '#d8fbff', tint: 'rgba(110,220,235,', bomb: '용궁 월도 해일', line: '용궁의 이름으로, 길을 연다.', from: 6,
     join: '왕명을 따랐을 뿐인데, 그 왕이 우리 바다를 빼앗은 자였다니. 장수의 의리는 바다에 있다. 그대들과 함께 가겠다.',
     kit: { shot: 'fan', shape: 'cres', c: '#a8f4ff', dmg: 1.1, rate: 0.12, sp: 540, charge: 'pierce', bomb: 'sweep', co: 'tide', sf: 900 }, col: '#a8f4ff', codesc: '물결 방어막', info: { role: '7층 대장 · 동료', st: [55, 70, 80], desc: '월도의 물결이 초승달처럼 퍼집니다. 모으기는 뚫는 큰 물결, 필살기는 용궁 월도 해일.' } },
   { name: '쇠 도깨비', robe: '#e0632e', speed: 185, img: 'p10', h: 68, cut: 'cut10x', cutv: 'cutv10x', glow: 'fire', spark: '#ffd08a', tint: 'rgba(255,130,40,', bomb: '천 자루 칼비', line: '내가 벼린 칼이 얼마나 잘 드는지 볼래?', from: 7,
     join: '왕의 무기를 만든 건 나야. 도깨비들도 살아야 하니까. 그런데 그 칼이 남의 땅을 베는 데 쓰였다면… 내가 도로 부러뜨려야지.',
     kit: { shot: 'home', shape: 'blade', c: '#ffb060', dmg: 1, rate: 0.14, sp: 440, charge: 'multi', bomb: 'rain', co: 'buff', sf: 500 }, col: '#ff9a5a', codesc: '공격력 올리기', info: { role: '8층 대장 · 동료', st: [60, 80, 65], desc: '벼린 칼이 부채꼴로 날아갑니다. 모으기는 다섯 자루 관통 칼, 필살기는 천 자루 칼비.' } },
-  { name: '두억시니', robe: '#8a5fd6', speed: 190, img: 'p11', h: 70, cut: 'cut11x', cutv: 'cutv11x', glow: 'purple', spark: '#d9c4ff', tint: 'rgba(150,90,240,', bomb: '검은 달', line: '달을 삼킨 몸이다. 밤은 내 편이지.', from: 8,
+  { name: '두억시니', robe: '#8a5fd6', speed: 190, img: 'p11b', h: 74, cut: 'cut11x', cutv: 'cutv11x', glow: 'purple', spark: '#d9c4ff', tint: 'rgba(150,90,240,', bomb: '검은 달', line: '달을 삼킨 몸이다. 밤은 내 편이지.', from: 8,
     join: '삼킨 달 조각이 빠져나갔군. 속이 다 시원하다. 달 지키는 노릇은 끝이다. 마지막 층까지 내가 길을 보여 주마.',
     kit: { shot: 'home', shape: 'cres', c: '#c9a8ff', dmg: 1.05, rate: 0.15, sp: 430, charge: 'pierce', bomb: 'spiral', co: 'dusk', sf: 330 }, col: '#c9a8ff', codesc: '어둠 걷기', info: { role: '9층 대장 · 동료', st: [65, 75, 70], desc: '검은 초승달이 부채꼴로 날아갑니다. 모으기는 뚫는 검은 달, 필살기는 검은 달.' } },
   { name: '도깨비 여왕', robe: '#e8b84a', speed: 200, img: 'p12', h: 68, cut: 'cut12x', cutv: 'cutv12x', glow: 'gold', spark: '#fff0b0', tint: 'rgba(255,210,90,', bomb: '금 나와라 뚝딱', line: '후후, 이번엔 훔치지 않고 같이 놀러 가는 거야.', from: 9,
@@ -610,7 +610,7 @@ const STAGES = [
   { name: '7층', place: '용궁', boss: '용왕의 장수', ready: 1, dim: 0.26, bg: 'bgS7', bossImg: 'bossH6', bossImg2: 'bz6b', zako: { img: 'zk6', mv: 1 }, vec: 2, seq: 'zfukL1zcK1zdug1kM2zsLuD1zKJ1fM2szD',
     talk: '왕명이다. 이 문 너머로는 한 걸음도 들일 수 없다.', pline: { 0: '그 왕이 그대의 바다를 빼앗았는데도 따르겠다는 것이오?' }, phase: '용궁의 수호수가 나섰다!', phaseSub: '바다를 지키는 현무' },
   { name: '8층', place: '불타는 대장간 골짜기', boss: '쇠 도깨비', ready: 1, bg: 'bgS8', bossImg: 'bossH7', bossImg2: 'bz7b', zako: { img: 'zk7', mv: 0 }, vec: 1, seq: 'zsFL1zcK1Fdh1kM2zsLFD1zKJ1FcM2szD',
-    talk: '어서 와! 마침 새 칼을 시험할 상대가 필요했거든.', pline: { 2: '스승님은 어디 계시냐! 도깨비한테 기술을 넘겼다는 게 정말이야?' }, phase: '전쟁 갑옷 기동!', phaseSub: '쇠 도깨비의 걸작' },
+    talk: '어서 와! 마침 새 칼을 시험할 상대가 필요했거든.', pline: { 2: '하늘 대장간의 불씨를 가져간 게 너였군요. 돌려받겠어요.' }, phase: '전쟁 갑옷 기동!', phaseSub: '쇠 도깨비의 걸작' },
   { name: '9층', place: '달밤 성곽', boss: '두억시니', ready: 1, bg: 'bg2', bossImg: 'bossH8', bossImg2: 'bz8b', zako: { img: 'zk8', mv: 0 }, vec: 2, night: 1, seq: 'zsnkL1zcK1zdnh1kM2zsLnD1zKJ1cM2szD',
     talk: '달도 삼킨 몸이다. 너 따위는 한입거리지.', pline: { 0: '달빛이… 아직 그 안에 남아 있소.' }, phase: '달을 삼킨 본모습!', phaseSub: '달을 삼킨 자' },
   { name: '10층', place: '구름 위 도깨비 궁', boss: '도깨비 여왕', ready: 1, dim: 0.22, bg: 'bgS10', bossImg: 'bossH9', bossImg2: 'bossH9', bossImg3: 'bz9b', zako: { img: 'zk9', mv: 1 }, vec: 2, night: 1, seq: 'zstL1zwK1zdp1kM2zsLuD1zFJ1nM2szD', last: 1,
@@ -713,7 +713,7 @@ if (!Array.isArray(SAVE.tried)) SAVE.tried = []; if (!Number.isInteger(SAVE.tria
 if (!Array.isArray(SAVE.owned)) SAVE.owned = []; if (!Array.isArray(SAVE.beaten)) SAVE.beaten = []; SAVE.gold = +SAVE.gold || 0;
 if (!Number.isInteger(SAVE.diff)) SAVE.diff = SAVE.hard ? 1 : 0; SAVE.moon = +SAVE.moon || 0; for (const k of ['eq', 'eqd', 'look']) if (!SAVE[k] || typeof SAVE[k] !== 'object') SAVE[k] = {}; for (const k of ['mfirst', 'tx']) if (!Array.isArray(SAVE[k])) SAVE[k] = []; SAVE.tower = +SAVE.tower || 0; if (!SAVE.tut || typeof SAVE.tut !== 'object') SAVE.tut = {}; SAVE.mstar = +SAVE.mstar || 0; SAVE.eq.o0 = 1; if (!Array.isArray(SAVE.outQ)) SAVE.outQ = [];
 /* 겉모습(외형): 주인공 3명은 입은 옷이나 고른 외형에 따라 그림이 바뀐다. 그림이 없는 옷은 기본옷(o0) 그림 */
-const LOOKS = { 1: { o0: { img: 'hp1_o0', cut: 'hc1_o0', cutv: 'cutvh1_o0' }, o3: { img: 'hp1', cut: 'hc1w', cutv: 'cutvh1w' } } };
+const LOOKS = { 1: { o0: { img: 'hp1_o0', cut: 'hc1_o0', cutv: 'cutvh1_o0' }, o3: { img: 'hp1', cut: 'hc1w', cutv: 'cutvh1w' } }, 2: { o6: { img: 'hp2s', cut: 'hc2s', cutv: 'cutvh2s' } } };
 const hasLook = ch => ch >= 0 && ch <= 2; // 외형이 바뀌는 주인공
 function lookId(ch) { const L = LOOKS[ch]; if (!L) return 'o0'; const s = SAVE.look[ch]; if (s && L[s] && SAVE.eq[s]) return s; const o = (SAVE.eqd[ch] || {}).o; return o && L[o] && SAVE.eq[o] ? o : 'o0'; }
 function look(ch) { const c = CH[ch]; if (!c) return {}; const L = LOOKS[ch] && LOOKS[ch][lookId(ch)]; return L || c; }
@@ -1339,7 +1339,7 @@ function chargeHit(s, e, d) {
   switch (c) {
     case 0: fxp(x, y, 'swirl', 26, '#7dffb0', 0.35); burst(x, y, 6, '#f3e2b0', 160); if (!big) e.y -= 16; break; // 한별: 소용돌이, 부적 조각, 띄워 밀기
     case 1: fxp(x, y, 'x', 12, '#ffe27a', 0.22); fxp(x - 60, y, 'line', 0, '#ffe27a', 0.3, { x2: x, y2: y }); s.lastE = e; break; // 달래: X 섬광, 금빛 줄, 꽂힘
-    case 2: G.shake = Math.max(G.shake, 0.3); for (let i = 0; i < 8; i++) parts.push({ x: x + rnd(-20, 20), y, vx: rnd(-60, 60), vy: -rnd(120, 260), life: 0.6, max: 0.6, col: i % 2 ? '#ffb040' : '#ff6a2a', r: rnd(1.5, 3) }); break; // 무쇠
+    case 2: G.shake = Math.max(G.shake, 0.3); fxp(x, y, 'cry', 22, '#dff4ff', 0.35); for (let i = 0; i < 10; i++) parts.push({ x: x + rnd(-20, 20), y, vx: rnd(-70, 70), vy: -rnd(120, 260), life: 0.6, max: 0.6, col: i % 2 ? '#bfe8ff' : '#ffffff', r: rnd(1.5, 3) }); break; // 나린: 큰 물보라
     case 3: burst(x, y, 10, '#7fc8ff', 160); e.burn = 1.5; break; // 탈 도깨비: 푸른 불이 붙음
     case 4: burst(x, y, 14, '#d0d4dc', 260); burst(x, y, 6, '#ffb060', 200); if (!big) e.x += 14; break; // 불가사리: 쇳조각, 크게 밀기
     case 5: for (let i = 0; i < 8; i++) parts.push({ x, y, vx: rnd(-80, 80), vy: rnd(-90, 40), life: 0.7, max: 0.7, col: i % 2 ? '#ff7a7a' : '#ffffff', r: 2.2 }); if (!big) e.charm = 0.6; break; // 구미호: 꽃잎, 홀림
@@ -1427,7 +1427,7 @@ function playerHit() {
   if (P.inv > 0 || P.deadT > 0 || G.clearT > 0) return;
   if (G.arc) { if (G.arc.ph === 1) { G.arc.hits++; P.inv = 1.1; G.shake = 0.3; tone(200, 0.15, 'sawtooth', 0.1, -120); float('앗!', P.x, P.y - 26, '#ff9a8a'); burst(P.x, P.y, 20, '#ffffff', 220); ring(P.x, P.y, 46, '#ff9a8a', 0.3); G.flash = Math.max(G.flash, 0.1); bullets = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) > 40); } return; } // 아케이드에서는 목숨이 줄지 않는다
   if (G.boon.shield > 0) { G.boon.shield--; P.inv = 1.2; bullets = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) > 70); parts.push({ x: P.x, y: P.y, vx: 0, vy: 0, life: 0.3, max: 0.3, ring: 70, col: '#ffe9a0', r: 0 }); tone(320, 0.2, 'square', 0.1, -120); float('축복이 막았다!', P.x, P.y - 30, '#ffe9a0'); return; }
-  if ((P.co === 2 || kitCo('guard')) && P.guard <= 0) { // 동료 무쇠·장승 자매의 방패
+  if ((P.co === 2 || kitCo('guard')) && P.guard <= 0) { // 동료 나린의 날개옷 방패
     P.guard = P.co === 2 ? 18 : 13; P.inv = 1; bullets = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) > 70);
     parts.push({ x: P.x, y: P.y, vx: 0, vy: 0, life: 0.3, max: 0.3, ring: 70, col: '#9fb4ff', r: 0 }); burst(P.x, P.y, 16, '#9fb4ff', 200);
     tone(260, 0.2, 'square', 0.1, -120); noise(0.15, 0.12, { f: 2500, q: 3 }); float('막았다!', P.x, P.y - 30, '#9fb4ff'); return;
@@ -1511,9 +1511,9 @@ function update(dt) {
     if ((G.bfx -= dt) <= 0) { // 화면의 적마다 잇달아 터진다
       G.bfx = 0.1; const live = enemies.filter(e => e.x < W && !e.dead);
       if (live.length) { const e = live[Math.floor(Math.random() * live.length)]; fireball(e.x + rnd(-e.r, e.r), e.y + rnd(-e.r, e.r), rnd(14, 26)); sfx.hit(); }
-      if (P.ch === 2 && G.bombHit) fireball(rnd(0, W), GY - rnd(0, 50), rnd(26, 50));
+      if (P.ch === 2 && G.bombHit) burst(rnd(0, W), GY - rnd(0, 50), 10, '#bfe8ff', 160);
     }
-    if (P.ch === 2 && !G.bombHit && G.bombT < BD * 0.8) { G.bombHit = true; G.shake = 0.9; G.flash = 0.45; sfx.big(); for (let i = 0; i < 8; i++) fireball(W * 0.15 + i * W * 0.1, GY - rnd(0, 70), rnd(40, 70), i * 0.04); }
+    if (P.ch === 2 && !G.bombHit && G.bombT < BD * 0.8) { G.bombHit = true; G.shake = 0.9; G.flash = 0.45; sfx.big(); for (let i = 0; i < 8; i++) { const fx = W * 0.15 + i * W * 0.1, fy = GY - rnd(0, 70); burst(fx, fy, 16, i % 2 ? '#bfe8ff' : '#ffffff', 240); parts.push({ x: fx, y: fy, vx: 0, vy: 0, life: 0.4, max: 0.4, ring: rnd(40, 70), col: '#9fd8ff', r: 0, delay: i * 0.04 }); } /* 나린: 물보라 */ }
   }
   // 적
   for (const e of enemies) {
@@ -1638,10 +1638,10 @@ function drawPlayer(x, y, ch) {
     ctx.fillRect(-9, -11, 3, 13); ctx.fillStyle = '#e8b84a'; ctx.fillRect(-9.5, 0, 4, 3);
     ctx.strokeStyle = '#7a4a22'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(8, 0, 11, -1.2, 1.2); ctx.stroke();
     ctx.strokeStyle = '#ece3cf'; ctx.lineWidth = 0.7; ctx.beginPath(); ctx.moveTo(12, -10.2); ctx.lineTo(12, 10.2); ctx.stroke();
-  } else { // 머리띠와 망치
-    ctx.fillStyle = '#20202a'; ctx.beginPath(); ctx.arc(1, -12, 6.3, Math.PI, TAU); ctx.fill();
-    ctx.fillStyle = '#ece3cf'; ctx.fillRect(-5, -14, 12, 2.2);
-    ctx.fillStyle = '#7a4a22'; ctx.fillRect(8, -8, 2.5, 16); ctx.fillStyle = '#9aa3b5'; ctx.fillRect(4, -13, 11, 7);
+  } else { // 올림머리와 물구슬
+    ctx.fillStyle = '#3a2a22'; ctx.beginPath(); ctx.arc(1, -14, 6.3, Math.PI, TAU); ctx.fill(); ctx.beginPath(); ctx.arc(0, -19, 3.5, 0, TAU); ctx.fill();
+    ctx.fillStyle = '#9fd8ff'; ctx.fillRect(-6, -15, 12, 1.8);
+    ctx.fillStyle = 'rgba(150,215,255,.9)'; ctx.beginPath(); ctx.arc(12, -4, 4, 0, TAU); ctx.fill();
   }
   ctx.restore();
 }
@@ -1777,7 +1777,7 @@ function drawShot(s) {
   glow(s.kind === 0 || s.kind === 10 ? 'jade' : s.kind === 3 || s.kind === 4 || s.kind === 13 ? 'blue' : s.kind === 5 || s.kind === 14 ? 'fire' : s.kind >= 20 ? CH[s.kc].glow : 'gold', x, y, s.kind >= 10 ? s.r * 2.2 : s.r * 2.6 + 4, 0.55);
   if (s.kind === 10 && ok(IMG.tornado)) { glow('jade', x, y, 62, 0.5); spr('tornado', x, y - 4, 104, { sx: Math.cos(s.t * 16) >= 0 ? 1 : -1, rot: Math.sin(s.t * 9) * 0.08 }); return; }
   if (s.kind === 11 && ok(IMG.arrowfx)) { spr('arrowfx', x - 28, y, 26); return; }
-  if (s.kind === 12 && ok(IMG.hammerfx)) { glow('fire', x, y, 42, 0.6); spr('hammerfx', x, y, 52, { rot: s.t * 14 }); return; }
+  if (s.kind === 12) { glow('blue', x, y, 46, 0.7); ctx.fillStyle = 'rgba(120,200,255,.85)'; circ(x, y, s.r * 1.3); ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, s.r * 1.3, s.t * 6, s.t * 6 + 2); ctx.stroke(); ctx.fillStyle = '#fff'; circ(x - 5, y - 5, 4); return; } // 나린: 큰 물구슬
   if (s.kind === 20 || s.kind === 21) { // kit 캐릭터의 탄: 모양과 색만 다르다
     const k = CH[s.kc].kit, a0 = Math.atan2(s.vy, s.vx), big = s.kind === 21, z = big ? (s.thin ? 2.2 : Math.max(2.4, s.r / 6)) : 1;
     if (big) { drawKitBig(s, k, x, y, a0); return; }
@@ -1803,7 +1803,7 @@ function drawShot(s) {
     ctx.strokeStyle = '#effff9'; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(-9, 0, 12, -0.8, 0.8); ctx.stroke(); ctx.restore();
   }
   else if (s.kind === 1 && ok(IMG.arrowfx)) spr('arrowfx', x, y, 11, { rot: Math.atan2(s.vy, s.vx) });
-  else if (s.kind === 2 && ok(IMG.hammerfx)) spr('hammerfx', x, y, 26, { rot: s.t * 16 });
+  else if (s.kind === 2) { glow('blue', x, y, 20, 0.6); ctx.fillStyle = 'rgba(150,215,255,.9)'; circ(x, y, s.r); ctx.fillStyle = '#fff'; circ(x - s.r * 0.3, y - s.r * 0.3, s.r * 0.35); } // 나린: 은하수 물구슬
   else if (s.kind === 1) { ctx.fillStyle = '#ffe9b0'; ctx.fillRect(x - 10, y - 1, 14, 2); ctx.beginPath(); ctx.moveTo(x + 8, y); ctx.lineTo(x + 2, y - 3); ctx.lineTo(x + 2, y + 3); ctx.fill(); }
   else if (s.kind === 2 || s.kind === 12) { const k = s.kind === 12 ? 1.8 : 1; ctx.save(); ctx.translate(x, y); ctx.rotate(s.t * 14); ctx.fillStyle = '#7a4a22'; ctx.fillRect(-1.5 * k, -8 * k, 3 * k, 16 * k); ctx.fillStyle = s.kind === 12 ? '#ffd27a' : '#c5ccdb'; ctx.fillRect(-6 * k, -10 * k, 12 * k, 7 * k); ctx.restore(); }
   else if (s.kind === 3) { ctx.fillStyle = '#9fe0ff'; circ(x, y, 2.5); }
@@ -1873,12 +1873,12 @@ function drawBomb() {
       const a = i * 0.9 + p * 5, R = p * 520, x = P.x + Math.cos(a) * R, y = P.y + Math.sin(a) * R * 0.7;
       glow('blue', x, y, 30, 0.6); spr('wisp', x, y, 30 + p * 16, { rot: a + Math.PI, flip: 1 });
     }
-  } else { // 거대한 불망치가 떨어지고 충격파가 세 번 퍼진다
+  } else { // 나린: 은하수가 폭포처럼 쏟아지고 물결이 세 번 퍼진다
     const hx = W * 0.55, kk = Math.min(1, k / 0.2), y = -190 + kk * kk * (GY - 125 + 190);
-    if (k < 0.55) { ctx.globalAlpha = k < 0.4 ? 1 : Math.max(0, (0.55 - k) / 0.15); glow('fire', hx, y + 90, 160, 0.65); spr('hammerfx', hx, y, 280, { rot: Math.PI }); ctx.globalAlpha = 1; }
+    if (k < 0.55) { const al = k < 0.4 ? 1 : Math.max(0, (0.55 - k) / 0.15); ctx.globalAlpha = al; glow('blue', hx, Math.min(y, GY) - 40, 170, 0.7); const g = ctx.createLinearGradient(0, 0, 0, Math.min(y, GY)); g.addColorStop(0, 'rgba(160,210,255,0)'); g.addColorStop(1, 'rgba(190,235,255,.85)'); ctx.fillStyle = g; ctx.fillRect(hx - 70, 0, 140, Math.min(y, GY)); for (let i = 0; i < 14; i++) { ctx.fillStyle = 'rgba(255,255,255,' + (0.4 + 0.5 * hs(i)) + ')'; ctx.fillRect(hx - 70 + hs(i + 3) * 140, (hs(i + 9) * GY + G.time * 600) % Math.max(1, Math.min(y, GY)), 2, 12); } ctx.globalAlpha = 1; }
     for (const k0 of [0.2, 0.42, 0.64]) {
       if (k < k0) continue; const q = Math.min(1, (k - k0) / 0.34);
-      ctx.strokeStyle = 'rgba(255,200,110,' + (1 - q) + ')';
+      ctx.strokeStyle = P.ch === 2 ? 'rgba(170,225,255,' + (1 - q) + ')' : 'rgba(255,200,110,' + (1 - q) + ')';
       for (let i = 0; i < 3; i++) { const R = Math.max(0, q * 740 - i * 50); ctx.lineWidth = 12 - i * 4; ctx.beginPath(); ctx.ellipse(hx, GY, R, R * 0.35, 0, 0, TAU); ctx.stroke(); }
     }
     if (k >= 0.2) { ctx.globalCompositeOperation = 'lighter'; for (let i = 0; i < 9; i++) { const fx = hs(i * 3) * W, fh = 40 + hs(i + 20) * 90 * Math.abs(Math.sin(G.time * 7 + i)); glow('fire', fx, GY - fh * 0.4, 20 + fh * 0.5, 0.5 * Math.min(1, (1 - k) * 4)); } ctx.globalCompositeOperation = 'source-over'; }
@@ -2146,7 +2146,7 @@ $('padSwap').addEventListener('pointerdown', e => { swapReq = true; touch.auto =
 const INFO = [
   { role: '부채 도사', st: [60, 60, 100], desc: '부채 바람이 넓게 퍼져 잔챙이를 쓸어 냅니다. 모으기는 적을 뚫는 회오리바람, 필살기는 월광풍.' },
   { role: '활잡이', st: [100, 65, 40], desc: '가장 빠르고 화살이 곧게 나갑니다. 모으기는 빛 화살 세 발, 필살기는 백야의 화살.' },
-  { role: '대장장이', st: [40, 100, 60], desc: '느리지만 한 방이 묵직합니다. 모으기는 터지는 불망치, 필살기는 천둥망치.' },
+  { role: '선녀', st: [45, 95, 65], desc: '은하수 물구슬이 묵직하게 날아갑니다. 모으기는 터지는 큰 물구슬, 필살기는 은하수 폭포.' },
   { role: '1층 대장 · 동료', st: [55, 75, 75], desc: '도깨비불을 부채꼴로 뿌립니다. 모으기는 적을 뚫는 큰 도깨비불, 필살기는 도깨비불 잔치.' },
   { role: '2층 대장 · 동료', st: [30, 90, 55], desc: '느리지만 쇠공이 묵직합니다. 모으기는 굴러가며 뚫는 큰 쇠공, 필살기는 쇠 소나기.' },
   { role: '3층 대장 · 동료', st: [80, 60, 90], desc: '여우불이 부채꼴로 퍼집니다. 모으기는 뚫고 지나가는 여우구슬, 필살기는 아홉 꼬리 홀림.' },
@@ -2217,6 +2217,7 @@ const EQ = [ // 장비: 무기(화력), 부적(필살기 피해·시작 부적),
   { id: 'o2', slot: 'o', g: 1, name: '설산 털가죽', chg: 12, need: '5층 아케이드(빙판길) 처음 성공' },
   { id: 'o3', slot: 'o', g: 1, name: '붉은 무희 궁수복', spd: 6, chg: 8, need: '5층 대장 처치', cond: () => SAVE.mfirst.includes('0-4'), show: 1 },
   { id: 'o4', slot: 'o', g: 2, name: '용궁 비늘 갑옷', spd: 8, chg: 15, cost: { moon: 380 }, need: '또는 어려움 7층 대장 처치', cond: () => SAVE.mfirst.includes('1-6') },
+  { id: 'o6', slot: 'o', g: 1, name: '은하수 물놀이 옷', spd: 6, chg: 8, need: '6층 대장 처치', cond: () => SAVE.mfirst.includes('0-5'), show: 1 }, // 나린 여름 옷
   { id: 'o5', slot: 'o', g: 2, name: '그믐밤 무희복', spd: 10, chg: 18, need: '어려움 10층 대장 처치 또는 무한의 탑 20층', cond: () => SAVE.mfirst.includes('1-9') || SAVE.tower >= 20 },
 ];
 const EQMAX = 10, eqById = id => EQ.find(e => e.id === id), eqMax = e => e.base ? 1 : EQMAX, eqK = lv => 1 + 0.12 * (lv - 1); // 강화 1단계마다 % 효과 +12%
@@ -2317,7 +2318,7 @@ function renderShop() {
   } else if (shopTab === 'eq') {
     for (const e of EQ) { if (e.base) continue; const own = SAVE.eq[e.id], btn = own ? '<button type="button" disabled>가짐 · Lv ' + own + '</button>' : e.need && !e.cost ? '<button type="button" disabled>' + e.need + '</button>' : '<button type="button" data-eq="' + e.id + '"' + (canPay(e.cost) ? '' : ' disabled') + '>' + costTxt(e.cost) + '</button>';
       h += card('g' + e.g, 'assets/eq/' + e.id + '.webp', e.name, SLOT[e.slot] + ' · ' + GN[e.g] + '<br>' + eqDesc(e, own || 1) + (!own && e.need && e.cost ? '<br><span class="tag">' + e.need + '</span>' : ''), btn); }
-    note = '장비는 한 번 사면 모든 캐릭터가 함께 쓸 수 있습니다. 끼는 곳은 캐릭터 고르는 화면의 장비 칸입니다. 옷은 한별·달래·무쇠가 입으면 겉모습도 바뀝니다.';
+    note = '장비는 한 번 사면 모든 캐릭터가 함께 쓸 수 있습니다. 끼는 곳은 캐릭터 고르는 화면의 장비 칸입니다. 옷은 한별·달래·나린이 입으면 겉모습도 바뀝니다.';
   } else {
     CH.forEach((c, i) => { if (c.from === undefined) return; const own = SAVE.owned.includes(i), beat = SAVE.beaten.includes(c.from);
       const btn = own ? '<button type="button" disabled>동료</button>' : (beat ? '<button type="button" data-hg="' + i + '"' + (SAVE.gold >= priceOf(i) ? '' : ' disabled') + '>골드 ' + priceOf(i).toLocaleString() + '</button>' : '') + '<button type="button" data-hm="' + i + '"' + (SAVE.moon >= moonPriceOf(i) ? '' : ' disabled') + '>달조각 ' + moonPriceOf(i) + '</button>';
@@ -2513,7 +2514,7 @@ function offerHero() { // 층 대장을 이긴 뒤: 그 대장을 동료로 삼�
 function closeOffer() { $('ovOffer').hidden = true; G.offer = false; refreshShop(); if (!newOutfit()) showResult(); }
 function newOutfit() { // 보상으로 얻은 옷을 한 번만 크게 보여 준다 (「새 옷!」)
   const id = SAVE.outQ[0], e = eqById(id); if (!e) return false;
-  const ch = P.ch, tgt = LOOKS[ch] && LOOKS[ch][id] ? ch : 1, a = (LOOKS[tgt] && LOOKS[tgt][id]) || look(tgt);
+  const ch = P.ch, tgt = LOOKS[ch] && LOOKS[ch][id] ? ch : +Object.keys(LOOKS).find(h => LOOKS[h][id]) || 1, a = (LOOKS[tgt] && LOOKS[tgt][id]) || look(tgt);
   G.offer = true; stageEl.classList.remove('playing');
   $('outImg').src = 'assets/' + a.cut + '.webp'; $('outName').textContent = e.name + ' · ' + GN[e.g]; $('outStat').textContent = eqDesc(e) + ' · 모든 캐릭터가 함께 씁니다';
   $('outNote').textContent = hasLook(ch) && LOOKS[ch] && LOOKS[ch][id] ? CH[ch].name + '의 겉모습도 이 옷으로 바뀝니다' : CH[tgt].name + '가 입으면 겉모습이 바뀝니다 · 다른 캐릭터는 능력만 받습니다';
@@ -2533,7 +2534,7 @@ const ENDING = [
   '도깨비 여왕이 쓰러지고, 달이 하늘로 돌아갔다.\n달빛이 퍼지자 탑이 무너지기 시작했다.',
   '층마다 갇혀 있던 땅이 제자리로 내려앉았다.\n산은 산으로, 강은 강으로, 숲은 숲으로, 바다는 바다로.',
   '여왕도 사실은 어둠 속에서 쫓겨 살던 도깨비들에게\n밤을 주고 싶었을 뿐이었다.',
-  '한별 「밤을 모두 도깨비에게 내어줄 필요도, 모두 사람의 것으로 만들 필요도 없소.」\n달래 「우리에게도 밤이 필요하고.」\n무쇠 「도깨비에게도 밤이 필요하겠지.」',
+  '한별 「밤을 모두 도깨비에게 내어줄 필요도, 모두 사람의 것으로 만들 필요도 없소.」\n달래 「우리에게도 밤이 필요하고.」\n나린 「도깨비에게도 밤이 필요하겠지요.」',
   '한 달에 하루, 달이 뜨는 밤은 도깨비의 밤이 되었다.\n그날만큼은 사람과 도깨비가 함께 놀고 먹고 춤춘다.',
   '그날 밤부터, 달이 뜨면 도깨비도 길을 나섰다.',
   '그믐밤의 이야기는 끝났다.\n하지만 아직 세상에는 다른 길이 남아 있다.',
