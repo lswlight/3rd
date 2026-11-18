@@ -28,6 +28,8 @@ button:hover{border-color:var(--gold)}
 button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .stage{container-type:inline-size;position:relative;border:1px solid var(--line);background:#000;aspect-ratio:16/9;max-width:100%;overflow:hidden}
 canvas{display:block;width:100%;height:100%;touch-action:none}
+.stage{isolation:isolate}.cutv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;visibility:hidden;pointer-events:none;background:#05060e}.cutv.on{visibility:visible}
+.stage:fullscreen .cutv{left:50%;top:50%;inset:auto;transform-origin:center;width:min(100vw,177.78vh);height:min(100vh,56.25vw);translate:-50% -50%}
 .overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:clamp(6px,2vw,16px);padding:8px;background:rgba(10,12,22,.62);text-align:center}
 .overlay h2{font-family:var(--display);font-weight:400;font-size:clamp(20px,5.5vw,44px);margin:0;line-height:1.1}
@@ -1933,6 +1935,7 @@ function prepVid(ch) { // 필요한 캐릭터의 컷인 영상만 불러와 미�
   const c = look(ch); if (!c || !c.cutv || VID[c.cutv]) return;
   const v = document.createElement('video'); v.muted = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.preload = 'auto';
   for (const [ext, type] of [['mp4', 'video/mp4'], ['webm', 'video/webm']]) { const so = document.createElement('source'); so.src = 'assets/' + c.cutv + '.' + ext; so.type = type; v.appendChild(so); }
+  v.className = 'cutv'; v.setAttribute('aria-hidden', 'true'); stageEl.insertBefore(v, cv); // 기획 7 4-A: 캔버스 밖에서 기기 해상도로 재생
   v.load(); VID[c.cutv] = v;
   try { const pr = v.play(); if (pr && pr.then) pr.then(() => { if (!(G.cut && G.cut.vs)) { v.pause(); v.currentTime = 0; } }).catch(() => {}); } catch (_) {}
 }
@@ -1954,8 +1957,8 @@ function drawCut() { // 필살기: 기를 모은 뒤 캐릭터가 화면 가득 
   ctx.save(); ctx.globalAlpha = a;
   const vd = VID[LK.cutv], useV = vd && vd.readyState >= 2 && !vd.error;
   if (useV) { // 움직이는 컷인 영상이 있는 캐릭터
-    const z = 1.04 + u * 0.05, vw = W * z, vh = H * z; ctx.fillStyle = '#05060e'; ctx.fillRect(0, 0, W, H);
-    ctx.drawImage(vd, (W - vw) / 2 - (1 - inK) * 40, (H - vh) / 2, vw, vh);
+    const z = 1.04 + u * 0.05; ctx.clearRect(0, 0, W, H); G.cut.vOn = LK.cutv; // 캔버스는 비우고 아래의 영상 요소가 보이게 한다
+    vd.style.opacity = a; vd.style.transform = 'translateX(' + (-(1 - inK) * 40 / W * 100).toFixed(2) + '%) scale(' + z.toFixed(3) + ')';
     if (u < 0.3) { ctx.fillStyle = 'rgba(255,255,255,' + (0.3 - u) / 0.3 * 0.7 + ')'; ctx.fillRect(0, 0, W, H); }
   } else {
   const bg = ctx.createLinearGradient(0, 0, W, H); bg.addColorStop(0, '#05060e'); bg.addColorStop(0.55, '#141026'); bg.addColorStop(1, '#05060e'); ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
@@ -2626,16 +2629,18 @@ $('btnFull').addEventListener('click', e => {
 const GLYPHS = '가각간갇갈감갑값갓갔강같갚개갱거건걸검겁것게겠겨격결겹겼경곁계고곧골곳공과곽관광괴교구군굴궁귀그근글금긋기긴길김까깐깨깬꺼께꼬꼭꼴꽃꽉꾸꾹꾼꿔꿰뀌뀐끄끌끔끝나난날남납났낮내냄냅냈냐냥너넓넘넜넣네넷녀년노녹놀높놓누눈눌느는늘능니님닢다단닫달담답닷대댕더던덜덩덮데도돌돕동돼되된됩두둔둘둠둡둥뒤드득든들듬등디따딱땅때떨떼또뚝뚫뜨띠라락란람랐랑래러런럼렀렁레려력렬렵렸례로록롤롱료루룻류륭르른를름릅릇리릭린릴림립마막만말맛망맞매머먹멈메멧며면명몇모목몸못몽무묵묶문묻물미믿밀바박밖반받발밝밤방배백뱀뱃뱉버벅번범베벨벼벽변별병보복본볼부분불붉붙비빈빌빗빙빛빠빨빼뺀뻗뽑뿌뿐쁜사삯산살삼상새색생서석섞선설섬섭섯섰성세셈셉셋셨소속손솟쇠쇳수순술숨숲쉽슈스슬습승시신실심싶싸쌍쌓써쏘쏜쏟쏩쓰쓴쓸씨씩아안앉않알앗았앞야약양얗얘어억언얻얼없었엉에엔여연열엽엿였영옆오온올옵옷와완왔왕왜외왼요욕용우운울움웁웃워원월위유율으윽은을음읍의이인일잃임입잇있잉자작잔잘잠잡장쟁저적전절점접정제져졌조족존좀종좋좌주죽준줄줍중줘쥐지직진질짐집짜짝째쩍쩔쪽쫓차찹창찾채챙처천첫체쳐쳤초총최추축춘출춤충층치친칠침칩칸칼캐커컷케켜켰크큰큼키킨타탄탈탑탕태택탠터텅테템텼통튀튼티팅파판패퍼편폭폰표푸풀풍프플피필하한할함합해했행향험혀현형호홀홉화확환활황회횟효후훌훔휘휜휩휴흐흡흩희흰히힘0123456789!?/·+-%: ';
 try { if (document.fonts) for (const f of ['16px "Black Han Sans"', '16px "Gowun Dodum"']) document.fonts.load(f, GLYPHS); } catch (_) {}
 let SC = 1, last = 0;
-function resize() { const r = cv.getBoundingClientRect(); const coarse = window.matchMedia && matchMedia('(pointer:coarse)').matches; const s = Math.min(coarse ? 2.5 : 3, Math.max(1, r.width * (window.devicePixelRatio || 1) / W)); cv.width = Math.round(W * s); cv.height = Math.round(H * s); SC = cv.width / W; }
+let boosted = false; // 기획 7 4-B: 컷인 동안만 캔버스를 기기 해상도(최대 4배)까지
+function resize(b = boosted) { const r = cv.getBoundingClientRect(); const coarse = window.matchMedia && matchMedia('(pointer:coarse)').matches; const s = Math.min(b ? 4 : coarse ? 2.5 : 3, Math.max(1, r.width * (window.devicePixelRatio || 1) / W)); cv.width = Math.round(W * s); cv.height = Math.round(H * s); SC = cv.width / W; }
 function frame(t) {
   const dt = Math.min(1 / 30, (t - last) / 1000 || 0); last = t;
   if (!G.paused) { let ts = 1; if (G.cut) { const c = G.cut; c.t += dt; const E = cutEnd(); if (c.t >= 0.25 && !c.vs) { c.vs = 1; const v = VID[look(P.ch).cutv]; if (v) { try { if (v.currentTime > 0.05) v.currentTime = 0; const pr = v.play(); if (pr && pr.catch) pr.catch(() => {}); } catch (_) {} } } if (c.t < E) ts = 0.04; if (c.t >= E && !c.fl) { c.fl = 1; G.flash = 0.55; } if (c.t > E + 0.15) { const v = VID[look(P.ch).cutv]; if (v) { try { v.pause(); v.currentTime = 0; } catch (_) {} } G.cut = null; } } if (G.hstop > 0) { G.hstop -= dt; ts = Math.min(ts, 0.05); } update(dt * ts); }
+  { const want = !!G.cut; if (want !== boosted) { boosted = want; resize(); } for (const k in VID) VID[k].classList.toggle('on', !!(G.cut && G.cut.vOn === k)); }
   draw();
   requestAnimationFrame(frame);
 }
 function start() {
   resize();
-  if (window.ResizeObserver) new ResizeObserver(resize).observe(cv); else addEventListener('resize', resize);
+  if (window.ResizeObserver) new ResizeObserver(() => resize()).observe(cv); else addEventListener('resize', () => resize());
   requestAnimationFrame(frame);
 }
 window.__game = { get shots() { return shots; }, releaseCharge: () => releaseCharge(), openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
