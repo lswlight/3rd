@@ -12,7 +12,8 @@ vidIQ 같은 도구가 자막과 조회수·트렌드를 맡고, 이 스크립�
 
 API 키: 환경 변수 GEMINI_API_KEY. Claude Code 클라우드 환경처럼 프록시가 키를 넣어 주는 곳에서는
 키 없이 실행해도 된다 (자리표시 값을 보내면 프록시가 실제 키로 바꾼다).
-모델: --model 또는 환경 변수 GEMINI_MODEL (기본 gemini-2.5-flash).
+모델: --model 또는 환경 변수 GEMINI_MODEL (기본 gemini-3.5-flash-lite, 무료 등급에서 확인한 모델).
+search 는 구글 검색 기능을 쓰는데 무료 등급에서는 사용량이 0이라 QUOTA_EXCEEDED 가 난다. 그때는 vidIQ로 영상을 찾는다.
 """
 import argparse
 import json
@@ -22,7 +23,7 @@ import urllib.error
 import urllib.request
 
 API = "https://generativelanguage.googleapis.com/v1beta"
-DEFAULT_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+DEFAULT_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite")
 
 WATCH_PROMPT = """이 유튜브 영상을 한국어로 정리해줘. 블로그 시황 글의 참고 자료로 쓴다.
 1. 영상 한 줄 요약
@@ -56,6 +57,11 @@ def _call(method, path, body=None, timeout=180):
         detail = e.read().decode("utf-8", "replace")[:500]
         if e.code in (401, 403) or "API_KEY_INVALID" in detail or "API key" in detail:
             sys.exit(f"AUTH_ERROR: Gemini API 키가 없거나 거부됐습니다 (HTTP {e.code}). {detail}")
+        if e.code == 429:
+            sys.exit("QUOTA_EXCEEDED: Gemini 사용량 한도를 넘었습니다 (무료 등급은 search 기능을 쓸 수 없음). "
+                     "영상 찾기는 vidIQ로 하고, 잠시 뒤 다시 시도하세요.")
+        if e.code in (500, 503):
+            sys.exit(f"BUSY: Gemini 서버가 바쁩니다 (HTTP {e.code}). 잠시 뒤 다시 시도하거나 --model 을 바꾸세요.")
         sys.exit(f"API_ERROR: HTTP {e.code} {detail}")
     except (urllib.error.URLError, TimeoutError, OSError) as e:
         sys.exit(

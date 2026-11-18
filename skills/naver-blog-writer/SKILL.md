@@ -67,6 +67,7 @@ python3 <이 스킬 폴더>/scripts/yt_gemini.py search "비트코인 시황 볼
 ```
 
 - 보통 vidIQ로 영상 2~3개를 고르고, 차트 화면이 중요한 영상만 Gemini `watch` 로 본다.
+- Gemini `search` 는 무료 등급에서 쓸 수 없다(`QUOTA_EXCEEDED`). 영상 찾기는 vidIQ로 한다. `BUSY` 면 잠시 뒤 다시 하거나 `--model gemini-3.8-flash` 로 바꾼다.
 - `AUTH_ERROR` 나 `NETWORK_BLOCKED` 가 나오면 Gemini API 키(환경 변수 `GEMINI_API_KEY`, 또는 클라우드 환경의 네트워크 시크릿 `x-goog-api-key`)가 필요하다고 안내하고 vidIQ 자막만으로 진행한다.
 - 본문에 유튜버 이름이나 영상 문장을 그대로 옮기지 않는다. 확인된 사실이나 시장 분위기("유튜브 시황 채널들도 밴드 상단 돌파 여부에 주목하는 분위기예요") 정도로만 녹인다. 참고한 영상 링크는 본문 밖 "발행 전 체크"에 적는다.
 

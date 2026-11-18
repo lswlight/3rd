@@ -57,7 +57,8 @@ python3 skills/naver-blog-writer/scripts/yt_gemini.py models
 ```
 
 API 키는 Google AI Studio에서 발급합니다. 로컬에서는 환경 변수 `GEMINI_API_KEY` 로, Claude Code 클라우드 환경에서는
-환경 설정의 Network secrets에 호스트 `generativelanguage.googleapis.com`, 헤더 `x-goog-api-key` 로 넣습니다.
+환경 설정의 Network secrets에 호스트 `generativelanguage.googleapis.com`, 헤더 `x-goog-api-key`, 접두사 없음으로 넣습니다.
+무료 등급에서는 `watch`(영상 분석)만 되고 `search`(구글 검색 기반)는 사용량 한도로 막히므로, 영상 찾기는 vidIQ로 합니다.
 
 ## 설치
 
