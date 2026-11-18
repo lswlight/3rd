@@ -207,6 +207,10 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .sel-step .go:disabled{background:var(--ink2);border-color:var(--line);color:var(--muted);cursor:default}
 .help{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;border-top:1px solid var(--line);padding-top:16px}
 .help > div{min-width:0}
+@media (pointer:coarse){.help .kb{display:none}} /* 터치 기기에서는 키보드 조작 줄을 숨긴다 */
+.helpv{z-index:7}
+.help-body{width:100%;flex:1;min-height:0;overflow-y:auto;text-align:left;margin:0;border-top:0;padding:.6cqw 1cqw 2cqw;gap:max(14px,2.4cqw);-webkit-overflow-scrolling:touch}
+.help-body h3{margin-top:0}.help-body p,.help-body li,.help-body dd,.help-body dt{font-size:max(12px,1.7cqw)}.help-body li{margin:.3em 0}
 h3{font-family:var(--display);font-weight:400;font-size:18px;margin:0 0 8px;color:var(--gold)}
 dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0;font-size:14px}
 dt{color:var(--muted);white-space:nowrap}
@@ -327,8 +331,13 @@ li+li{margin-top:4px}
       <p id="pauseText"></p>
       <div class="offer-btns">
         <button type="button" class="buy" id="btnResume">계속하기</button>
+        <button type="button" id="btnHelp">도움말</button>
         <button type="button" id="btnQuit">처음 화면으로</button>
       </div>
+    </div>
+    <div class="overlay shop helpv" id="ovHelp" hidden>
+      <div class="shop-head"><b>도움말</b><button type="button" id="btnHelpX">닫기</button></div>
+      <div class="help help-body" id="helpBody"></div>
     </div>
     <div class="overlay shop" id="ovShop" hidden>
       <div class="shop-head"><b id="shopWallet"></b><div class="shop-tabs" role="tablist"><button type="button" data-tab="moon">달조각</button><button type="button" data-tab="eq">장비</button><button type="button" data-tab="hero">동료</button></div><button type="button" id="btnShopX">닫기</button></div>
@@ -366,13 +375,13 @@ li+li{margin-top:4px}
     <div>
       <h3>조작</h3>
       <dl>
-        <dt>이동</dt><dd><kbd>방향키</kbd> 또는 <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></dd>
-        <dt>쏘기</dt><dd><kbd>Z</kbd> 또는 <kbd>Space</kbd> 를 누르고 있기</dd>
-        <dt>기 모으기</dt><dd><kbd>X</kbd> 를 꾹 눌렀다 떼기</dd>
-        <dt>부적 폭탄</dt><dd><kbd>C</kbd></dd>
-        <dt>동료와 교대</dt><dd><kbd>V</kbd> (잠깐 무적, 6초마다)</dd>
-        <dt>일시정지</dt><dd><kbd>P</kbd></dd>
-        <dt>휴대폰</dt><dd>화면을 끌어 움직이면 자동으로 쏩니다. 오른쪽 아래 「기」는 꾹 눌렀다 떼고, 「부적」은 폭탄입니다</dd>
+        <dt class="kb">이동</dt><dd class="kb"><kbd>방향키</kbd> 또는 <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></dd>
+        <dt class="kb">쏘기</dt><dd class="kb"><kbd>Z</kbd> 또는 <kbd>Space</kbd> 를 누르고 있기</dd>
+        <dt class="kb">기 모으기</dt><dd class="kb"><kbd>X</kbd> 를 꾹 눌렀다 떼기</dd>
+        <dt class="kb">부적 폭탄</dt><dd class="kb"><kbd>C</kbd></dd>
+        <dt class="kb">동료와 교대</dt><dd class="kb"><kbd>V</kbd> (잠깐 무적, 6초마다)</dd>
+        <dt class="kb">일시정지</dt><dd class="kb"><kbd>P</kbd></dd>
+        <dt>휴대폰</dt><dd>화면을 끌어 움직이면 자동으로 쏩니다. 오른쪽 아래 「기」는 꾹 눌렀다 떼고, 「부적」은 폭탄입니다. 「교대」는 동료와 자리를 바꿉니다(잠깐 무적, 6초마다). 오른쪽 위 「멈춤」으로 쉬고, 이 도움말도 거기서 다시 볼 수 있습니다</dd>
       </dl>
     </div>
     <div>
@@ -392,7 +401,7 @@ li+li{margin-top:4px}
         <li>2층부터는 3구간 대장 앞에 <b>아케이드 구간</b>이 있습니다. 층마다 놀이가 다르고, 5층까지는 골드, 6층부터는 장비를 보상으로 받습니다. 못해도 목숨은 줄지 않고 그대로 진행됩니다. 난이도마다 처음 성공할 때 큰 보상을 받고, 무엇을 받는지는 놀이 시작 화면에 나옵니다.</li>
         <li><b>부적</b>은 가장 강한 공격입니다. 화면의 탄을 지우고 큰 피해를 줍니다. <b>기 모으기</b>는 잔챙이를 뚫는 보조 공격입니다.</li>
         <li>한 번도 안 죽으면 별 셋, 한 번 죽으면 별 둘, 그 밖에는 별 하나입니다.</li>
-        <li>첫 화면 왼쪽 위 <b>오늘의 임무</b>는 날마다 세 개가 나오고, 채우면 골드를 받습니다.</li>
+        <li>첫 화면 왼쪽 아래 <b>임무</b> 버튼의 오늘의 임무는 날마다 세 개가 나오고, 채우면 골드를 받습니다.</li>
         <li>층 대장을 이기고 바로 영입하지 않으면 그 대장을 <b>한 판 써 볼</b> 수 있습니다.</li>
         <li>골드로 캐릭터를 <b>강화</b>하면 레벨마다 화력이 6%씩 오릅니다. 4레벨에 부적 +1, 7레벨에 목숨 +1, 10레벨에 시작 화력 +1이 붙습니다.</li>
         <li><b>동료</b>를 한 명 데려가면 옆에서 지원 사격을 하고, 교대 버튼으로 자리를 바꿔 직접 조종할 수 있습니다.</li>
@@ -1846,8 +1855,11 @@ const KEYMAP = { ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'ri
   KeyZ: 'fire', Space: 'fire', KeyJ: 'fire', KeyX: 'charge', KeyK: 'charge' };
 const stageEl = document.querySelector('.stage');
 function togglePause() { if (G.mode !== 'play' || G.res || G.offer) return; G.paused = !G.paused; $('btnPause').textContent = G.paused ? '계속' : '멈춤';
-  $('pauseText').textContent = segName() + ' · ' + STAGES[G.stage].place + ' · 나가면 이 구간은 처음부터 다시 합니다. 골드는 남습니다.'; $('ovPause').hidden = !G.paused; stageEl.classList.toggle('playing', !G.paused); if (G.paused) $('btnResume').focus(); }
+  $('pauseText').textContent = segName() + ' · ' + STAGES[G.stage].place + ' · 나가면 이 구간은 처음부터 다시 합니다. 골드는 남습니다.'; $('ovPause').hidden = !G.paused; if (!G.paused) $('ovHelp').hidden = true; stageEl.classList.toggle('playing', !G.paused); if (G.paused) $('btnResume').focus(); }
 $('btnResume').addEventListener('click', () => { if (G.paused) togglePause(); $('btnResume').blur(); });
+function openHelp() { const src = document.querySelector('.wrap > .help'); if (src && !$('helpBody').childElementCount) $('helpBody').innerHTML = src.innerHTML; $('helpBody').scrollTop = 0; $('ovHelp').hidden = false; } // 출시판에서는 화면 아래 설명이 숨겨져 있으므로 같은 글을 여기서 보여 준다
+$('btnHelp').addEventListener('click', e => { openHelp(); e.currentTarget.blur(); });
+$('btnHelpX').addEventListener('click', () => { $('ovHelp').hidden = true; });
 $('btnQuit').addEventListener('click', () => { useTrial(); saveGame(); toTitle(); });
 addEventListener('keydown', e => {
   if (e.target && /BUTTON|INPUT|TEXTAREA/.test(e.target.tagName) && (e.code === 'Space' || e.code === 'Enter') && G.mode !== 'play') return;
@@ -2142,7 +2154,7 @@ function showResult() { // 구간을 깬 뒤: 별과 골드를 보여 주고 이
   $('resText').innerHTML = '이번 구간 골드 <b class="gold">+' + (G.resGold || 0).toLocaleString() + '</b> · 가진 골드 <b class="gold">' + SAVE.gold.toLocaleString() + '</b>';
   $('btnNext').textContent = last ? '결말 보기' : G.part === 2 ? '다음 층으로' : '다음 구간'; $('ovRes').hidden = false; $('btnNext').focus();
 }
-function toTitle() { G.endless = false; G.loop = 0; G.mode = 'title'; G.arc = null; G.paused = false; G.cut = null; G.bombT = 0; G.talk = null; G.boss = null; parts = []; $('ovPause').hidden = true; $('btnPause').textContent = '멈춤'; enemies = []; bullets = []; shots = []; items = []; stageEl.classList.remove('playing'); $('ovOver').hidden = true; $('ovRes').hidden = true; G.res = false; $('ovTitle').hidden = false; if (document.activeElement) document.activeElement.blur(); select(sel); pickStage(0); }
+function toTitle() { $('ovHelp').hidden = true; G.endless = false; G.loop = 0; G.mode = 'title'; G.arc = null; G.paused = false; G.cut = null; G.bombT = 0; G.talk = null; G.boss = null; parts = []; $('ovPause').hidden = true; $('btnPause').textContent = '멈춤'; enemies = []; bullets = []; shots = []; items = []; stageEl.classList.remove('playing'); $('ovOver').hidden = true; $('ovRes').hidden = true; G.res = false; $('ovTitle').hidden = false; if (document.activeElement) document.activeElement.blur(); select(sel); pickStage(0); }
 $('btnNext').addEventListener('click', () => { if (!owns(P.ch) || (P.co >= 0 && !owns(P.co))) { $('btnHome').click(); return; } $('ovRes').hidden = true; $('btnNext').blur();
   const go = () => { G.res = false; stageEl.classList.add('playing'); nextStage(); };
   if (G.part === 2 && !STAGES[G.stage].last && !G.endless && G.stage + 1 < STAGES.length) { openMap({ ch: P.ch, from: G.stage, to: G.stage + 1, go: back => { if (back) toTitle(); else go(); } }); return; } // 탑을 한 층 오르는 장면
