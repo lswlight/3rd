@@ -69,6 +69,7 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .ending p{font-size:max(13px,2.3cqw);line-height:1.7;max-width:70cqw;color:var(--paper);white-space:pre-line}
 .ending .last{font-family:var(--display);font-size:max(16px,3.2cqw);color:var(--gold)}
 .ending small{font-size:max(10px,1.5cqw);color:var(--muted)}
+.story-skip{position:absolute;right:2cqw;bottom:2cqw;font-size:max(12px,1.7cqw);padding:max(5px,.7cqw) max(12px,1.6cqw);background:rgba(25,29,45,.85)}
 .sel-row button[aria-pressed="true"]{border-color:var(--gold);background:rgba(232,184,74,.2)}
 @container (max-width:1100px){.sel-desc{display:none}}
 @container (max-width:600px){.sel-desc,.sel-kicker,.sel-stats{display:none}.sel-info{top:2.5cqw;gap:3px}.sel-row{bottom:2cqw}.select h2{font-size:19px}.sel-row img{height:22px}.sel-info{top:28px}.sel-step{gap:3px}.sel-step span{font-size:10px}.sel-step button{padding:3px 6px}.sel-role,.sel-row button small{display:none}.sel-row button{font-size:0;gap:0;padding:3px 1px}.sel-row img{height:30px}}
@@ -249,6 +250,7 @@ li+li{margin-top:4px}
     <div class="overlay ending" id="ovEnd" hidden role="button" tabindex="0">
       <p id="endText"></p>
       <small id="endHint">화면을 누르면 넘어갑니다</small>
+      <button type="button" class="story-skip" id="btnStorySkip" hidden>건너뛰기</button>
     </div>
     <div class="overlay offer res mis" id="ovMis" hidden>
       <h2>오늘의 임무</h2>
@@ -2262,12 +2264,23 @@ const ENDING = [
   '그날 밤부터, 달이 뜨면 도깨비도 길을 나섰다.',
   '그믐밤의 이야기는 끝났다.\n하지만 아직 세상에는 다른 길이 남아 있다.',
 ];
-let endI = 0;
-function showEnding() { G.mode = 'title'; G.ended = true; enemies = []; bullets = []; shots = []; items = []; stageEl.classList.remove('playing'); saveGame(); endI = 0; drawEnding(); $('ovEnd').hidden = false; }
-function drawEnding() { const t = $('endText'); t.textContent = ENDING[endI]; t.className = endI >= ENDING.length - 2 ? 'last' : ''; $('endHint').textContent = endI === ENDING.length - 1 ? '화면을 누르면 처음으로 돌아갑니다' : '화면을 누르면 넘어갑니다'; }
-function nextEnding() { if (++endI >= ENDING.length) { $('ovEnd').hidden = true; G.pick = 0; G.pp = 0; toTitle(); return; } drawEnding(); }
+let endI = 0, story = ENDING; // story: 지금 보여 주는 이야기(결말 또는 프롤로그)
+const PROLOGUE = [
+  '그믐밤, 하늘에서 달이 사라졌다.\n도깨비 여왕이 달을 훔쳐 구름 위 탑에 숨겼다는 소문이 돌았다.',
+  '탑의 층마다 세상에서 떼어 간 땅이 갇혀 있고,\n층마다 홀린 문지기가 길을 막고 있다.',
+  '부채 도사 한별 「달을 되찾으러 가겠소. 통행세는 부채 바람으로 치르지.」',
+];
+function showEnding() { story = ENDING; $('btnStorySkip').hidden = true; G.mode = 'title'; G.ended = true; enemies = []; bullets = []; shots = []; items = []; stageEl.classList.remove('playing'); saveGame(); endI = 0; drawEnding(); $('ovEnd').hidden = false; }
+function drawEnding() { const t = $('endText'), pro = story === PROLOGUE; t.textContent = story[endI]; t.className = (pro ? endI === story.length - 1 : endI >= story.length - 2) ? 'last' : ''; $('endHint').textContent = endI === story.length - 1 ? (pro ? '화면을 누르면 탑으로 출발합니다' : '화면을 누르면 처음으로 돌아갑니다') : '화면을 누르면 넘어갑니다'; }
+function nextEnding() { if (++endI >= story.length) { if (story === PROLOGUE) return endPrologue(); $('ovEnd').hidden = true; G.pick = 0; G.pp = 0; toTitle(); return; } drawEnding(); }
+function showPrologue() { story = PROLOGUE; endI = 0; $('ovCover').hidden = true; $('btnStorySkip').hidden = false; drawEnding(); $('ovEnd').hidden = false; }
+function endPrologue() { // 처음 한 번: 이야기가 끝나면 캐릭터 고르기 없이 한별로 1-1을 바로 시작
+  SAVE.tut.prologue = 1; saveGame(); $('ovEnd').hidden = true; $('btnStorySkip').hidden = true; story = ENDING;
+  audioInit(); G.pick = 0; G.pp = 0; G.co = -1; sel = 0; newGame(0);
+}
+$('btnStorySkip').addEventListener('click', e => { e.stopPropagation(); endPrologue(); });
 $('ovEnd').addEventListener('click', nextEnding);
-function openSelect() { audioInit(); $('ovCover').hidden = true; $('ovTitle').hidden = false; refreshShop(); $('btnGo').focus(); }
+function openSelect() { audioInit(); if (!SAVE.tut.prologue && !SAVE.stars[0]) return showPrologue(); $('ovCover').hidden = true; $('ovTitle').hidden = false; refreshShop(); $('btnGo').focus(); }
 $('ovCover').addEventListener('click', openSelect);
 function pickStage(d) {
   const N = STAGES.length * 3, k = ((G.pick || 0) * 3 + (G.pp || 0) + d + N) % N; G.pick = Math.floor(k / 3); G.pp = k % 3; const S = STAGES[G.pick], el = $('stageName');
