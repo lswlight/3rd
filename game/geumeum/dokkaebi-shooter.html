@@ -140,7 +140,7 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .map-fl .nm{position:absolute;right:100%;margin-right:-26%;text-align:right;white-space:nowrap;font-size:max(10px,1.4cqw);color:#d8d2c4;text-shadow:0 0 .5cqw #000,0 0 .5cqw #000;line-height:1}
 .map-fl .nm b{font-family:var(--display);font-weight:400;font-size:max(13px,2cqw);color:#fff}
 .map-fl .st{position:absolute;left:100%;margin-left:-26%;white-space:nowrap;font-size:max(11px,1.6cqw);color:var(--gold);text-shadow:0 0 .5cqw #000}
-.map-fl .st i{font-style:normal;color:#4a5070}
+.map-fl .st i{font-style:normal;color:#4a5070}.map-fl .st .rec{font-style:normal;color:#9ff5e6;font-size:.82em;margin-left:.6em}
 .map-fl.lock .nm,.map-fl.lock .st{opacity:.38}
 .map-fl.clear .nm b{color:var(--gold)}
 .map-wrap>img.dim{filter:brightness(.38) saturate(.6)}.map-wrap>img.lit{transition:clip-path .9s ease}
@@ -204,6 +204,7 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .offer-btns .buy{background:var(--red);border-color:var(--red);color:#fff}
 .offer-btns .buy:disabled{background:var(--ink2);border-color:var(--line);color:var(--muted)}
 .sel-step{display:flex;align-items:center;gap:1cqw}
+.st-rec{font-size:max(10px,1.35cqw);color:#9ff5e6;min-height:1.2em;margin-top:-.3cqw}.st-rec.no{color:var(--muted)}
 .sel-step button{font-size:max(11px,1.7cqw);padding:max(3px,.5cqw) max(8px,1.1cqw);background:rgba(25,29,45,.9)}
 .sel-step span{font-size:max(11px,1.8cqw);min-width:0;flex:1;text-align:center;color:var(--paper)}
 .sel-step span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -333,6 +334,7 @@ li+li{margin-top:4px}
           <button type="button" id="stNext" aria-label="다음 구간">▶</button>
           <button type="button" class="go" id="btnGo">출발</button>
         </div>
+        <div class="st-rec" id="stRec"></div>
       </div>
       <div class="sel-row">
         <button type="button" data-ch="0" id="pick0"><img src="assets/hp0.webp" alt="">한별</button>
@@ -676,6 +678,8 @@ const touch = { id: null, x: 0, y: 0, down: false };
 let bombReq = false, swapReq = false;
 const SWAPCD = 6; // 교대 대기 시간(초)
 
+const LOGS = []; // 측정 기록(기획 2·5): 대장전 시간, 구간별 죽은 횟수·번 골드. 개발판에서는 콘솔에도 남긴다
+function devLog(...a) { LOGS.push(a); if (LOGS.length > 300) LOGS.shift(); if (TEST_UNLOCK) console.log(...a); }
 function banner(text, sub, t = 2.6) { G.banner = { text, sub, t, max: t }; }
 function addScore(n) { G.score += n; if (G.score > G.hi) G.hi = G.score; }
 
@@ -751,14 +755,14 @@ const ET = {
       if (e.t < 2.2) { e.x += (W - 118 - e.x) * Math.min(1, dt * 2); return; }
       const S = STAGES[G.stage];
       if (!e.talked) { e.talked = true; if (startTalk()) return; }
-      e.inv = false;
+      e.inv = false; e.ft = (e.ft || 0) + dt; // 대장전 시간(등장·대사 빼고)
       e.y = (GY / 2) + Math.sin(e.t * 0.7) * (GY / 2 - 88);
       if (S.pats3 && e.p2 && !e.p3 && e.hp < e.mhp * 0.33) { // 3단계(마지막 대장): 동료들이 돕는다
         e.p3 = true; e.pi = 0; e.pc = -2; e.cd = 0.3; bullets = []; G.flash = 0.6; G.shake = 0.9; sfx.big(); G.allyT = 0;
         for (let i = 0; i < 7; i++) fireball(e.x + rnd(-60, 60), e.y + rnd(-60, 60), rnd(30, 56), i * 0.1);
         banner(S.phase3 || '폭주한다!', S.phase3Sub || '', 2.2);
       }
-      if (!e.p2 && e.hp < e.mhp * (S.pats3 ? 0.66 : 0.5)) { // 2단계: 모습과 탄막이 바뀐다
+      if (!e.p2 && e.hp < e.mhp * (S.pats3 ? 0.66 : G.stage >= 5 ? 0.6 : 0.5)) { // 6층부터는 2단계를 더 오래 본다 // 2단계: 모습과 탄막이 바뀐다
         e.p2 = true; e.pi = 0; e.pc = -1.8; e.cd = 0.3; bullets = []; G.flash = 0.5; G.shake = 0.7; sfx.big();
         for (let i = 0; i < 5; i++) fireball(e.x + rnd(-50, 50), e.y + rnd(-50, 50), rnd(30, 50), i * 0.1);
         banner(S.phase || '본색을 드러냈다!', S.phaseSub || '', 1.8);
@@ -812,8 +816,24 @@ MN(9, ['금 도깨비 근위병', 0], ['방망이 쌍둥이', 2], ['보물 상�
 STAGES[9].pats = [patFan, patRing]; STAGES[9].pats2 = [patTails, patSpiral, patStream]; STAGES[9].pats3 = [patMolten, patClone, patSnow, patTails, patBlade, patIron]; // 3단계: 앞선 대장들의 힘(쇠·환영·눈보라·꼬리·물 칼날)을 빌려 쓴다
 ['지우산 처녀', '버들 물귀신', '대숲 무녀', '엿장수 처녀', '설녀의 시녀', '바다 해녀', '용궁 시녀', '풀무 아가씨', '등롱 궁녀', '도깨비 궁 무희'].forEach((nm, i) => { const m = STAGES[i].minis[1]; m.name = nm; m.img = 'mh' + i; }); // 층마다 두 번째 문지기는 여성 인간형 요괴
 
+const BOSS_K = 0.17; // 대장 체력이 층마다 오르는 폭 (기획 5: 0.25 → 0.17, 측정 뒤 다시 맞춘다)
+/* 층별 추천 동료(기획 5 3-5): 안 데려가도 깰 수 있지만 데려가면 편하다. 목록 앞쪽부터 가진 동료를 고른다 */
+const REC = [null, [2, '방패로 쇠공을 한 번 막음'], [1, '노려 쏘기가 진짜 구미호를 노림'], [3, '세 갈래 도깨비불로 넓게 정리'], [4, '곁에 온 눈 탄을 먹어 치움'], [7, '빠른 물줄기를 느리게 얼림'], [6, '장승 기둥으로 탄을 막음'], [9, '물결 방어막으로 칼비를 막음'], [[11, '어둠을 걷어 냄'], [5, '분신 사격으로 화력 보충']], null];
+function recOf(i) { const r = REC[i]; if (!r) return null; const L = Array.isArray(r[0]) ? r : [r]; const o = L.find(x => owns(x[0])); return o ? { ch: o[0], why: o[1], own: true } : { ch: L[L.length - 1][0], why: L[L.length - 1][1], own: false }; }
+function recText(i, short) { const r = recOf(i); if (!r) return ''; const c = CH[r.ch];
+  if (!r.own) return '아직 없는 동료 · ' + (c.from + 1) + '층 대장을 이기면 데려올 수 있습니다';
+  return short ? '추천 ' + c.name : '추천 동료 · ' + c.name + ' (' + r.why + ')'; }
+const lossKey = () => G.diff + '-' + (G.stage * 3 + G.part), lossN = () => (SAVE.loss && SAVE.loss[lossKey()]) || 0;
+function lossAdd() { if (G.endless) return; SAVE.loss = SAVE.loss || {}; SAVE.loss[lossKey()] = lossN() + 1; devLog('lose', G.stage + 1, G.part + 1, DN[G.diff], G.deaths || 0, lossN()); }
+function lossClear() { if (SAVE.loss) delete SAVE.loss[lossKey()]; }
+function loseHelp() { // 같은 구간에서 3번 넘게 지면 진 까닭에 맞춘 한 줄
+  if (G.endless || lossN() < 3) return ''; const r = recOf(G.stage);
+  if (r && r.own && P.ch !== r.ch && P.co !== r.ch) return '이 층은 「' + CH[r.ch].name + '」가 있으면 편합니다';
+  if (!G.bombUsed) return '위험할 땐 「부적」! 탄이 모두 지워집니다';
+  if (lvOf(P.ch) < G.stage + 1 && lvOf(P.ch) < MAXLV) return '캐릭터를 강화하면 화력이 오릅니다 (골드 ' + upCost(P.ch).toLocaleString() + ')';
+  return '맞는 곳은 몸 가운데 흰 점 하나뿐입니다'; }
 function spawn(type, x, y, o) {
-  const T = ET[type], hp = T.hp * (1 + 0.3 * G.loop) * (type === 'boss' ? (1.3 + 0.25 * G.stage) * (STAGES[G.stage].pats3 ? 1.35 : 1) : type === 'mini' || type === 'mid' ? 1 + 0.1 * G.stage : 1) * (o && o.n ? 1 + 0.15 * o.n : 1);
+  const T = ET[type], hp = T.hp * (1 + 0.3 * G.loop) * (type === 'boss' ? (1.3 + BOSS_K * G.stage) * (STAGES[G.stage].pats3 ? 1.35 : 1) : type === 'mini' || type === 'mid' ? 1 + 0.1 * G.stage : 1) * (o && o.n ? 1 + 0.15 * o.n : 1);
   const e = Object.assign({ type, x, y, y0: y, hp, mhp: hp, r: T.r * (type === 'boss' ? SZ.b : type === 'illu' ? 1 : SZ.e), t: 0, ph: rnd(0, 6), cd: rnd(0.4, 0.9), flash: 0 }, o);
   if (T.init) T.init(e);
   enemies.push(e); return e;
@@ -1080,7 +1100,7 @@ function advanceTalk() {
 }
 function startStage(i, part = 0) {
   G.part = part; G.pick = i; G.pp = part; G.deaths = 0; G.segDone = false; G.res = false; G.arc = null; G.arcDone = false; G.boon = newBoon();
-  G.stage = i; G.rank = 1 + 0.05 * i + 0.28 * Math.min(G.loop, 4); if (i === 0 && part === 0 && !G.endless && G.diff === 0) { SAVE.tut.r11 = (SAVE.tut.r11 || 0) + 1; if (SAVE.tut.r11 === 1) G.rank *= 0.85; } /* 처음 1-1은 탄 속도 0.85배 */ G.boon.shield += eqStat(P.ch).shield; G.pend = []; G.si = 0; G.wait = 3; G.gate = null; G.nMini = part === 1 ? 3 : 0; G.nMid = part === 1 ? 1 : 0; G.n0 = G.nMini + G.nMid; G.bossCalled = false; G.st = 0; G.boss = null; G.clearT = 0;
+  G.stage = i; G.rank = 1 + 0.05 * i + 0.28 * Math.min(G.loop, 4); if (i === 0 && part === 0 && !G.endless && G.diff === 0) { SAVE.tut.r11 = (SAVE.tut.r11 || 0) + 1; if (SAVE.tut.r11 === 1) G.rank *= 0.85; } /* 처음 1-1은 탄 속도 0.85배 */ G.boon.shield += eqStat(P.ch).shield; G.helped = false; G.bombUsed = false; if (!G.endless && lossN() >= 2) { G.boon.shield++; G.helped = true; G.boon.txt.push('탑의 기운 · 방패 1개'); setTimeout(() => tipFlash('탑의 기운 · 방패 1개를 받았습니다 (이 도움으로 깨면 별은 최대 둘)', 5), 3200); } G.pend = []; G.si = 0; G.wait = 3; G.gate = null; G.nMini = part === 1 ? 3 : 0; G.nMid = part === 1 ? 1 : 0; G.n0 = G.nMini + G.nMid; G.bossCalled = false; G.st = 0; G.boss = null; G.clearT = 0;
   if (G.endless) banner('무한의 탑 ' + G.tf + '층', STAGES[i].boss + ' · ' + STAGES[i].place, 3); else banner(STAGES[i].name + ' ' + (part + 1) + '구간', STAGES[i].place + (G.diff ? ' · ' + DN[G.diff] : ''), 3);
 }
 const towerLoop = n => 0.4 + 0.12 * n; // 무한의 탑: 층이 오를수록 적 체력과 탄 속도가 오른다
@@ -1126,7 +1146,7 @@ function kill(e) {
   if (e.drop) items.push({ x: e.x, y: e.y, type: e.drop, t: 0 });
   for (let i = 0; i < (T.coins || 0); i++) items.push({ x: e.x + rnd(-16, 16), y: e.y + rnd(-16, 16), type: 'C', t: 0 });
   if (e.type === 'boss') {
-    sfx.big(); G.shake = 0.9; G.flash = 0.5; G.boss = null; G.clearT = 7; addGold(1000); G.tally = { lives: (P.lives + 1) * 3000, bombs: P.bombs * 1000, gold: G.goldRun || 0 }; if (!G.endless) { if (!SAVE.beaten.includes(G.stage)) SAVE.beaten.push(G.stage); const fk = G.diff + '-' + G.stage; if (!SAVE.mfirst.includes(fk)) SAVE.mfirst.push(fk); checkRewards(); } saveGame();
+    devLog('boss', G.stage + 1, Math.round(e.ft || 0), DN[G.diff], G.deaths || 0); sfx.big(); G.shake = 0.9; G.flash = 0.5; G.boss = null; G.clearT = 7; addGold(1000); G.tally = { lives: (P.lives + 1) * 3000, bombs: P.bombs * 1000, gold: G.goldRun || 0 }; if (!G.endless) { if (!SAVE.beaten.includes(G.stage)) SAVE.beaten.push(G.stage); const fk = G.diff + '-' + G.stage; if (!SAVE.mfirst.includes(fk)) SAVE.mfirst.push(fk); checkRewards(); } saveGame();
     for (const b of bullets) items.push({ x: b.x, y: b.y, type: 'C', t: 0, auto: true });
     bullets = []; for (const o of enemies) if (o !== e && !o.dead) { o.dead = true; burst(o.x, o.y, 10, '#ffc46b'); }
     banner(STAGES[G.stage].name + ' 돌파!', '', 2); addScore(G.tally.lives + G.tally.bombs);
@@ -1257,7 +1277,7 @@ function updatePlayer(dt) {
     P.deadT -= dt;
     if (P.deadT <= 0) {
       if (P.lives < 0 && !G.endless && G.stage === 0 && G.diff === 0 && !SAVE.tut.save1) { SAVE.tut.save1 = 1; saveGame(); P.lives = 0; banner('다시 일어섰다!', '처음 한 번은 탑이 봐줍니다', 2.4); sfx.life(); }
-      if (P.lives < 0) { useTrial(); if (G.endless) { SAVE.tower = Math.max(SAVE.tower, G.tf - 1); } G.mode = 'over'; G.overT = 0.8; stageEl.classList.remove('playing'); saveGame(); return; }
+      if (P.lives < 0) { useTrial(); lossAdd(); if (G.endless) { SAVE.tower = Math.max(SAVE.tower, G.tf - 1); } G.mode = 'over'; G.overT = 0.8; stageEl.classList.remove('playing'); saveGame(); return; }
       P.x = 110; P.y = H / 2; P.cx = 50; P.cy = H / 2; P.inv = 2.6; P.bombs = Math.max(P.bombs, 2); bullets = [];
     }
     return;
@@ -1283,7 +1303,7 @@ function updatePlayer(dt) {
   else if (P.charge > 0) { if (P.charge >= chgT()) releaseCharge(); P.charge = 0; }
   // 폭탄
   if (G.arc) bombReq = false;
-  if (bombReq && P.bombs > 0 && G.bombT <= 0) { tipDone('bomb'); P.bombs--; mis('bomb'); G.bombT = BD; G.bfx = 0; P.inv = Math.max(P.inv, BD + 1.2); G.flash = 0; G.cut = { t: 0 }; G.bombHit = false; sfx.bomb(); }
+  if (bombReq && P.bombs > 0 && G.bombT <= 0) { tipDone('bomb'); G.bombUsed = true; P.bombs--; mis('bomb'); G.bombT = BD; G.bfx = 0; P.inv = Math.max(P.inv, BD + 1.2); G.flash = 0; G.cut = { t: 0 }; G.bombHit = false; sfx.bomb(); }
   bombReq = false;
   updateBuddy(dt);
 }
@@ -1296,7 +1316,7 @@ function update(dt) {
   for (const p of parts) { if (p.delay > 0) { p.delay -= dt; continue; } p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; }
   parts = parts.filter(p => p.life > 0);
   if (G.mode === 'title') return;
-  if (G.mode === 'over') { if (G.overT > 0 && (G.overT -= dt) <= 0) { $('overText').textContent = (G.endless ? '무한의 탑 ' + G.tf + '층에서 · 최고 기록 ' + SAVE.tower + '층 돌파 · ' : '') + '점수 ' + G.score.toLocaleString() + ' · 최고 ' + G.hi.toLocaleString(); reviveUI(); if (G.boss && uiOpen('moon') && !TEST_UNLOCK && !SAVE.starter && !SAVE.tut.starterAd) { SAVE.tut.starterAd = 1; saveGame(); $('overText').textContent += ' · 상점의 「첫 구매 묶음」(달조각 300 + 희귀 무기, 한 번만)으로 대장을 넘어 보세요'; } /* 대장에게 처음 졌을 때 한 번만 */ $('ovOver').hidden = false; $('btnRetry').focus(); } return; }
+  if (G.mode === 'over') { if (G.overT > 0 && (G.overT -= dt) <= 0) { $('overText').textContent = (G.endless ? '무한의 탑 ' + G.tf + '층에서 · 최고 기록 ' + SAVE.tower + '층 돌파 · ' : '') + '점수 ' + G.score.toLocaleString() + ' · 최고 ' + G.hi.toLocaleString(); reviveUI(); { const hl = loseHelp(); if (hl) $('overText').textContent += ' · ' + hl; } if (G.boss && uiOpen('moon') && !TEST_UNLOCK && !SAVE.starter && !SAVE.tut.starterAd) { SAVE.tut.starterAd = 1; saveGame(); $('overText').textContent += ' · 상점의 「첫 구매 묶음」(달조각 300 + 희귀 무기, 한 번만)으로 대장을 넘어 보세요'; } /* 대장에게 처음 졌을 때 한 번만 */ $('ovOver').hidden = false; $('btnRetry').focus(); } return; }
 
   if (G.offer || G.res) return;
   if (G.talk) { G.talk.t += dt; if (G.talk.t > 3.4) advanceTalk(); return; }
@@ -2173,7 +2193,7 @@ function openMap(o = {}) {
   let h = '';
   for (let i = 0; i < STAGES.length; i++) { const S = STAGES[i], open = segOpen(i * 3), st = [0, 1, 2].reduce((a, p) => a + (SAVE.stars[i * 3 + p + HK()] || 0), 0), clear = !!SAVE.stars[i * 3 + 2 + HK()];
     h += '<div class="map-fl' + (open ? '' : ' lock') + (clear ? ' clear' : '') + (i === (G.pick || 0) && !o.go ? ' on' : '') + '" data-f="' + i + '" style="top:' + (TOWER_FY[i] * 100) + '%"><div class="nm"><b>' + (i + 1) + '층</b> ' + (open ? S.place : '???') + '</div><div class="st">' + (open ? '★ ' + st + '<i>/9</i>' : '잠김') + '</div></div>'; }
-  $('mapFloors').innerHTML = h;
+  $('mapFloors').innerHTML = h; $('mapFloors').querySelectorAll('[data-f]').forEach(d => { const i = +d.dataset.f; if (d.classList.contains('lock')) return; const r = recText(i, 1); if (r) { const em = document.createElement('em'); em.className = 'rec'; em.textContent = r.startsWith('아직') ? '추천 ' + CH[recOf(i).ch].name + ' (아직 없음)' : r; d.querySelector('.st').appendChild(em); } });
   const hero = $('mapHero'); hero.src = 'assets/' + look(ch).img + '.webp'; hero.style.transition = 'none'; hero.style.top = (TOWER_FY[from] * 100) + '%'; hero.classList.remove('hop');
   const lit = $('mapLit'); lit.style.transition = 'none'; const shadeAt = f => { lit.style.clipPath = 'inset(' + Math.max(0, (TOWER_FY[f] - 0.04) * 100) + '% 0 0 0)'; }; shadeAt(from); // 오른 층까지만 불이 켜진다
   mapGo = o.go || null; const g = $('btnMapGo'); g.hidden = !o.go; if (o.go) g.textContent = (to + 1) + '층으로 출발';
@@ -2269,7 +2289,8 @@ const DN = ['보통', '어려움', '악몽'], HK = () => G.diff * 30; // 난이�
 const diffOpen = d => d === 0 || TEST_UNLOCK || !!SAVE.stars[30 * d - 1], towerOpen = () => TEST_UNLOCK || !!SAVE.stars[29];
 const segOpen = k => TEST_UNLOCK || (diffOpen(G.diff) && (k === 0 || !!SAVE.stars[k - 1 + HK()]));
 function showResult() { // 구간을 깬 뒤: 별과 골드를 보여 주고 이어 할지 묻는다
-  const k = G.stage * 3 + G.part + HK(), st = G.deaths === 0 ? 3 : G.deaths === 1 ? 2 : 1, last = STAGES[G.stage].last && G.part === 2;
+  const k = G.stage * 3 + G.part + HK(), st = Math.min(G.helped ? 2 : 3, G.deaths === 0 ? 3 : G.deaths === 1 ? 2 : 1), last = STAGES[G.stage].last && G.part === 2;
+  devLog('econ', G.stage + 1, G.part + 1, DN[G.diff], G.deaths || 0, G.resGold || 0); lossClear();
   SAVE.stars[k] = Math.max(SAVE.stars[k] || 0, st); mis('seg'); if (st === 3) mis('star'); useTrial(); saveGame(); G.res = true; stageEl.classList.remove('playing');
   $('resName').textContent = segName() + (G.diff ? ' ' + DN[G.diff] : '') + ' 돌파'; starMoon(); $('resStars').innerHTML = starStr(st);
   $('resText').innerHTML = '이번 구간 골드 <b class="gold">+' + (G.resGold || 0).toLocaleString() + '</b> · 가진 골드 <b class="gold">' + SAVE.gold.toLocaleString() + '</b>';
@@ -2343,7 +2364,7 @@ $('ovCover').addEventListener('click', openSelect);
 function pickStage(d) {
   const N = STAGES.length * 3, k = ((G.pick || 0) * 3 + (G.pp || 0) + d + N) % N; G.pick = Math.floor(k / 3); G.pp = k % 3; const S = STAGES[G.pick], el = $('stageName');
   el.innerHTML = (G.pick + 1) + '-' + (G.pp + 1) + ' · ' + S.place + (G.pp === 2 ? ' · 대장' : '') + (segOpen(k) ? ' <b>' + starStr(SAVE.stars[k + HK()] || 0) + '</b>' : ' (잠김)');
-  el.classList.toggle('lock', !S.ready || !segOpen(k)); refreshShop();
+  el.classList.toggle('lock', !S.ready || !segOpen(k)); { const rr = $('stRec'), r = recOf(G.pick); rr.textContent = recText(G.pick); rr.classList.toggle('no', !!r && !r.own); } refreshShop();
   if (G.mode === 'title') G.stage = S.ready ? G.pick : 0;
 }
 $('stPrev').addEventListener('click', () => pickStage(-1)); $('stNext').addEventListener('click', () => pickStage(1));
@@ -2389,7 +2410,7 @@ function start() {
   if (window.ResizeObserver) new ResizeObserver(resize).observe(cv); else addEventListener('resize', resize);
   requestAnimationFrame(frame);
 }
-window.__game = { tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
+window.__game = { LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
 if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start); else start();
 })();
 </script>
