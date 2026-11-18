@@ -101,8 +101,8 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .stage:fullscreen canvas{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(100vw,177.78vh);height:min(100vh,56.25vw)}
 .cover{padding:0;background:#05060c;cursor:pointer;display:block}
 .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,6,14,.82),rgba(5,6,14,.5) 30%,rgba(5,6,14,0) 50%,rgba(5,6,14,0) 70%,rgba(5,6,14,.8))}
-.cover-txt{position:absolute;left:4cqw;top:4cqw;z-index:1;text-align:left;max-width:60cqw}
+.cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,6,14,.7),rgba(5,6,14,0) 22%,rgba(5,6,14,0) 75%,rgba(5,6,14,.75))}
+.cover-txt{position:absolute;left:4cqw;top:2.5cqw;z-index:1;text-align:left;max-width:60cqw}
 .cover h2{font-size:max(26px,7.4cqw);line-height:1.02;color:#fff;text-shadow:0 .3cqw 0 #7a1f17,0 0 2cqw rgba(0,0,0,.8)}
 .cover h2 span{color:var(--gold)}
 .cover-story{font-size:max(11px,1.75cqw);line-height:1.5;color:var(--paper);margin:1.2cqw 0 0;text-shadow:0 0 .8cqw #000}
@@ -232,6 +232,65 @@ dd{margin:0}
 kbd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;border:1px solid var(--line);border-radius:3px;padding:1px 5px;background:var(--ink2)}
 ul{margin:0;padding-left:18px;font-size:14px}
 li+li{margin-top:4px}
+
+/* 기획 6: 첫 화면(로비)과 캐릭터 고르기 창 */
+#ovTitle .lb-top{position:absolute;left:2cqw;top:1.6cqw;z-index:3;display:flex;gap:1cqw}
+.pill{font-family:var(--display);font-size:max(11px,1.6cqw);color:var(--gold);background:rgba(10,12,22,.78);border:1px solid rgba(232,184,74,.5);border-radius:99px;padding:max(3px,.5cqw) max(10px,1.6cqw)}
+#ovTitle .sel-art{cursor:pointer;max-width:56cqw}
+.lb-hero{position:absolute;left:0;bottom:0;padding:6cqw 2.6cqw 3.4cqw;background:linear-gradient(0deg,rgba(5,6,14,.82),rgba(5,6,14,.5) 60%,rgba(5,6,14,0));z-index:2;width:50cqw;display:flex;flex-direction:column;gap:.7cqw;text-shadow:0 0 .8cqw #000,0 0 .4cqw #000}
+#ovTitle .lb-hero h2{font-size:max(26px,6cqw);line-height:1}
+#ovTitle .sel-role{font-size:max(11px,1.7cqw);color:var(--paper);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-chips{display:flex;gap:.8cqw;align-items:center;flex-wrap:wrap}
+.chip{font-family:var(--display);font-size:max(10px,1.5cqw);color:var(--paper);background:rgba(10,12,22,.85);border:1px solid var(--line);border-radius:.8cqw;padding:max(3px,.5cqw) max(8px,1.2cqw);line-height:1.2;text-shadow:none}
+.chip.up{border-color:var(--gold);color:var(--gold)}.chip.up:disabled{border-color:var(--line);color:var(--muted);cursor:default}
+button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,184,74,.14)}button.chip:disabled{color:var(--muted);cursor:default}
+.chip.rec{font-family:var(--body);color:#cfeee8;max-width:22cqw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.chip.rec.no{color:var(--muted)}
+.lb-diff{display:flex;gap:.8cqw}.lb-diff button{font-family:var(--body)}
+.lb-right{position:absolute;right:2cqw;top:6.4cqw;bottom:1.6cqw;width:45cqw;z-index:2;display:flex;flex-direction:column;gap:1.2cqw}
+.lb-card{background:rgba(10,12,22,.84);border:1px solid rgba(232,184,74,.42);border-radius:1.1cqw;padding:1.1cqw 1.6cqw;text-align:left}
+.lb-lab{display:block;font-size:max(9px,1.25cqw);color:var(--muted);margin-bottom:.3cqw}
+.lb-next{display:flex;flex-direction:column;gap:.9cqw}
+.lb-step{display:flex;align-items:center;gap:1.2cqw}
+.lb-step>button{flex:none;width:max(26px,3.6cqw);height:max(26px,3.6cqw);padding:0;font-size:max(11px,1.6cqw);background:rgba(25,29,45,.9)}
+.lb-st{flex:1;min-width:0;display:flex;flex-direction:column;gap:.3cqw}
+.lb-st b{font-family:var(--display);font-weight:400;font-size:max(14px,2.6cqw);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lb-st b.lock{color:var(--muted)}
+.lb-st span{font-size:max(10px,1.45cqw);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lb-st span b{font-family:inherit;font-size:inherit;color:var(--gold);letter-spacing:1px}.lb-st span b i{font-style:normal;color:#4a5070}
+.lb-row{display:flex;gap:1.2cqw}
+.lb-co{flex:1;min-width:0;display:flex;align-items:center;gap:1.2cqw;cursor:pointer;color:var(--paper)}
+.lb-co img{width:max(34px,5cqw);height:max(34px,5cqw);object-fit:cover;object-position:50% 20%;border-radius:.8cqw;border:1px solid var(--line);background:#141826;flex:none}
+.lb-co span{display:flex;flex-direction:column;min-width:0}.lb-co b{font-family:var(--display);font-weight:400;font-size:max(12px,1.9cqw);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-co em{font-style:normal;font-size:max(9px,1.3cqw);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-eq{flex:1;min-width:0}
+#ovTitle .sel-eq{position:static;display:flex;flex-direction:row;gap:.8cqw}
+#ovTitle .sel-eq button{width:max(30px,4.6cqw);height:max(30px,4.6cqw)}#ovTitle .sel-eq small{display:none}#ovTitle .sel-eq b{font-size:max(9px,1.2cqw)}
+#ovTitle .go{width:100%;font-size:max(18px,3.6cqw);padding:max(8px,1.5cqw) 0;border-radius:1.1cqw;background:linear-gradient(180deg,#e8613f,#c23b2e);border:1px solid #ff8a6a;box-shadow:0 .5cqw 0 #7a1f17,0 .6cqw 1.6cqw rgba(0,0,0,.5);letter-spacing:.2em}
+#ovTitle .go:disabled{background:var(--ink2);border-color:var(--line);color:var(--muted);box-shadow:none}
+#ovTitle .sel-menu{position:static;margin-top:auto;display:flex;gap:1cqw;width:auto}
+#ovTitle .sel-menu button{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:.2cqw;padding:max(4px,.7cqw) 0;font-family:var(--display);font-size:max(10px,1.45cqw);background:rgba(10,12,22,.84);border:1px solid var(--line);border-radius:.9cqw;position:relative;color:var(--paper)}
+#ovTitle .sel-menu i{font-style:normal;font-size:max(12px,1.9cqw);line-height:1}#ovTitle .sel-menu span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+#ovTitle .sel-menu .shop{border-color:var(--red)}#ovTitle .sel-menu button:disabled{color:var(--muted);cursor:default}
+#ovTitle .sel-menu .dot::after{content:'';position:absolute;right:22%;top:.6cqw;width:max(6px,.9cqw);height:max(6px,.9cqw);border-radius:50%;background:#ff4a3a}
+.pick{background:rgba(5,6,14,.78);z-index:6}
+.pk-box{position:absolute;inset:3.4cqw 5cqw;background:rgba(10,12,22,.95);border:1px solid rgba(232,184,74,.45);border-radius:1.6cqw;padding:2cqw 2.4cqw;display:flex;flex-direction:column;gap:1cqw;text-align:left}
+.pk-head{display:flex;align-items:center;gap:1cqw}.pk-head h2{flex:1;font-size:max(16px,3cqw);color:var(--gold)}
+.pk-head button{font-family:var(--display);font-size:max(11px,1.6cqw);padding:max(3px,.5cqw) max(10px,1.4cqw)}
+.pk-sub{font-size:max(10px,1.4cqw);color:var(--muted);margin:0}
+#ovPick .pk-grid{position:static;width:auto;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1cqw;overflow:visible;flex:1;min-height:0}
+#ovPick .pk-grid button{flex:none;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:.2cqw;padding:.6cqw .4cqw;font-family:var(--display);font-size:max(10px,1.5cqw);background:rgba(28,32,52,.92);border:1px solid var(--line);border-radius:1cqw;min-height:0;overflow:hidden}
+#ovPick .pk-grid img{flex:1;min-height:0;height:auto;width:100%;object-fit:contain;animation:none}
+#ovPick .pk-grid small{font-family:var(--body);font-size:max(8px,1.15cqw);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+#ovPick .pk-grid button[aria-pressed="true"]{border-color:#7dffd9;box-shadow:0 0 1cqw rgba(125,255,217,.35)}
+#ovPick .pk-grid button.dim{opacity:.35}
+#ovPick .pk-grid button.locked::after{right:.5cqw;top:.4cqw}
+.pk-detail{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto;gap:.5cqw 2.4cqw;align-items:center;border-top:1px solid var(--line);padding-top:1cqw;min-height:max(54px,8cqw)}
+.pk-who{display:flex;flex-direction:column;gap:.3cqw;min-width:0}.pk-who b{font-family:var(--display);font-weight:400;font-size:max(14px,2.3cqw)}.pk-who small{font-size:max(9px,1.25cqw);color:var(--muted)}
+#ovPick .sel-stats{display:grid;grid-template-columns:auto 1fr;gap:.5cqw 1cqw;font-size:max(9px,1.25cqw);align-items:center;margin:0}
+#ovPick .sel-desc{display:block;font-size:max(9px,1.25cqw);line-height:1.4;margin:0;min-height:0;color:var(--paper)}
+.pk-btns{display:flex;flex-direction:column;gap:.6cqw}
+.pk-btns button{font-family:var(--display);font-size:max(11px,1.6cqw);padding:max(4px,.7cqw) max(12px,1.8cqw);white-space:nowrap}.pk-btns .buy{background:var(--red);border-color:var(--red);color:#fff}.pk-btns small{font-size:max(9px,1.2cqw);color:var(--muted);max-width:22cqw}
+.corner button.ico{width:max(28px,4.2cqw);height:max(28px,4.2cqw);padding:0;border-radius:50%;font-size:max(12px,1.7cqw);display:flex;align-items:center;justify-content:center}
+/* 작은 화면(세로 400px 이하) */
+@media (max-height:400px){#ovTitle .sel-role,.st-comp,#ovTitle .sel-menu span,.pk-sub,#ovPick .sel-desc{display:none}#ovTitle .sel-menu i{font-size:18px}#ovTitle .sel-menu button{padding:5px 0}.lb-card{padding:6px 10px}.lb-right{gap:6px}}
 </style>
 
 <main class="wrap">
@@ -248,7 +307,6 @@ li+li{margin-top:4px}
       <img src="assets/cover5.jpg" alt="">
       <div class="cover-txt">
         <h2>그믐 <span>달을 훔친 자</span></h2>
-        <p class="cover-story">도깨비 여왕이 세상의 달빛을 훔쳐 구름 위 열 층 탑 꼭대기에 숨었다.<br>부채 도사 한별, 활잡이 달래, 대장장이 무쇠가 구름을 타고 탑을 오른다.</p>
       </div>
       <div class="cover-start">화면을 눌러 탑에 오르기</div>
     </div>
@@ -300,55 +358,60 @@ li+li{margin-top:4px}
       </div>
     </div>
     <div class="overlay select" id="ovTitle" hidden>
-      <div class="sel-gold" id="selGold"></div>
-      <div class="sel-menu">
-        <button type="button" class="sel-mis sel-map" id="btnMap">탑 지도</button>
-        <button type="button" class="sel-mis" id="btnMis"></button>
-        <button type="button" class="sel-mis sel-shop" id="btnShop">상점</button>
-        <button type="button" class="sel-mis sel-hard" id="btnHard"></button>
-        <button type="button" class="sel-mis sel-tower" id="btnTower"></button>
-      </div>
-      <img class="sel-art" id="selArt" src="assets/hc0.webp" alt="">
-      <div class="sel-eq" id="selEq" aria-label="장비"></div>
-      <div class="sel-info">
+      <div class="lb-top"><button type="button" class="pill" id="selGold"></button><button type="button" class="pill" id="selMoon"></button></div>
+      <img class="sel-art" id="selArt" src="assets/hc0.webp" alt="캐릭터 고르기">
+      <div class="lb-hero">
         <h2 id="selName">한별</h2>
-        <p class="sel-role" id="selRole" hidden>부채 도사</p>
-        <div class="sel-step sel-lv">
-          <span id="lvName"></span>
-          <button type="button" id="btnUp"></button>
-        </div>
-        <dl class="sel-stats">
-          <dt>빠르기</dt><dd><i id="st0"></i></dd>
-          <dt>화력</dt><dd><i id="st1"></i></dd>
-          <dt>범위</dt><dd><i id="st2"></i></dd>
-        </dl>
-        <p class="sel-desc" id="selDesc"></p>
-        <div class="sel-step" id="coRow">
-          <button type="button" id="coPrev" aria-label="앞 동료">◀</button>
-          <span id="coName"></span>
-          <button type="button" id="coNext" aria-label="다음 동료">▶</button>
-        </div>
-        <div class="sel-step">
-          <button type="button" id="stPrev" aria-label="앞 구간">◀</button>
-          <span id="stageName"></span>
-          <button type="button" id="stNext" aria-label="다음 구간">▶</button>
-          <button type="button" class="go" id="btnGo">출발</button>
-        </div>
-        <div class="st-rec" id="stRec"></div>
+        <p class="sel-role" id="selRole">부채 도사</p>
+        <div class="lb-chips"><span class="chip" id="lvChip"></span><span class="chip" id="atkChip"></span><button type="button" class="chip up" id="btnUp"></button></div>
       </div>
-      <div class="sel-row">
-        <button type="button" data-ch="0" id="pick0"><img src="assets/hp0.webp" alt="">한별</button>
-        <button type="button" data-ch="1" id="pick1"><img src="assets/hp1_o0.webp" alt="">달래</button>
-        <button type="button" data-ch="2" id="pick2"><img src="assets/hp2.webp" alt="">무쇠</button>
-        <button type="button" data-ch="3" id="pick3"><img src="assets/p3.webp" alt="">탈 도깨비<small id="lock3"></small></button>
-        <button type="button" data-ch="4" id="pick4"><img src="assets/p4.webp" alt="">불가사리<small id="lock4"></small></button>
-        <button type="button" data-ch="5" id="pick5"><img src="assets/p5.webp" alt="">구미호<small id="lock5"></small></button>
+      <div class="lb-right">
+        <div class="lb-card lb-next">
+          <small class="lb-lab">다음 도전</small>
+          <div class="lb-step">
+            <button type="button" id="stPrev" aria-label="앞 구간">◀</button>
+            <div class="lb-st"><b id="stageName"></b><span id="stSub"></span></div>
+            <button type="button" id="stNext" aria-label="다음 구간">▶</button>
+          </div>
+          <div class="lb-chips"><span class="lb-diff" id="diffChips"></span><button type="button" class="chip rec" id="stRec"></button></div>
+        </div>
+        <div class="lb-row">
+          <button type="button" class="lb-card lb-co" id="coRow"><img id="coImg" alt=""><span><small class="lb-lab">동료</small><b id="coName"></b><em id="coDesc"></em></span></button>
+          <div class="lb-card lb-eq" id="eqCard"><small class="lb-lab">장비</small><div class="sel-eq" id="selEq" aria-label="장비"></div></div>
+        </div>
+        <button type="button" class="go" id="btnGo">출발</button>
+        <div class="sel-menu">
+          <button type="button" id="btnMap"><i>🗺️</i><span>탑 지도</span></button>
+          <button type="button" id="btnMis"><i>📜</i><span id="misTxt">임무</span></button>
+          <button type="button" id="btnTower"><i>🗼</i><span id="towerTxt">무한의 탑</span></button>
+          <button type="button" id="btnChar"><i>👥</i><span>캐릭터</span></button>
+          <button type="button" class="shop" id="btnShop"><i>🏮</i><span>상점</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="overlay pick" id="ovPick" hidden>
+      <div class="pk-box">
+        <div class="pk-head"><h2 id="pkTitle">캐릭터 고르기</h2><button type="button" id="btnPkNone" hidden>동료 없이 가기</button><button type="button" id="btnPickX">닫기</button></div>
+        <p class="pk-sub" id="pkSub"></p>
+        <div class="sel-row pk-grid">
+          <button type="button" data-ch="0" id="pick0"><img src="assets/hp0.webp" alt="">한별<small></small></button>
+          <button type="button" data-ch="1" id="pick1"><img src="assets/hp1_o0.webp" alt="">달래<small></small></button>
+          <button type="button" data-ch="2" id="pick2"><img src="assets/hp2.webp" alt="">무쇠<small></small></button>
+          <button type="button" data-ch="3" id="pick3"><img src="assets/p3.webp" alt="">탈 도깨비<small id="lock3"></small></button>
+          <button type="button" data-ch="4" id="pick4"><img src="assets/p4.webp" alt="">불가사리<small id="lock4"></small></button>
+          <button type="button" data-ch="5" id="pick5"><img src="assets/p5.webp" alt="">구미호<small id="lock5"></small></button>
+        </div>
+        <div class="pk-detail" id="pkDetail">
+          <div class="pk-who"><b id="pkName"></b><small id="pkRole"></small><p class="sel-desc" id="selDesc"></p></div>
+          <dl class="sel-stats"><dt>빠르기</dt><dd><i id="st0"></i></dd><dt>화력</dt><dd><i id="st1"></i></dd><dt>범위</dt><dd><i id="st2"></i></dd></dl>
+          <div class="pk-btns" id="pkBtns"></div>
+        </div>
       </div>
     </div>
     <div class="corner">
-      <button type="button" id="btnPause">멈춤</button>
-      <button type="button" id="btnMute">소리 켜짐</button>
-      <button type="button" id="btnFull">크게</button>
+      <button type="button" class="ico" id="btnPause" aria-label="멈춤">⏸</button>
+      <button type="button" class="ico" id="btnMute" aria-label="소리">🔊</button>
+      <button type="button" class="ico" id="btnFull" aria-label="크게">⛶</button>
     </div>
     <div class="touch">
       <button type="button" class="tb tb-swap" id="padSwap" aria-label="동료와 교대">교대</button>
@@ -365,7 +428,7 @@ li+li{margin-top:4px}
       </div>
     </div>
     <div class="overlay shop helpv" id="ovHelp" hidden>
-      <div class="shop-head"><b>도움말</b><div class="help-head-btns"><button type="button" id="btnTutReset">안내 다시 보기</button><button type="button" id="btnHelpX">닫기</button></div></div>
+      <div class="shop-head"><b>도움말</b><div class="help-head-btns"><button type="button" id="btnStoryAgain">이야기 다시 보기</button><button type="button" id="btnTutReset">안내 다시 보기</button><button type="button" id="btnHelpX">닫기</button></div></div>
       <div class="help help-body" id="helpBody"></div>
     </div>
     <div class="overlay shop" id="ovShop" hidden>
@@ -1162,7 +1225,7 @@ function newGame(ch, tower) {
   const pp = tower ? 2 : G.pp || 0, lv = lvOf(ch), es = eqStat(ch); if (tower) { startStage(0, 2); G.arcDone = true; } else startStage(G.pick || 0, pp);
   P.power = Math.min(4, 1 + pp + (lv >= 10 ? 1 : 0)); if (lv >= 4) P.bombs++; if (lv >= 7) P.lives++; P.bombs += es.bombs; P.lives += es.lives;
   $('padSwap').classList.toggle('ui-off', P.co < 0);
-  if (SAVE.trial >= 0 && !SAVE.owned.includes(SAVE.trial) && (P.ch === SAVE.trial || P.co === SAVE.trial)) setTimeout(() => tipFlash('체험 중 · 이 판이 끝나면 다시 골드로 데려올 수 있습니다', 5), 600); $('ovTitle').hidden = true; $('ovOver').hidden = true; $('btnPause').textContent = '멈춤'; stageEl.classList.add('playing'); prepVid(P.ch); if (P.co >= 0) prepVid(P.co);
+  if (SAVE.trial >= 0 && !SAVE.owned.includes(SAVE.trial) && (P.ch === SAVE.trial || P.co === SAVE.trial)) setTimeout(() => tipFlash('체험 중 · 이 판이 끝나면 다시 골드로 데려올 수 있습니다', 5), 600); $('ovTitle').hidden = true; $('ovOver').hidden = true; $('btnPause').textContent = '⏸'; stageEl.classList.add('playing'); prepVid(P.ch); if (P.co >= 0) prepVid(P.co);
 }
 
 /* ---------- 효과 ---------- */
@@ -1976,13 +2039,14 @@ function draw() {
 const KEYMAP = { ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right', ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down',
   KeyZ: 'fire', Space: 'fire', KeyJ: 'fire', KeyX: 'charge', KeyK: 'charge' };
 const stageEl = document.querySelector('.stage');
-function togglePause() { if (G.mode !== 'play' || G.res || G.offer) return; G.paused = !G.paused; $('btnPause').textContent = G.paused ? '계속' : '멈춤';
+function togglePause() { if (G.mode !== 'play' || G.res || G.offer) return; G.paused = !G.paused; $('btnPause').textContent = G.paused ? '▶' : '⏸';
   $('pauseText').textContent = segName() + ' · ' + STAGES[G.stage].place + ' · 나가면 이 구간은 처음부터 다시 합니다. 골드는 남습니다.'; $('ovPause').hidden = !G.paused; if (!G.paused) $('ovHelp').hidden = true; stageEl.classList.toggle('playing', !G.paused); if (G.paused) $('btnResume').focus(); }
 $('btnResume').addEventListener('click', () => { if (G.paused) togglePause(); $('btnResume').blur(); });
 function openHelp() { const src = document.querySelector('.wrap > .help'); if (src && !$('helpBody').childElementCount) $('helpBody').innerHTML = src.innerHTML; $('helpBody').scrollTop = 0; $('ovHelp').hidden = false; } // 출시판에서는 화면 아래 설명이 숨겨져 있으므로 같은 글을 여기서 보여 준다
 $('btnHelp').addEventListener('click', e => { openHelp(); e.currentTarget.blur(); });
 $('btnHelpX').addEventListener('click', () => { $('ovHelp').hidden = true; });
 $('btnTutReset').addEventListener('click', tutReset);
+$('btnStoryAgain').addEventListener('click', () => { $('ovHelp').hidden = true; story = PROLOGUE; endI = 0; storyAgain = true; $('btnStorySkip').hidden = false; drawEnding(); $('ovEnd').hidden = false; });
 $('btnQuit').addEventListener('click', () => { useTrial(); saveGame(); toTitle(); });
 addEventListener('keydown', e => {
   if (e.target && /BUTTON|INPUT|TEXTAREA/.test(e.target.tagName) && (e.code === 'Space' || e.code === 'Enter') && G.mode !== 'play') return;
@@ -2044,7 +2108,7 @@ function select(ch) {
   sel = (ch + CH.length) % CH.length; const a = $('selArt');
   a.src = 'assets/' + look(sel).cut + '.webp'; a.style.transform = CH[sel].flip ? 'scaleX(-1)' : ''; a.style.objectPosition = CH[sel].flip ? 'right bottom' : ''; a.style.filter = owns(sel) ? '' : 'brightness(.85)'; // 잠긴 캐릭터도 컬러로 보여 준다(자물쇠 표시만) a.classList.remove('in'); void a.offsetWidth; a.classList.add('in');
   $('selName').textContent = CH[sel].name; $('selName').style.color = SELCOL[sel];
-  $('selRole').textContent = INFO[sel].role; $('selDesc').textContent = INFO[sel].desc;
+  $('selRole').textContent = INFO[sel].role.replace(' · 동료', '') + ' · ' + INFO[sel].desc.split('.')[0]; $('selDesc').textContent = INFO[sel].desc;
   INFO[sel].st.forEach((v, i) => { $('st' + i).style.width = v + '%'; });
   picks.forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.ch === sel)));
   refreshShop(); if (G.co === sel || !owns(sel)) G.co = -1; pickCo(0);
@@ -2052,18 +2116,21 @@ function select(ch) {
 function refreshShop() { // 골드와 잠긴 동료 표시
   if (typeof applyUnlocks === 'function') try { applyUnlocks(); } catch (_) {}
   if (typeof renderSelEq === 'function') try { renderSelEq(); } catch (_) {}
-  $('selGold').textContent = '골드 ' + SAVE.gold.toLocaleString() + (uiOpen('moon') ? ' · 달조각 ' + SAVE.moon.toLocaleString() : '');
-  { const h = $('btnHard'), op = diffOpen(1); if (!diffOpen(G.diff)) G.diff = 0; h.disabled = !op; h.classList.toggle('on', G.diff > 0); h.textContent = op ? '난이도 ' + DN[G.diff] : '어려움 🔒'; h.title = op ? '' : '10층을 깨면 열립니다';
-    const t = $('btnTower'); t.disabled = !towerOpen(); t.textContent = towerOpen() ? '무한의 탑 · 최고 ' + SAVE.tower + '층' : '무한의 탑 🔒'; }
-  { const D = daily(); $('btnMis').textContent = '임무 ' + D.ids.filter(i => D.paid[i]).length + '/3'; }
+  $('selGold').textContent = '골드 ' + SAVE.gold.toLocaleString(); $('selMoon').textContent = '달조각 ' + SAVE.moon.toLocaleString();
+  { if (!diffOpen(G.diff)) G.diff = 0; let h = ''; // 난이도 칩: 보통 · 어려움 · 악몽 (잠긴 것은 하나만 자물쇠로 보여 준다)
+    for (let d = 0; d < 3; d++) { const op = diffOpen(d); if (d === 2 && !diffOpen(1)) break; h += '<button type="button" class="chip' + (G.diff === d ? ' on' : '') + '" data-d="' + d + '"' + (op ? '' : ' disabled title="' + (d * 10) + '층 대장을 ' + DN[d - 1] + '으로 이기면 열립니다"') + '>' + DN[d] + (op ? '' : ' 🔒') + '</button>'; if (!op) break; }
+    $('diffChips').innerHTML = h;
+    const t = $('btnTower'); t.disabled = !towerOpen(); $('towerTxt').textContent = towerOpen() ? '무한의 탑' + (SAVE.tower ? ' ' + SAVE.tower + '층' : '') : '무한의 탑 🔒'; }
+  { const D = daily(), n = D.ids.filter(i => D.paid[i]).length; $('misTxt').textContent = '임무 ' + n + '/3'; $('btnMis').classList.toggle('dot', n < 3); }
   const locked = !owns(sel), beaten = locked && SAVE.beaten.includes(CH[sel].from);
-  for (const b of picks) { const c = +b.dataset.ch, l = !owns(c); b.classList.toggle('locked', l); const sm = b.querySelector('small'); if (sm) sm.textContent = SAVE.trial === c && !SAVE.owned.includes(c) ? '체험 1판' : l ? (SAVE.beaten.includes(CH[c].from) ? won(priceOf(c)) + ' 골드' : (CH[c].from + 1) + '층 돌파 후') : ''; }
+  for (const b of picks) { const c = +b.dataset.ch, l = !owns(c); b.classList.toggle('locked', l); const sm = b.querySelector('small'); if (sm) sm.textContent = SAVE.trial === c && !SAVE.owned.includes(c) ? '체험 1판' : l ? (CH[c].from + 1) + '층' + (SAVE.beaten.includes(CH[c].from) ? ' · ' + won(priceOf(c)) : ' 대장') : 'Lv' + lvOf(c) + ' · ' + (c < 3 ? INFO[c].role : (CH[c].from + 1) + '층 대장'); }
   const S = STAGES[G.pick || 0], go = $('btnGo');
   if (locked) { go.disabled = !(beaten && SAVE.gold >= priceOf(sel)); go.textContent = beaten ? (SAVE.gold >= priceOf(sel) ? won(priceOf(sel)) + ' 골드로 사기' : '골드 부족') : '잠김'; if (!beaten) $('selDesc').textContent = (CH[sel].from + 1) + '층 대장을 이기면 ' + won(priceOf(sel)) + ' 골드로 동료로 삼을 수 있습니다.'; }
   else { const op = segOpen((G.pick || 0) * 3 + (G.pp || 0)); go.disabled = !S.ready || !op; go.textContent = op ? '출발' : '잠김'; }
   const lv = lvOf(sel), up = $('btnUp'), c = upCost(sel);
-  $('lvName').textContent = INFO[sel].role.replace(' · 동료', '') + ' · Lv ' + lv + ' · 화력 +' + (lv - 1) * 6 + '%' + (lv < 4 ? ' · Lv4 부적+1' : lv < 7 ? ' · Lv7 목숨+1' : lv < 10 ? ' · Lv10 시작 화력+1' : '');
-  up.textContent = lv >= MAXLV ? '최고 레벨' : '강화 ' + c.toLocaleString(); up.disabled = locked || lv >= MAXLV || SAVE.gold < c;
+  $('lvChip').textContent = 'Lv ' + lv; $('atkChip').textContent = '화력 +' + (lv - 1) * 6 + '%';
+  up.title = lv < 4 ? 'Lv4 부적+1' : lv < 7 ? 'Lv7 목숨+1' : lv < 10 ? 'Lv10 시작 화력+1' : '';
+  up.textContent = lv >= MAXLV ? '최고 레벨' : '강화 · 골드 ' + c.toLocaleString(); up.disabled = locked || lv >= MAXLV || SAVE.gold < c;
 }
 $('btnUp').addEventListener('click', () => { const c = upCost(sel); if (!owns(sel) || lvOf(sel) >= MAXLV || SAVE.gold < c) return; SAVE.gold -= c; SAVE.lv[sel] = lvOf(sel) + 1; saveGame(); sfx.life(); refreshShop(); });
 function buyHero(ch) { if (SAVE.owned.includes(ch) || SAVE.gold < priceOf(ch) || !SAVE.beaten.includes(CH[ch].from)) return false; SAVE.gold -= priceOf(ch); SAVE.owned.push(ch); saveGame(); sfx.life(); return true; }
@@ -2329,7 +2396,8 @@ const UNLOCKS = [ // [키, 열리는 조건, 열릴 때 한 줄 안내]
   ['pick', () => !!SAVE.stars[0], '세 사람은 빠르기·화력·범위가 다릅니다. 골라서 출발해 보세요'],
   ['co', () => !!SAVE.stars[2], '쓰러뜨린 대장은 골드로 동료가 됩니다. 동료와 「교대」하며 싸울 수 있습니다'],
   ['up', () => !!SAVE.stars[5], '골드로 캐릭터를 강하게 만들 수 있습니다. 오늘의 임무도 열렸습니다'],
-  ['eq', () => !!SAVE.stars[8] || Object.keys(SAVE.eq).length > 0, '장비는 모든 캐릭터가 함께 씁니다'],
+  ['eq', () => !!SAVE.stars[8] || Object.keys(SAVE.eq).some(k => k !== 'o0'), // 기본옷은 처음부터 있으므로 빼고 센다
+    '장비는 모든 캐릭터가 함께 씁니다'],
   ['moon', () => !!SAVE.moonSeen || SAVE.moon > 0, '달조각으로 동료를 바로 데려올 수 있습니다'],
   ['hard', () => !!SAVE.stars[29], '어려움 난이도와 무한의 탑이 열렸습니다'],
 ];
@@ -2338,18 +2406,18 @@ function applyUnlocks() { // 첫 화면에서 열린 것만 보이게 하고, �
   if (SAVE.moon > 0) SAVE.moonSeen = 1;
   const o = {}; for (const [k] of UNLOCKS) o[k] = uiOpen(k);
   const show = (el, on) => { if (el) el.classList.toggle('ui-off', !on); };
-  show(document.querySelector('.sel-row'), o.pick); show($('stPrev'), o.pick); show($('stNext'), o.pick);
+  show($('btnChar'), o.pick); show($('stPrev'), o.pick); show($('stNext'), o.pick); $('selArt').classList.toggle('nopick', !o.pick);
   document.querySelectorAll('.sel-row [data-ch]').forEach(b => show(b, +b.dataset.ch < 3 || o.co));
-  show($('coRow'), o.co); show($('btnMap'), o.co);
+  show($('coRow'), o.co); show($('btnMap'), o.co); show($('stRec'), o.co);
   show($('btnUp'), o.up); show($('btnMis'), o.up);
-  show($('selEq'), o.eq); show($('btnShop'), o.moon);
-  show($('btnHard'), o.hard); show($('btnTower'), o.hard);
+  show($('eqCard'), o.eq); show($('btnShop'), o.moon); show($('selMoon'), o.moon);
+  show($('diffChips'), o.hard); show($('btnTower'), o.hard);
   if (!o.pick && sel !== 0) select(0);
-  if (!o.co) { G.co = -1; $('coName').textContent = '동료 없음'; }
+  if (!o.co) { G.co = -1; coRender(); }
   if (TEST_UNLOCK) return;
   SAVE.uiSeen = SAVE.uiSeen || {}; const fresh = UNLOCKS.filter(([k]) => o[k] && !SAVE.uiSeen[k]);
   if (!fresh.length || G.mode !== 'title') return;
-  const els = { pick: ['.sel-row', '#stNext'], co: ['#coRow', '#btnMap'], up: ['#btnUp', '#btnMis'], eq: ['#selEq'], moon: ['#btnShop'], hard: ['#btnHard', '#btnTower'] };
+  const els = { pick: ['#btnChar', '#stNext'], co: ['#coRow', '#btnMap'], up: ['#btnUp', '#btnMis'], eq: ['#eqCard'], moon: ['#btnShop'], hard: ['#diffChips', '#btnTower'] };
   for (const [k, , msg] of fresh) { SAVE.uiSeen[k] = 1; for (const q of els[k]) { const el = document.querySelector(q); if (el) { el.classList.remove('ui-new'); void el.offsetWidth; el.classList.add('ui-new'); setTimeout(() => el.classList.remove('ui-new'), 6000); } } }
   // 처음 실행이 아니라면(이미 진행한 기록) 안내 문구 없이 표시만
   toast(fresh[fresh.length - 1][2]); saveGame();
@@ -2367,7 +2435,7 @@ function showResult() { // 구간을 깬 뒤: 별과 골드를 보여 주고 이
   $('resText').innerHTML = '이번 구간 골드 <b class="gold">+' + (G.resGold || 0).toLocaleString() + '</b> · 가진 골드 <b class="gold">' + SAVE.gold.toLocaleString() + '</b>';
   $('btnNext').textContent = last ? '결말 보기' : G.part === 2 ? '다음 층으로' : '다음 구간'; $('ovRes').hidden = false; $('btnNext').focus();
 }
-function toTitle() { $('ovHelp').hidden = true; tipHide(); G.endless = false; G.loop = 0; G.mode = 'title'; G.arc = null; G.paused = false; G.cut = null; G.bombT = 0; G.talk = null; G.boss = null; parts = []; $('ovPause').hidden = true; $('btnPause').textContent = '멈춤'; enemies = []; bullets = []; shots = []; items = []; stageEl.classList.remove('playing'); $('ovOver').hidden = true; $('ovRes').hidden = true; G.res = false; $('ovTitle').hidden = false; if (document.activeElement) document.activeElement.blur(); select(sel); pickStage(0); }
+function toTitle() { $('ovHelp').hidden = true; tipHide(); G.endless = false; G.loop = 0; G.mode = 'title'; G.arc = null; G.paused = false; G.cut = null; G.bombT = 0; G.talk = null; G.boss = null; parts = []; $('ovPause').hidden = true; $('btnPause').textContent = '⏸'; enemies = []; bullets = []; shots = []; items = []; stageEl.classList.remove('playing'); $('ovOver').hidden = true; $('ovRes').hidden = true; G.res = false; $('ovTitle').hidden = false; if (document.activeElement) document.activeElement.blur(); select(sel); pickStage(0); }
 $('btnNext').addEventListener('click', () => { if (!owns(P.ch) || (P.co >= 0 && !owns(P.co))) { $('btnHome').click(); return; } $('ovRes').hidden = true; $('btnNext').blur();
   const go = () => { G.res = false; stageEl.classList.add('playing'); nextStage(); };
   if (G.part === 2 && !STAGES[G.stage].last && !G.endless && G.stage + 1 < STAGES.length) { openMap({ ch: P.ch, from: G.stage, to: G.stage + 1, go: back => { if (back) toTitle(); else go(); } }); return; } // 탑을 한 층 오르는 장면
@@ -2403,7 +2471,7 @@ $('btnOutWear').addEventListener('click', () => closeOut(true)); $('btnOutLater'
 $('btnBuy').addEventListener('click', () => { if (buyHero(+$('btnBuy').dataset.ch)) banner('새 동료!', CH[+$('btnBuy').dataset.ch].name, 2); closeOffer(); });
 $('btnSkip').addEventListener('click', () => { const ch = +$('btnBuy').dataset.ch; if (!SAVE.tried.includes(ch)) { SAVE.tried.push(ch); SAVE.trial = ch; saveGame(); } closeOffer(); });
 function showMis() { const D = daily(); $('misList').innerHTML = D.ids.map(i => { const m = MISSIONS[i], v = Math.min(m[1], D.prog[i] || 0); return '<li class="' + (D.paid[i] ? 'done' : '') + '"><span>' + m[0] + ' (' + v.toLocaleString() + '/' + m[1].toLocaleString() + ')</span><span>' + (D.paid[i] ? '받음' : '+' + m[2] + ' 골드') + '</span></li>'; }).join(''); $('ovMis').hidden = false; }
-$('btnHard').addEventListener('click', () => { let d = (G.diff + 1) % 3; if (!diffOpen(d)) d = 0; G.diff = d; SAVE.diff = d; saveGame(); pickStage(0); });
+$('diffChips').addEventListener('click', ev => { const b = ev.target.closest('[data-d]'); if (!b || b.disabled) return; const d = +b.dataset.d; if (!diffOpen(d)) return; G.diff = d; SAVE.diff = d; saveGame(); pickStage(0); });
 $('btnMis').addEventListener('click', showMis); $('btnMisX').addEventListener('click', () => { $('ovMis').hidden = true; refreshShop(); });
 const ENDING = [
   '도깨비 여왕이 쓰러지고, 달이 하늘로 돌아갔다.\n달빛이 퍼지자 탑이 무너지기 시작했다.',
@@ -2421,10 +2489,12 @@ const PROLOGUE = [
   '부채 도사 한별 「달을 되찾으러 가겠소. 통행세는 부채 바람으로 치르지.」',
 ];
 function showEnding() { story = ENDING; $('btnStorySkip').hidden = true; G.mode = 'title'; G.ended = true; enemies = []; bullets = []; shots = []; items = []; stageEl.classList.remove('playing'); saveGame(); endI = 0; drawEnding(); $('ovEnd').hidden = false; }
-function drawEnding() { const t = $('endText'), pro = story === PROLOGUE; t.textContent = story[endI]; t.className = (pro ? endI === story.length - 1 : endI >= story.length - 2) ? 'last' : ''; $('endHint').textContent = endI === story.length - 1 ? (pro ? '화면을 누르면 탑으로 출발합니다' : '화면을 누르면 처음으로 돌아갑니다') : '화면을 누르면 넘어갑니다'; }
+function drawEnding() { const t = $('endText'), pro = story === PROLOGUE; t.textContent = story[endI]; t.className = (pro ? endI === story.length - 1 : endI >= story.length - 2) ? 'last' : ''; $('endHint').textContent = endI === story.length - 1 ? (pro ? (storyAgain ? '화면을 누르면 돌아갑니다' : '화면을 누르면 탑으로 출발합니다') : '화면을 누르면 처음으로 돌아갑니다') : '화면을 누르면 넘어갑니다'; }
 function nextEnding() { if (++endI >= story.length) { if (story === PROLOGUE) return endPrologue(); $('ovEnd').hidden = true; G.pick = 0; G.pp = 0; toTitle(); return; } drawEnding(); }
-function showPrologue() { story = PROLOGUE; endI = 0; $('ovCover').hidden = true; $('btnStorySkip').hidden = false; drawEnding(); $('ovEnd').hidden = false; }
+let storyAgain = false; // 도움말에서 이야기를 다시 볼 때: 끝나면 하던 곳으로 돌아간다
+function showPrologue() { storyAgain = false; story = PROLOGUE; endI = 0; $('ovCover').hidden = true; $('btnStorySkip').hidden = false; drawEnding(); $('ovEnd').hidden = false; }
 function endPrologue() { // 처음 한 번: 이야기가 끝나면 캐릭터 고르기 없이 한별로 1-1을 바로 시작
+  if (storyAgain) { storyAgain = false; $('ovEnd').hidden = true; $('btnStorySkip').hidden = true; story = ENDING; return; }
   SAVE.tut.prologue = 1; saveGame(); $('ovEnd').hidden = true; $('btnStorySkip').hidden = true; story = ENDING;
   audioInit(); G.pick = 0; G.pp = 0; G.co = -1; sel = 0; newGame(0);
 }
@@ -2432,10 +2502,13 @@ $('btnStorySkip').addEventListener('click', e => { e.stopPropagation(); endProlo
 $('ovEnd').addEventListener('click', nextEnding);
 function openSelect() { audioInit(); if (!SAVE.tut.prologue && !SAVE.stars[0]) return showPrologue(); $('ovCover').hidden = true; $('ovTitle').hidden = false; refreshShop(); $('btnGo').focus(); }
 $('ovCover').addEventListener('click', openSelect);
+const KN = ['', '하나', '둘', '셋', '넷', '다섯'];
+function segComp(i, p) { const S = STAGES[i]; if (p === 2) return (S.arc ? '아케이드 · ' : '') + '대장전 · ' + S.boss; const q = segSeq(S, p), a = (q.match(/1/g) || []).length, b = (q.match(/2/g) || []).length; return '문지기 ' + KN[a] + (b ? ' · 수문장' : ''); }
 function pickStage(d) {
   const N = STAGES.length * 3, k = ((G.pick || 0) * 3 + (G.pp || 0) + d + N) % N; G.pick = Math.floor(k / 3); G.pp = k % 3; const S = STAGES[G.pick], el = $('stageName');
-  el.innerHTML = (G.pick + 1) + '-' + (G.pp + 1) + ' · ' + S.place + (G.pp === 2 ? ' · 대장' : '') + (segOpen(k) ? ' <b>' + starStr(SAVE.stars[k + HK()] || 0) + '</b>' : ' (잠김)');
-  el.classList.toggle('lock', !S.ready || !segOpen(k)); { const rr = $('stRec'), r = recOf(G.pick); rr.textContent = recText(G.pick); rr.classList.toggle('no', !!r && !r.own); } refreshShop();
+  el.textContent = (G.pick + 1) + '-' + (G.pp + 1) + ' ' + S.place;
+  $('stSub').innerHTML = '<span class="st-comp">' + segComp(G.pick, G.pp) + ' · </span>' + (segOpen(k) ? '<b>' + starStr(SAVE.stars[k + HK()] || 0) + '</b>' : '잠김');
+  el.classList.toggle('lock', !S.ready || !segOpen(k)); { const rr = $('stRec'), r = recOf(G.pick); rr.textContent = r ? (r.own ? '추천 동료 · ' + CH[r.ch].name : '추천 · ' + CH[r.ch].name + ' 🔒') : '추천 동료 · 없음'; rr.title = recText(G.pick); rr.classList.toggle('no', !r || !r.own); } refreshShop();
   if (G.mode === 'title') G.stage = S.ready ? G.pick : 0;
 }
 $('stPrev').addEventListener('click', () => pickStage(-1)); $('stNext').addEventListener('click', () => pickStage(1));
@@ -2444,18 +2517,49 @@ for (let i = 6; i < CH.length; i++) CODESC[i] = CH[i].codesc;
 function pickCo(d) { // 같이 갈 동료: 가진 캐릭터 중 조종할 사람을 뺀 나머지
   const list = [-1].concat(CH.map((c, i) => i).filter(i => i !== sel && owns(i)));
   let k = list.indexOf(G.co); if (k < 0) k = 0; k = (k + d + list.length) % list.length; G.co = list[k];
-  $('coName').textContent = G.co < 0 ? '동료 없음' : '동료 · ' + CH[G.co].name + ' (' + CODESC[G.co] + ')';
-  SAVE.co = G.co; 
+  SAVE.co = G.co; coRender();
 }
-$('coPrev').addEventListener('click', () => pickCo(-1)); $('coNext').addEventListener('click', () => pickCo(1));
+function coRender() { const c = G.co, im = $('coImg'); $('coName').textContent = c < 0 ? '동료 없음' : CH[c].name; $('coDesc').textContent = c < 0 ? '눌러서 같이 갈 동료 고르기' : CODESC[c];
+  im.hidden = c < 0; if (c >= 0) im.src = 'assets/' + look(c).cut + '.webp'; }
+$('coRow').addEventListener('click', () => openPick('co'));
+$('stRec').addEventListener('click', () => { const r = recOf(G.pick); if (!r) return; if (!r.own) { toast(recText(G.pick)); return; } if (r.ch === sel) { toast(CH[r.ch].name + '(으)로 이미 갑니다'); return; } G.co = r.ch; SAVE.co = G.co; saveGame(); coRender(); toast('동료를 ' + CH[r.ch].name + '(으)로 바꿨습니다'); });
+$('selGold').addEventListener('click', () => { if (uiOpen('moon')) openShop('moon'); }); $('selMoon').addEventListener('click', () => openShop('moon'));
+$('selArt').addEventListener('click', () => { if (uiOpen('pick')) openPick('ch'); }); $('btnChar').addEventListener('click', () => openPick('ch'));
+/* 캐릭터·동료 고르기 창 (기획 6 모형 ③): 7칸 × 2줄 */
+let pkMode = 'ch', pkSel = 0;
+function openPick(mode) { pkMode = mode; $('pkTitle').textContent = mode === 'co' ? '같이 갈 동료' : '캐릭터 고르기';
+  $('pkSub').textContent = mode === 'co' ? '교대하며 함께 싸울 동료를 고르세요. 지금 조종하는 캐릭터는 고를 수 없습니다.' : '조종할 캐릭터를 누르세요. 잠긴 동료는 그 층 대장을 이기면 데려올 수 있습니다.';
+  $('btnPkNone').hidden = mode !== 'co'; refreshShop();
+  picks.forEach(b => { const c = +b.dataset.ch; b.classList.toggle('dim', mode === 'co' && c === sel); b.setAttribute('aria-pressed', String(mode === 'co' ? c === G.co : c === sel)); });
+  $('ovPick').hidden = false; pkShow(mode === 'co' ? (G.co >= 0 ? G.co : -1) : sel); }
+function pkShow(c) { pkSel = c; const d = $('pkDetail'); if (c < 0) { $('pkName').textContent = '동료 없음'; $('pkRole').textContent = ''; $('selDesc').textContent = '카드를 누르면 능력이 보입니다.'; $('pkBtns').innerHTML = ''; [0, 1, 2].forEach(i => { $('st' + i).style.width = '0%'; }); return; }
+  $('pkName').textContent = CH[c].name; $('pkName').style.color = SELCOL[c]; $('pkRole').textContent = INFO[c].role + (owns(c) ? ' · Lv ' + lvOf(c) : '') + (c >= 3 || pkMode === 'co' ? ' · 동료 능력: ' + CODESC[c] : '');
+  INFO[c].st.forEach((v, i) => { $('st' + i).style.width = v + '%'; }); $('selDesc').textContent = INFO[c].desc;
+  const own = owns(c), beat = CH[c].from !== undefined && SAVE.beaten.includes(CH[c].from); let h = '';
+  if (pkMode === 'co') h = c === sel ? '<small>지금 조종하는 캐릭터입니다</small>' : own ? '<button type="button" class="buy" data-pk="co">같이 가기</button>' : '<small>' + (CH[c].from + 1) + '층 대장을 이기면 데려올 수 있습니다</small>';
+  else if (own) h = '<button type="button" class="buy" data-pk="pick">고르기</button>';
+  else { if (beat) h += '<button type="button" class="buy" data-pk="gold"' + (SAVE.gold >= priceOf(c) ? '' : ' disabled') + '>골드로 데려오기 · ' + won(priceOf(c)) + '</button>';
+    if (uiOpen('moon')) h += '<button type="button" data-pk="moon"' + (SAVE.moon >= moonPriceOf(c) ? '' : ' disabled') + '>달조각으로 데려오기 · ' + moonPriceOf(c) + '</button>';
+    if (beat && !SAVE.tried.includes(c)) h += '<button type="button" data-pk="try">한 판 써 보기</button>';
+    if (!beat) h += '<small>' + (CH[c].from + 1) + '층 대장을 이기면 골드로 데려올 수 있습니다</small>'; }
+  $('pkBtns').innerHTML = h; }
+for (const b of picks) b.addEventListener('click', () => { const c = +b.dataset.ch; if (pkMode === 'co') { if (c === sel) return; picks.forEach(o => o.setAttribute('aria-pressed', String(o === b))); pkShow(c); return; } select(c); pkShow(c); });
+$('pkBtns').addEventListener('click', ev => { const b = ev.target.closest('[data-pk]'); if (!b || b.disabled) return; const k = b.dataset.pk, c = pkSel;
+  if (k === 'pick') { closePick(); return; }
+  if (k === 'co') { G.co = c; SAVE.co = c; saveGame(); coRender(); closePick(); return; }
+  if (k === 'gold') { if (buyHero(c)) { toast(CH[c].name + '이(가) 동료가 되었다!'); select(c); } }
+  else if (k === 'moon') { if (!SAVE.owned.includes(c) && SAVE.moon >= moonPriceOf(c)) { SAVE.moon -= moonPriceOf(c); SAVE.owned.push(c); saveGame(); sfx.life(); toast(CH[c].name + '이(가) 동료가 되었다!'); select(c); } }
+  else if (k === 'try') { SAVE.tried.push(c); SAVE.trial = c; saveGame(); toast('한 판 써 볼 수 있습니다 · 이 판이 끝나면 다시 잠깁니다'); select(c); }
+  refreshShop(); pkShow(c); });
+function closePick() { $('ovPick').hidden = true; select(sel); }
+$('btnPickX').addEventListener('click', closePick); $('btnPkNone').addEventListener('click', () => { G.co = -1; SAVE.co = -1; saveGame(); coRender(); closePick(); });
 const go = () => { if (!owns(sel)) { if (buyHero(sel)) select(sel); return; } if (!STAGES[G.pick || 0].ready || !segOpen((G.pick || 0) * 3 + (G.pp || 0))) return; audioInit(); newGame(sel); if (document.activeElement) document.activeElement.blur(); };
-for (const b of picks) b.addEventListener('click', () => { if (+b.dataset.ch === sel && b.dataset.armed && owns(sel)) return go(); picks.forEach(o => { delete o.dataset.armed; }); select(+b.dataset.ch); b.dataset.armed = '1'; });
 $('btnGo').addEventListener('click', go);
 select(0); pickStage(0);
 $('btnRetry').addEventListener('click', () => { audioInit(); newGame(P.ch, G.endless); $('btnRetry').blur(); });
 $('btnBack').addEventListener('click', toTitle);
 $('btnPause').addEventListener('click', e => { togglePause(); e.currentTarget.blur(); });
-$('btnMute').addEventListener('click', e => { muted = !muted; e.currentTarget.textContent = muted ? '소리 꺼짐' : '소리 켜짐'; e.currentTarget.blur(); });
+$('btnMute').addEventListener('click', e => { muted = !muted; e.currentTarget.textContent = muted ? '🔇' : '🔊'; e.currentTarget.blur(); });
 if (!stageEl.requestFullscreen) $('btnFull').hidden = true;
 $('btnFull').addEventListener('click', e => {
   e.currentTarget.blur();
@@ -2481,7 +2585,7 @@ function start() {
   if (window.ResizeObserver) new ResizeObserver(resize).observe(cv); else addEventListener('resize', resize);
   requestAnimationFrame(frame);
 }
-window.__game = { darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
+window.__game = { openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
 if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start); else start();
 })();
 </script>
