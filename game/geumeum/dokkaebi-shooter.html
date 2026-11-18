@@ -208,6 +208,10 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .help{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;border-top:1px solid var(--line);padding-top:16px}
 .help > div{min-width:0}
 .helpv{z-index:7}
+.ui-off{display:none!important}
+.ui-new{animation:uiNew .7s ease-in-out 8 alternate}button.ui-new,.sel-step.ui-new{position:relative}
+.ui-new::before{content:'새로 열림!';position:absolute;left:50%;top:-1.15em;transform:translateX(-50%);font:400 max(10px,1.3cqw)/1 var(--display);color:#1a1205;background:#ffd76a;padding:.25em .6em;border-radius:99px;white-space:nowrap;pointer-events:none;z-index:5}
+@keyframes uiNew{from{box-shadow:0 0 0 0 rgba(255,215,106,.95)}to{box-shadow:0 0 0 1cqw rgba(255,215,106,0)}}
 .tip{position:absolute;left:50%;top:9%;transform:translateX(-50%);z-index:4;max-width:76%;padding:max(6px,.9cqw) max(14px,2cqw);border-radius:99px;background:rgba(8,10,22,.78);border:1px solid rgba(232,184,74,.7);color:#ffe9a0;font-size:max(13px,2cqw);line-height:1.3;text-align:center;pointer-events:none;animation:tipIn .3s ease-out}
 @keyframes tipIn{from{opacity:0;transform:translate(-50%,-8px)}}
 .tb.pulse{animation:tbPulse .8s ease-in-out infinite alternate}
@@ -299,7 +303,7 @@ li+li{margin-top:4px}
           <dt>범위</dt><dd><i id="st2"></i></dd>
         </dl>
         <p class="sel-desc" id="selDesc"></p>
-        <div class="sel-step">
+        <div class="sel-step" id="coRow">
           <button type="button" id="coPrev" aria-label="앞 동료">◀</button>
           <span id="coName"></span>
           <button type="button" id="coNext" aria-label="다음 동료">▶</button>
@@ -632,6 +636,7 @@ function daily() { // 날짜가 바뀌면 임무 셋을 새로 뽑는다(같은 
   return SAVE.daily;
 }
 function mis(id, n = 1) {
+  if (!uiOpen('up')) return; // 오늘의 임무는 2층 대장 뒤에 연다
   const D = daily(); if (!D.ids.includes(id) || D.paid[id]) return;
   D.prog[id] = (D.prog[id] || 0) + n;
   if (D.prog[id] >= MISSIONS[id][1]) { D.paid[id] = 1; SAVE.gold += MISSIONS[id][2]; if (!D.moon && D.ids.every(i => D.paid[i])) { D.moon = 1; addMoon(10, '오늘의 임무 모두 완료'); } saveGame(); if (G.mode === 'play') { float('임무 완료 +' + MISSIONS[id][2], P.x + 40, P.y - 40, '#ffd76a'); sfx.life(); } }
@@ -1058,12 +1063,12 @@ const towerLoop = n => 0.4 + 0.12 * n; // 무한의 탑: 층이 오를수록 적
 function newGame(ch, tower) {
   enemies = []; bullets = []; shots = []; items = []; parts = [];
   Object.assign(P, { ch, x: 110, y: H / 2, power: 1, lives: 2, bombs: 2, inv: 2, charge: 0, fcd: 0, famcd: 0, deadT: 0, fam: [] });
-  Object.assign(P, { co: G.co >= 0 && G.co !== ch && owns(G.co) ? G.co : -1, cx: 50, cy: H / 2, cofire: 0, cogust: 3, guard: 0, swapcd: 0 });
+  Object.assign(P, { co: G.co >= 0 && G.co !== ch && owns(G.co) && uiOpen('co') ? G.co : -1, cx: 50, cy: H / 2, cofire: 0, cogust: 3, guard: 0, swapcd: 0 });
   Object.assign(G, { mode: 'play', paused: false, loop: tower ? towerLoop(1) : G.diff, endless: !!tower, tf: 1, revives: 0, score: 0, bombT: 0, shake: 0, flash: 0, overT: 0, cut: null });
   G.talk = null; G.tally = null; G.offer = false; G.goldRun = 0; G.slow = 0; G.allyT = 0; P.cz = undefined;
   const pp = tower ? 2 : G.pp || 0, lv = lvOf(ch), es = eqStat(ch); if (tower) { startStage(0, 2); G.arcDone = true; } else startStage(G.pick || 0, pp);
   P.power = Math.min(4, 1 + pp + (lv >= 10 ? 1 : 0)); if (lv >= 4) P.bombs++; if (lv >= 7) P.lives++; P.bombs += es.bombs; P.lives += es.lives;
-  $('ovTitle').hidden = true; $('ovOver').hidden = true; $('btnPause').textContent = '멈춤'; stageEl.classList.add('playing'); prepVid(P.ch); if (P.co >= 0) prepVid(P.co);
+  $('padSwap').classList.toggle('ui-off', P.co < 0); $('ovTitle').hidden = true; $('ovOver').hidden = true; $('btnPause').textContent = '멈춤'; stageEl.classList.add('playing'); prepVid(P.ch); if (P.co >= 0) prepVid(P.co);
 }
 
 /* ---------- 효과 ---------- */
@@ -1265,7 +1270,7 @@ function update(dt) {
   for (const p of parts) { if (p.delay > 0) { p.delay -= dt; continue; } p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; }
   parts = parts.filter(p => p.life > 0);
   if (G.mode === 'title') return;
-  if (G.mode === 'over') { if (G.overT > 0 && (G.overT -= dt) <= 0) { $('overText').textContent = (G.endless ? '무한의 탑 ' + G.tf + '층에서 · 최고 기록 ' + SAVE.tower + '층 돌파 · ' : '') + '점수 ' + G.score.toLocaleString() + ' · 최고 ' + G.hi.toLocaleString(); reviveUI(); $('ovOver').hidden = false; $('btnRetry').focus(); } return; }
+  if (G.mode === 'over') { if (G.overT > 0 && (G.overT -= dt) <= 0) { $('overText').textContent = (G.endless ? '무한의 탑 ' + G.tf + '층에서 · 최고 기록 ' + SAVE.tower + '층 돌파 · ' : '') + '점수 ' + G.score.toLocaleString() + ' · 최고 ' + G.hi.toLocaleString(); reviveUI(); if (G.boss && uiOpen('moon') && !TEST_UNLOCK && !SAVE.starter && !SAVE.tut.starterAd) { SAVE.tut.starterAd = 1; saveGame(); $('overText').textContent += ' · 상점의 「첫 구매 묶음」(달조각 300 + 희귀 무기, 한 번만)으로 대장을 넘어 보세요'; } /* 대장에게 처음 졌을 때 한 번만 */ $('ovOver').hidden = false; $('btnRetry').focus(); } return; }
 
   if (G.offer || G.res) return;
   if (G.talk) { G.talk.t += dt; if (G.talk.t > 3.4) advanceTalk(); return; }
@@ -1775,7 +1780,7 @@ function drawHUD() {
   if (G.mode === 'title') return;
   text(String(G.score).padStart(7, '0'), 10, 22, 16, '#ece3cf');
   text('최고 ' + String(G.hi).padStart(7, '0'), 10, 35, 10, '#a8a08f');
-  if (G.mode !== 'title') text('골드 ' + SAVE.gold.toLocaleString() + '  달조각 ' + SAVE.moon.toLocaleString(), 10, 49, 11, '#e8b84a');
+  if (G.mode !== 'title') text('골드 ' + SAVE.gold.toLocaleString() + (uiOpen('moon') ? '  달조각 ' + SAVE.moon.toLocaleString() : ''), 10, 49, 11, '#e8b84a');
   if (G.endless && G.mode === 'play') text('무한의 탑 ' + G.tf + '층', 10, 63, 12, '#d9c4ff');
   if (G.mode !== 'play' && G.mode !== 'over') return;
   if (G.boon && G.boon.shield > 0 && !G.arc) text('방패 ' + G.boon.shield, W / 2, H - 32, 10, '#ffe9a0', 'center');
@@ -1928,8 +1933,9 @@ function select(ch) {
   refreshShop(); if (G.co === sel || !owns(sel)) G.co = -1; pickCo(0);
 }
 function refreshShop() { // 골드와 잠긴 동료 표시
+  if (typeof applyUnlocks === 'function') try { applyUnlocks(); } catch (_) {}
   if (typeof renderSelEq === 'function') try { renderSelEq(); } catch (_) {}
-  $('selGold').textContent = '골드 ' + SAVE.gold.toLocaleString() + ' · 달조각 ' + SAVE.moon.toLocaleString();
+  $('selGold').textContent = '골드 ' + SAVE.gold.toLocaleString() + (uiOpen('moon') ? ' · 달조각 ' + SAVE.moon.toLocaleString() : '');
   { const h = $('btnHard'), op = diffOpen(1); if (!diffOpen(G.diff)) G.diff = 0; h.disabled = !op; h.classList.toggle('on', G.diff > 0); h.textContent = op ? '난이도 ' + DN[G.diff] : '어려움 🔒'; h.title = op ? '' : '10층을 깨면 열립니다';
     const t = $('btnTower'); t.disabled = !towerOpen(); t.textContent = towerOpen() ? '무한의 탑 · 최고 ' + SAVE.tower + '층' : '무한의 탑 🔒'; }
   { const D = daily(); $('btnMis').textContent = '임무 ' + D.ids.filter(i => D.paid[i]).length + '/3'; }
@@ -2182,6 +2188,37 @@ function tutTick(dt) {
   if (P.co >= 0 && G.st > 1.5 && (G.stage > 0 || G.endless)) tipShow('swap'); // 교대는 1층을 익힌 뒤(2층부터) 알려 준다
 }
 function tutReset() { SAVE.tut = {}; saveGame(); tipHide(); toast('처음 하는 안내를 다시 보여 줍니다'); }
+
+/* ---------- 첫 화면을 단계적으로 열기: 처음엔 「출발」만, 진행할수록 버튼이 하나씩 나타난다 ---------- */
+const UNLOCKS = [ // [키, 열리는 조건, 열릴 때 한 줄 안내]
+  ['pick', () => !!SAVE.stars[0], '세 사람은 빠르기·화력·범위가 다릅니다. 골라서 출발해 보세요'],
+  ['co', () => !!SAVE.stars[2], '쓰러뜨린 대장은 골드로 동료가 됩니다. 동료와 「교대」하며 싸울 수 있습니다'],
+  ['up', () => !!SAVE.stars[5], '골드로 캐릭터를 강하게 만들 수 있습니다. 오늘의 임무도 열렸습니다'],
+  ['eq', () => !!SAVE.stars[8] || Object.keys(SAVE.eq).length > 0, '장비는 모든 캐릭터가 함께 씁니다'],
+  ['moon', () => !!SAVE.moonSeen || SAVE.moon > 0, '달조각으로 동료를 바로 데려올 수 있습니다'],
+  ['hard', () => !!SAVE.stars[29], '어려움 난이도와 무한의 탑이 열렸습니다'],
+];
+const uiOpen = k => { if (TEST_UNLOCK) return true; const u = UNLOCKS.find(x => x[0] === k); return !!(u && u[1]()); };
+function applyUnlocks() { // 첫 화면에서 열린 것만 보이게 하고, 처음 열린 것은 금색으로 깜빡인다
+  if (SAVE.moon > 0) SAVE.moonSeen = 1;
+  const o = {}; for (const [k] of UNLOCKS) o[k] = uiOpen(k);
+  const show = (el, on) => { if (el) el.classList.toggle('ui-off', !on); };
+  show(document.querySelector('.sel-row'), o.pick); show($('stPrev'), o.pick); show($('stNext'), o.pick);
+  document.querySelectorAll('.sel-row [data-ch]').forEach(b => show(b, +b.dataset.ch < 3 || o.co));
+  show($('coRow'), o.co); show($('btnMap'), o.co);
+  show($('btnUp'), o.up); show($('btnMis'), o.up);
+  show($('selEq'), o.eq); show($('btnShop'), o.moon);
+  show($('btnHard'), o.hard); show($('btnTower'), o.hard);
+  if (!o.pick && sel !== 0) select(0);
+  if (!o.co) { G.co = -1; $('coName').textContent = '동료 없음'; }
+  if (TEST_UNLOCK) return;
+  SAVE.uiSeen = SAVE.uiSeen || {}; const fresh = UNLOCKS.filter(([k]) => o[k] && !SAVE.uiSeen[k]);
+  if (!fresh.length || G.mode !== 'title') return;
+  const els = { pick: ['.sel-row', '#stNext'], co: ['#coRow', '#btnMap'], up: ['#btnUp', '#btnMis'], eq: ['#selEq'], moon: ['#btnShop'], hard: ['#btnHard', '#btnTower'] };
+  for (const [k, , msg] of fresh) { SAVE.uiSeen[k] = 1; for (const q of els[k]) { const el = document.querySelector(q); if (el) { el.classList.remove('ui-new'); void el.offsetWidth; el.classList.add('ui-new'); setTimeout(() => el.classList.remove('ui-new'), 6000); } } }
+  // 처음 실행이 아니라면(이미 진행한 기록) 안내 문구 없이 표시만
+  toast(fresh[fresh.length - 1][2]); saveGame();
+}
 
 const starStr = n => '★'.repeat(n) + '<i>' + '★'.repeat(3 - n) + '</i>';
 const DN = ['보통', '어려움', '악몽'], HK = () => G.diff * 30; // 난이도마다 별을 30칸씩 따로 적는다(보통 0~29, 어려움 30~59, 악몽 60~89)
