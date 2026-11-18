@@ -118,6 +118,7 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .offer h2{font-size:max(18px,4cqw)}
 .offer p{font-size:max(11px,1.8cqw);margin:.8cqw 0 0}
 .offer .gold{color:var(--gold)}
+.offer-goal{color:#9ff5e6!important}.offer-btns.flip{flex-direction:row-reverse;justify-content:flex-end}.offer-btns .small{font-size:max(11px,1.6cqw)!important;opacity:.85}
 .sel-mis{position:absolute;left:2cqw;top:5cqw;z-index:2;font-size:max(10px,1.6cqw);padding:max(3px,.5cqw) max(7px,1cqw);background:rgba(25,29,45,.9);border-color:var(--gold);color:var(--gold)}
 .sel-tower{top:14.2cqw}.sel-shop{top:18.8cqw;background:rgba(216,72,58,.9);border-color:var(--red);color:#fff}.sel-tower:disabled{border-color:var(--line);color:var(--muted);cursor:default}
 .sel-hard{top:9.6cqw}.sel-hard.on{border-color:var(--red);color:#ff9a8a}.sel-hard:disabled{border-color:var(--line);color:var(--muted);cursor:default}
@@ -274,6 +275,7 @@ li+li{margin-top:4px}
           <h2 id="offerName"></h2>
           <p id="offerText"></p>
           <p>값 <b class="gold" id="offerPrice"></b> · 가진 골드 <b class="gold" id="offerGold"></b></p>
+          <p class="offer-goal" id="offerGoal" hidden></p>
           <div class="offer-btns">
             <button type="button" class="buy" id="btnBuy">동료로 삼기</button>
             <button type="button" id="btnSkip">다음에</button>
@@ -1070,7 +1072,8 @@ function newGame(ch, tower) {
   G.talk = null; G.tally = null; G.offer = false; G.goldRun = 0; G.slow = 0; G.allyT = 0; P.cz = undefined;
   const pp = tower ? 2 : G.pp || 0, lv = lvOf(ch), es = eqStat(ch); if (tower) { startStage(0, 2); G.arcDone = true; } else startStage(G.pick || 0, pp);
   P.power = Math.min(4, 1 + pp + (lv >= 10 ? 1 : 0)); if (lv >= 4) P.bombs++; if (lv >= 7) P.lives++; P.bombs += es.bombs; P.lives += es.lives;
-  $('padSwap').classList.toggle('ui-off', P.co < 0); $('ovTitle').hidden = true; $('ovOver').hidden = true; $('btnPause').textContent = '멈춤'; stageEl.classList.add('playing'); prepVid(P.ch); if (P.co >= 0) prepVid(P.co);
+  $('padSwap').classList.toggle('ui-off', P.co < 0);
+  if (SAVE.trial >= 0 && !SAVE.owned.includes(SAVE.trial) && (P.ch === SAVE.trial || P.co === SAVE.trial)) setTimeout(() => tipFlash('체험 중 · 이 판이 끝나면 다시 골드로 데려올 수 있습니다', 5), 600); $('ovTitle').hidden = true; $('ovOver').hidden = true; $('btnPause').textContent = '멈춤'; stageEl.classList.add('playing'); prepVid(P.ch); if (P.co >= 0) prepVid(P.co);
 }
 
 /* ---------- 효과 ---------- */
@@ -2189,6 +2192,7 @@ function tutTick(dt) {
   if (first && G.boss) tipShow('boss');
   if (P.co >= 0 && G.st > 1.5 && (G.stage > 0 || G.endless)) tipShow('swap'); // 교대는 1층을 익힌 뒤(2층부터) 알려 준다
 }
+function tipFlash(text, sec = 5) { if (tut.key) return; const el = $('tip'); el.textContent = text; el.hidden = false; clearTimeout(tipFlash.t); tipFlash.t = setTimeout(() => { if (!tut.key) el.hidden = true; }, sec * 1000); }
 function tutReset() { SAVE.tut = {}; saveGame(); tipHide(); toast('처음 하는 안내를 다시 보여 줍니다'); }
 
 /* ---------- 첫 화면을 단계적으로 열기: 처음엔 「출발」만, 진행할수록 버튼이 하나씩 나타난다 ---------- */
@@ -2245,9 +2249,12 @@ function offerHero() { // 층 대장을 이긴 뒤: 그 대장을 동료로 삼�
   $('offerImg').src = 'assets/' + CH[ch].cut + '.webp'; $('offerName').textContent = CH[ch].name + '를 동료로!';
   $('offerText').textContent = '「' + (CH[ch].join || '같이 가자.') + '」';
   $('offerPrice').textContent = priceOf(ch).toLocaleString() + ' 골드'; $('offerGold').textContent = SAVE.gold.toLocaleString();
-  const can = SAVE.gold >= priceOf(ch); $('btnBuy').disabled = !can; $('btnBuy').textContent = can ? '동료로 삼기' : '골드 부족';
-  $('btnSkip').textContent = SAVE.tried.includes(ch) ? '다음에' : '한 판 써 보기';
-  $('btnBuy').dataset.ch = ch; $('ovOffer').hidden = false; return true;
+  const can = SAVE.gold >= priceOf(ch), tried = SAVE.tried.includes(ch), first = G.stage === 0 && !tried; // 1층 대장: 「한 판 써 보기」를 크게 먼저
+  $('btnBuy').disabled = !can; $('btnBuy').textContent = (can ? '동료로 삼기' : '골드 부족') + (first ? ' (' + won(priceOf(ch)) + ' 골드)' : '');
+  $('btnSkip').textContent = tried ? '다음에' : '한 판 써 보기';
+  $('btnSkip').classList.toggle('buy', first); $('btnBuy').classList.toggle('buy', !first); $('btnBuy').classList.toggle('small', first); $('btnBuy').parentElement.classList.toggle('flip', first);
+  const g = $('offerGoal'); g.hidden = can; g.textContent = '지금 골드 ' + SAVE.gold.toLocaleString() + ' / ' + priceOf(ch).toLocaleString() + ' · 층을 오를수록 골드를 더 받습니다';
+  $('btnBuy').dataset.ch = ch; $('ovOffer').hidden = false; (first ? $('btnSkip') : $('btnBuy')).focus(); return true;
 }
 function closeOffer() { $('ovOffer').hidden = true; G.offer = false; refreshShop(); showResult(); }
 $('btnBuy').addEventListener('click', () => { if (buyHero(+$('btnBuy').dataset.ch)) banner('새 동료!', CH[+$('btnBuy').dataset.ch].name, 2); closeOffer(); });
