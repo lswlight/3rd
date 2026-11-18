@@ -1076,26 +1076,28 @@ const ARC = {
       ctx.strokeStyle = 'rgba(230,245,255,.35)'; ctx.lineWidth = 1; for (let i = 0; i < 26; i++) { const x = W - ((G.time * 300 + i * 97) % (W + 60)), y = (i * 53 + Math.sin(i) * 20) % GY; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 26, y - 4); ctx.stroke(); } },
     stat: a => '맞은 횟수 ' + a.hits + ' / 2',
     end(a) { if (a.hits > 2) return lose('눈보라에 휩쓸렸다'); return { ok: true, txt: '빙판길을 무사히 건넜다' }; } },
-  chase: { name: '이무기 추격전', how: ['도망치는 이무기의 빛나는 비늘을 맞히세요.', '바위는 피하세요. 첫 눈금을 넘기면 성공, 끝까지 채우면 골드 +500 더!'], dur: 24,
-    init(a) { a.ty = GY / 2; a.cd = 0.6; },
-    up(a, dt) { a.ty = GY / 2 + Math.sin(a.t * 1.3) * 92 + Math.sin(a.t * 2.9) * 24; const tx = W - 86;
-      if ((a.cd -= dt) <= 0) { a.cd = 0.55; shootB(W + 10, rnd(20, GY - 20), Math.PI + rnd(-0.12, 0.12), 165, 8, 1); }
-      a.hcd = (a.hcd || 0) - dt; a.fl = (a.fl || 0) - dt;
-      for (const s of shots) if (!s.dead && Math.abs(s.x - tx) < 26 && Math.abs(s.y - a.ty) < 30) { a.score += s.dmg; if (!s.pierce) s.dead = true; a.fl = 0.1; a.combo = (a.combo || 0) + 1; a.ct = 0.6;
-        burst(tx - 14, a.ty + rnd(-14, 14), 7, '#c8fff4', 220); ring(tx - 8, a.ty, 18 + Math.min(20, a.combo), '#9ff5e6', 0.18);
-        if (a.hcd <= 0) { a.hcd = 0.12; tone(1200 + Math.min(800, a.combo * 25), 0.05, 'square', 0.05); float('+' + Math.ceil(s.dmg * 10), tx - 24 + rnd(-8, 8), a.ty - 26, '#c8fff4'); }
-        if (a.combo % 10 === 0) { float(a.combo + '연속!', tx - 70, a.ty + 34, '#ffd76a'); G.shake = Math.max(G.shake, 0.15); }
-        for (const [g, lab] of [[80, '성공!'], [120, '완벽! 골드 +500']]) if (a.score >= g && (a.goal || 0) < g) { a.goal = g; G.flash = 0.3; G.shake = 0.6; fanfare(); float(lab, tx - 120, a.ty - 44, '#ffd76a'); for (let q = 0; q < 8; q++) fireball(tx + rnd(-30, 30), a.ty + rnd(-40, 40), rnd(20, 40), q * 0.07); } }
-      if ((a.ct = (a.ct || 0) - dt) <= 0) a.combo = 0; },
-    draw(a) { const tx = W - 86 + (a.fl > 0 ? rnd(-3, 3) : 0); ctx.strokeStyle = 'rgba(160,240,230,.3)'; ctx.lineWidth = 1.5; for (let i = 0; i < 18; i++) { const x = W - ((G.time * 520 + i * 131) % (W + 80)), y = (i * 47) % GY; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 44, y); ctx.stroke(); }
-      glow('teal', tx, a.ty, 50 + Math.sin(G.time * 9) * 6, 0.8); if (!spr('bossH5', tx + 24, a.ty, 130)) { ctx.fillStyle = '#1f8f86'; circ(tx, a.ty, 22); } else if (a.fl > 0) spr('bossH5', tx + 24, a.ty, 130, { add: true, alpha: 0.45 });
-      if (a.fl > 0) { ctx.globalCompositeOperation = 'lighter'; glow('teal', tx - 6, a.ty, 46, 1); glow('teal', tx - 6, a.ty, 26, 1); ctx.globalCompositeOperation = 'source-over'; }
-      { const pr = 15 + Math.sin(G.time * 8) * 3; ctx.strokeStyle = 'rgba(255,240,160,.9)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(tx - 8, a.ty, pr, 0, TAU); ctx.stroke(); for (let q = 0; q < 4; q++) { const an = q * Math.PI / 2 + G.time; ctx.beginPath(); ctx.moveTo(tx - 8 + Math.cos(an) * (pr + 3), a.ty + Math.sin(an) * (pr + 3)); ctx.lineTo(tx - 8 + Math.cos(an) * (pr + 10), a.ty + Math.sin(an) * (pr + 10)); ctx.stroke(); } }
-      const bw = 240, bx = W / 2 - bw / 2, full = 120; ctx.fillStyle = 'rgba(10,12,24,.75)'; ctx.fillRect(bx, 62, bw, 9); ctx.fillStyle = a.score >= 120 ? '#ffd76a' : a.score >= 80 ? '#7dffd9' : '#5fe0d0'; ctx.fillRect(bx, 62, bw * Math.min(1, a.score / full), 9);
-      for (const [g, lab] of [[80, '성공'], [120, '완벽']]) { const mx = bx + bw * g / full; ctx.fillStyle = a.score >= g ? '#ffd76a' : '#ece3cf'; ctx.fillRect(mx - 1, 58, 2, 17); text(lab, mx, 86, 10, a.score >= g ? '#ffd76a' : '#a8a08f', 'center'); }
-      if (a.combo >= 5) text(a.combo + ' 연속', tx - 60, a.ty + 52, 12 + Math.min(8, a.combo / 5), '#ffd76a', 'center'); },
-    stat: a => '빛나는 비늘(노란 고리)을 맞히세요 · ' + (a.score >= 120 ? '완벽!' : a.score >= 80 ? '성공! 더 맞히면 완벽' : '눈금 ' + Math.floor(a.score / 80 * 100) + '%'),
-    end(a) { if (a.score < 80) return lose('이무기를 놓쳤다'); if (a.score >= 120) { SAVE.gold += 500; return { ok: true, txt: '완벽! 비늘을 모두 꿰뚫었다 · 골드 +500 더' }; } return { ok: true, txt: '이무기가 지쳐 물러났다' }; } },
+  pearl: { name: '해녀 진주 캐기', how: ['물결 사이로 열리는 진주조개에 닿아 진주를 모으세요.', '해파리는 피하세요. 진주 10개면 성공, 15개면 골드 +500 더!'], dur: 24,
+    init(a) { a.cl = []; a.cd = 0.2; a.jcd = 1; a.sg = 6; a.sw = 0; },
+    up(a, dt) {
+      if ((a.cd -= dt) <= 0 && a.cl.length < 4) { a.cd = rnd(0.6, 1.0); a.cl.push({ x: rnd(W * 0.28, W - 40), y: rnd(56, GY - 34), t: 0 }); }
+      for (const c of a.cl) { c.t += dt; if (c.t > 0.45 && !c.got && Math.hypot(P.x - c.x, P.y - c.y) < 28) { c.got = 1; a.score++; sfx.item(); burst(c.x, c.y, 14, '#ffffff', 180); ring(c.x, c.y, 30, '#bff6ff', 0.25); float('진주 ' + a.score, c.x, c.y - 22, '#ffffff');
+        for (const [g, lab] of [[10, '성공!'], [15, '완벽! 골드 +500']]) if (a.score === g) { G.flash = 0.25; fanfare(); float(lab, W / 2, 96, '#ffd76a'); } } }
+      a.cl = a.cl.filter(c => !c.got && c.t < 4.2);
+      if ((a.jcd -= dt) <= 0) { a.jcd = rnd(0.55, 0.85); const y0 = rnd(40, GY - 30); bullets.push({ x: W + 14, y: y0, y0, vx: -rnd(60, 95), vy: 0, r: 9, kind: 0, sh: 'jelly', col: '#ff9ad8', t: rnd(0, 6), up: (b, d) => { b.t += d; b.y = b.y0 + Math.sin(b.t * 2.2) * 26; } }); }
+      if ((a.sg -= dt) <= 0) { a.sg = 6; a.sw = 1.1; float('큰 물결!', W - 120, 80, '#bff6ff'); noise(0.5, 0.1, { f: 600, f2: 200 }); } // 큰 물결이 왼쪽으로 민다
+      if (a.sw > 0) { a.sw -= dt; P.x = Math.max(32, P.x - 95 * dt); }
+    },
+    draw(a) { ctx.fillStyle = 'rgba(40,140,190,.18)'; ctx.fillRect(0, 0, W, GY);
+      ctx.strokeStyle = 'rgba(200,245,255,' + (a.sw > 0 ? 0.55 : 0.22) + ')'; ctx.lineWidth = 1.5; for (let i = 0; i < 14; i++) { const x = W - ((G.time * (a.sw > 0 ? 420 : 90) + i * 97) % (W + 80)), y = 40 + (i * 53) % (GY - 50); ctx.beginPath(); ctx.moveTo(x, y); ctx.quadraticCurveTo(x + 14, y - 6, x + 28, y); ctx.stroke(); }
+      for (const c of a.cl) { const op = Math.min(1, Math.max(0, (c.t - 0.15) / 0.3)), fade = c.t > 3.6 ? (4.2 - c.t) / 0.6 : 1; ctx.globalAlpha = fade;
+        ctx.fillStyle = '#c9b8a8'; ctx.beginPath(); ctx.ellipse(c.x, c.y + 6, 17, 8, 0, 0, Math.PI); ctx.fill(); // 아래 껍데기
+        ctx.save(); ctx.translate(c.x - 16, c.y + 4); ctx.rotate(-op * 0.9); ctx.fillStyle = '#e2d4c4'; ctx.beginPath(); ctx.ellipse(16, 0, 17, 8, 0, Math.PI, TAU); ctx.fill(); ctx.restore(); // 위 껍데기가 열린다
+        if (op > 0.3) { ctx.globalCompositeOperation = 'lighter'; glow('blue', c.x, c.y + 1, 18 + Math.sin(G.time * 8) * 2, 0.7 * op); ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = '#ffffff'; circ(c.x, c.y + 1, 5); }
+        ctx.globalAlpha = 1; }
+      const bw = 240, bx = W / 2 - bw / 2, full = 15; ctx.fillStyle = 'rgba(10,12,24,.75)'; ctx.fillRect(bx, 62, bw, 9); ctx.fillStyle = a.score >= 15 ? '#ffd76a' : a.score >= 10 ? '#7dffd9' : '#9ff0ff'; ctx.fillRect(bx, 62, bw * Math.min(1, a.score / full), 9);
+      for (const [g, lab] of [[10, '성공'], [15, '완벽']]) { const mx = bx + bw * g / full; ctx.fillStyle = a.score >= g ? '#ffd76a' : '#ece3cf'; ctx.fillRect(mx - 1, 58, 2, 17); text(lab, mx, 86, 10, a.score >= g ? '#ffd76a' : '#a8a08f', 'center'); } },
+    stat: a => '진주 ' + a.score + '개 · ' + (a.score >= 15 ? '완벽!' : a.score >= 10 ? '성공! 15개면 완벽' : '10개면 성공'),
+    end(a) { if (a.score < 10) return lose('진주를 다 못 모았다'); if (a.score >= 15) { SAVE.gold += 500; return { ok: true, txt: '완벽! 바닷속 진주를 모두 캤다 · 골드 +500 더' }; } return { ok: true, txt: '진주를 한 바구니 모았다' }; } },
   chest: { name: '용궁 보물찾기', how: ['상자 넷 가운데 하나만 열 수 있습니다.', '반짝임과 연기를 잘 보고, 열고 싶은 상자 앞에 서 있으세요.'],
     init(a) { a.kind = shuffle(['gold', 'trap', 'plain', 'plain']); a.st = 'pick'; a.tt = 0; },
     up(a, dt) { a.tt += dt; if (a.st === 'pick') { if (a.tt > 6.5) { a.lane = laneOf(4); a.got = a.kind[a.lane]; a.st = 'rev'; a.tt = 0; const cy = laneY(a.lane, 4), cx = W * 0.7; if (a.got === 'gold') { sfx.life(); burst(cx, cy - 10, 40, '#ffd76a', 260); ring(cx, cy, 90, '#ffd76a', 0.5); G.flash = 0.2; } else if (a.got === 'trap') { noise(0.3, 0.2, { f: 400 }); burst(cx, cy - 10, 40, '#b07af0', 220); G.shake = 0.6; fireball(cx, cy, 30); } else { tone(300, 0.1); burst(cx, cy - 10, 10, '#e8b84a', 120); } } } else if (a.tt > 1.4) a.over = true; },
@@ -1161,11 +1163,11 @@ const ARC = {
     end(a) { const g = a.score * 300; if (g) addGold(g); return a.score >= Math.ceil(a.list.length * 0.6) ? { ok: true, txt: '동료 ' + a.score + '명의 공격이 통했다 · 골드 +' + g.toLocaleString() } : { ok: false, txt: '호흡이 조금 어긋났다' + (g ? ' · 골드 +' + g.toLocaleString() : '') }; },
     after() { const b = G.boss; if (b) { b.inv = false; b.hp = 0; G.flash = 0.6; G.shake = 1; sfx.big(); kill(b); } } },
 };
-[null, 'iron', 'fox', 'market', 'ice', 'chase', 'chest', 'forge', 'moon', null].forEach((id, i) => { if (id) STAGES[i].arc = id; });
+[null, 'iron', 'fox', 'market', 'ice', 'pearl', 'chest', 'forge', 'moon', null].forEach((id, i) => { if (id) STAGES[i].arc = id; });
 const ring = (x, y, r, col, life = 0.35) => parts.push({ x, y, vx: 0, vy: 0, life, max: life, ring: r, col, r: 0 });
 function confetti() { const c = ['#ffd76a', '#7dffd9', '#ff9a8a', '#c9a8ff', '#ffffff']; for (let i = 0; i < 56; i++) parts.push({ x: W / 2 + rnd(-200, 200), y: H / 2 - 70, vx: rnd(-110, 110), vy: rnd(-190, 90), life: rnd(0.7, 1.4), max: 1.4, col: c[i % 5], r: rnd(1.5, 3.2) }); }
 function fanfare() { tone(523, 0.1, 'square', 0.08); tone(659, 0.1, 'square', 0.08, 0, 0.1); tone(784, 0.1, 'square', 0.08, 0, 0.2); tone(1047, 0.3, 'square', 0.09, 0, 0.3); }
-const ARC_EQ = { ice: 'o2', chase: 'w2', chest: 't2', forge: 'w1', moon: 'a2', final: 'a1' }; // 처음 성공하면 받는 장비 (5층 빙판길은 옷, 6층부터 일반 장비)
+const ARC_EQ = { ice: 'o2', pearl: 'w2', chest: 't2', forge: 'w1', moon: 'a2', final: 'a1' }; // 처음 성공하면 받는 장비 (5층 빙판길은 옷, 6층부터 일반 장비)
 const arcGold = () => (1000 + 500 * (G.stage + 1)) * (1 + 0.5 * G.diff); // 5층까지 처음 성공 골드
 function arcPrize(id, peek) { // 이 아케이드를 이 난이도에서 처음 성공하면 주는 것. peek 이면 설명만 돌려준다
   SAVE.arcw = SAVE.arcw || []; const key = G.diff + '-' + id, first = !SAVE.arcw.includes(key), e = eqById(ARC_EQ[id]);
@@ -1472,6 +1474,31 @@ function updateBuddy(dt) { // 따라다니는 동료: 자동 지원 사격, 고�
     if (near.length) { P.cogust = gw ? 8 : 5; bullets = bullets.filter(b => !near.includes(b)); for (const b of near) burst(b.x, b.y, 2, '#bffff0', 60); parts.push({ x: P.x, y: P.y, vx: 0, vy: 0, life: 0.3, max: 0.3, ring: 85, col: '#bffff0', r: 0 }); noise(0.2, 0.09, { f: 1200, f2: 3000, q: 1 }); }
     else P.cogust = 0.2;
   }
+}
+/* 적 탄 모양: 층마다 테마가 다르다(도깨비불·쇳조각·여우불 꽃잎·부적·눈꽃·물방울·거품·불똥·검은 초승달·엽전). 빠른 탄은 바늘, 큰 탄은 구슬 */
+const BSH = ['flame', 'shard', 'petal', 'tag', 'flake', 'drop', 'bubble', 'ember', 'cres', 'coin'];
+const BCOL = ['#ff4f9a', '#ffb050', '#ff6fae', '#ffd24a', '#8fe4ff', '#46d2e6', '#9ff0ff', '#ff7a2a', '#c08aff', '#ffd76a'];
+const BGLOW = ['pink', 'orange', 'pink', 'gold', 'blue', 'teal', 'blue', 'fire', 'purple', 'gold'];
+function drawBullet(b) {
+  const st = G.stage % 10, sh = b.sh || (b.sh = G.arc ? (b.r >= 7 ? 'big' : 'orb') : b.r >= 7 ? 'big' : Math.hypot(b.vx, b.vy) > 172 * G.rank ? 'needle' : BSH[st]);
+  const col = b.col || (b.kind ? '#ff8a1c' : BCOL[st]), r = b.r, a = Math.atan2(b.vy, b.vx);
+  glow(b.kind ? 'orange' : BGLOW[st], b.x, b.y, r * 3); ctx.save(); ctx.translate(b.x, b.y); ctx.fillStyle = col; ctx.strokeStyle = col;
+  switch (sh) {
+    case 'flame': case 'drop': ctx.rotate(a); ctx.beginPath(); ctx.arc(0, 0, r + 1, -Math.PI / 2, Math.PI / 2); ctx.quadraticCurveTo(-r * 1.2, r * 0.6, -r * 2.8, 0); ctx.quadraticCurveTo(-r * 1.2, -r * 0.6, 0, -r - 1); ctx.fill(); ctx.fillStyle = '#fff'; circ(r * 0.2, 0, r * 0.5); break;
+    case 'shard': case 'ember': ctx.rotate(a); ctx.beginPath(); ctx.moveTo(r * 1.9, 0); ctx.lineTo(0, r * 0.9); ctx.lineTo(-r * 1.5, 0); ctx.lineTo(0, -r * 0.9); ctx.closePath(); ctx.fill(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(r, 0); ctx.lineTo(0, r * 0.35); ctx.lineTo(-r * 0.6, 0); ctx.lineTo(0, -r * 0.35); ctx.fill();
+      if (sh === 'ember') { ctx.strokeStyle = 'rgba(255,200,120,.6)'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(-r * 1.5, 0); ctx.lineTo(-r * 3.4, 0); ctx.stroke(); } break;
+    case 'petal': ctx.rotate(a + G.time * 6); ctx.beginPath(); ctx.ellipse(0, 0, r * 1.7, r * 0.8, 0, 0, TAU); ctx.fill(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.ellipse(0, 0, r * 0.8, r * 0.3, 0, 0, TAU); ctx.fill(); break;
+    case 'tag': ctx.rotate(a + Math.sin(G.time * 10 + b.x) * 0.3); ctx.fillStyle = '#fff6d8'; ctx.fillRect(-r * 1.5, -r * 0.85, r * 3, r * 1.7); ctx.fillStyle = col; ctx.fillRect(-r * 1.5, -r * 0.85, r * 3, r * 0.45); ctx.fillStyle = '#d8483a'; ctx.fillRect(-r * 0.25, -r * 0.3, r * 0.5, r * 0.9); break;
+    case 'flake': ctx.rotate(G.time * 3 + b.x * 0.05); ctx.lineWidth = 2; ctx.beginPath(); for (let i = 0; i < 6; i++) { const t = i * TAU / 6; ctx.moveTo(0, 0); ctx.lineTo(Math.cos(t) * r * 1.6, Math.sin(t) * r * 1.6); } ctx.stroke(); ctx.fillStyle = '#fff'; circ(0, 0, r * 0.55); break;
+    case 'bubble': ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, r + 1.5, 0, TAU); ctx.stroke(); ctx.fillStyle = 'rgba(200,250,255,.35)'; circ(0, 0, r + 1); ctx.fillStyle = '#fff'; circ(-r * 0.4, -r * 0.4, r * 0.35); break;
+    case 'cres': ctx.rotate(a); ctx.lineWidth = r * 0.9; ctx.lineCap = 'round'; ctx.beginPath(); ctx.arc(-r * 0.4, 0, r * 1.3, -1.15, 1.15); ctx.stroke(); ctx.strokeStyle = '#fff'; ctx.lineWidth = r * 0.3; ctx.stroke(); break;
+    case 'coin': ctx.rotate(G.time * 4); ctx.beginPath(); ctx.arc(0, 0, r + 1.5, 0, TAU); ctx.fill(); ctx.fillStyle = '#7a5410'; ctx.fillRect(-r * 0.35, -r * 0.35, r * 0.7, r * 0.7); ctx.strokeStyle = '#fff3c0'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(0, 0, r + 1.5, 0, TAU); ctx.stroke(); break;
+    case 'needle': ctx.rotate(a); ctx.beginPath(); ctx.ellipse(0, 0, r * 2.6, r * 0.75, 0, 0, TAU); ctx.fill(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.ellipse(r * 0.3, 0, r * 1.6, r * 0.3, 0, 0, TAU); ctx.fill(); break;
+    case 'big': ctx.fillStyle = col; circ(0, 0, r + 1.5); ctx.fillStyle = '#fff'; circ(0, 0, r * 0.55); ctx.rotate(G.time * 3); ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.beginPath(); for (let i = 0; i < 4; i++) { ctx.moveTo(Math.cos(i * TAU / 4) * (r + 2), Math.sin(i * TAU / 4) * (r + 2)); ctx.lineTo(Math.cos(i * TAU / 4) * (r + 6), Math.sin(i * TAU / 4) * (r + 6)); } ctx.stroke(); break;
+    case 'jelly': ctx.globalAlpha = 0.85; ctx.beginPath(); ctx.arc(0, 0, r + 2, Math.PI, TAU); ctx.lineTo(r + 2, r * 0.3); ctx.lineTo(-r - 2, r * 0.3); ctx.fill(); ctx.strokeStyle = col; ctx.lineWidth = 1.5; for (let i = -2; i <= 2; i++) { ctx.beginPath(); ctx.moveTo(i * r * 0.4, r * 0.3); ctx.quadraticCurveTo(i * r * 0.4 + Math.sin(G.time * 8 + i) * 3, r * 1.2, i * r * 0.4, r * 2); ctx.stroke(); } ctx.fillStyle = '#fff'; circ(-r * 0.35, -r * 0.4, r * 0.3); break;
+    default: circ(0, 0, r + 1.2); ctx.fillStyle = '#fff'; circ(0, 0, r * 0.6);
+  }
+  ctx.restore();
 }
 function drawCoFx() { // 동료가 만든 물벽·장승 기둥
   if (G.mode !== 'play') return;
@@ -2117,7 +2144,7 @@ function draw() {
   if (G.slow > 0 && G.mode === 'play') { ctx.fillStyle = 'rgba(150,210,255,' + 0.12 * Math.min(1, G.slow) + ')'; ctx.fillRect(0, 0, W, H); }
   if (G.boss && G.boss.p3 && G.mode === 'play') { const al = allies(); ctx.globalAlpha = 0.75; al.forEach((c, i) => { const y = 36 + i * ((GY - 60) / Math.max(1, al.length - 1 || 1)); glow(CH[c].glow, 24, y, 22, 0.6); spr(look(c).img, 24, y + Math.sin(G.time * 4 + i) * 2, CH[c].h * 0.55, { flip: CH[c].flip }); }); ctx.globalAlpha = 1; }
   for (const b of bullets) { if (b.tl) { ctx.strokeStyle = 'rgba(255,240,200,' + (0.35 + 0.35 * Math.sin(G.time * 30)) + ')'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(b.x, b.y); ctx.lineTo(P.x, P.y); ctx.stroke(); } // 꺾이기 전 예고선
-    glow(b.kind ? 'orange' : 'pink', b.x, b.y, b.r * 3.2); ctx.fillStyle = b.col || (b.kind ? '#ff8a1c' : '#ff2f7b'); circ(b.x, b.y, b.r + 1.2); ctx.fillStyle = '#fff'; circ(b.x, b.y, b.r * 0.6); }
+    drawBullet(b); }
   drawCoFx(); drawHz(); drawDark();
   if (SHOWHIT && G.mode === 'play') { ctx.strokeStyle = '#00ff88'; ctx.lineWidth = 1; for (const e of enemies) { const b = ehb(e); ctx.beginPath(); if (b) ctx.ellipse(e.x + b.ox, e.y + b.oy, b.rx, b.ry, 0, 0, TAU); else ctx.arc(e.x, e.y, e.r, 0, TAU); ctx.stroke(); } ctx.strokeStyle = '#ff0'; ctx.beginPath(); ctx.arc(P.x, P.y, meR({ r: 4 }), 0, TAU); ctx.stroke(); } // 개발판 ?hit=1: 판정 보기
   for (const p of parts) {
