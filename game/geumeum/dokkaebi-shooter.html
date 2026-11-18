@@ -503,7 +503,7 @@ const CH = [
   // 6번부터는 kit(공격 묶음)으로 정의한다. shot: 기본 공격, charge: 모으기, bomb: 필살기 모양, co: 동료일 때 능력
   { name: '장승 자매', robe: '#3fae6a', speed: 170, img: 'p6', h: 72, cut: 'cut6x', cutv: 'cutv6x', glow: 'green', spark: '#b8ffb0', tint: 'rgba(80,220,120,', bomb: '수호 장승진', line: '마을 문은 우리가 지킨다. 길도 우리가 연다.', from: 3,
     join: '우리가 지키려던 마을을 우리 손으로 가두었구나. 용서를 바라진 않는다. 대신 그 왕에게 가는 길을 우리가 열겠다. 길삯은 새 장승 세우는 데 쓰마.',
-    kit: { shot: 'heavy', shape: 'log', c: '#b07a3a', dmg: 2.4, rate: 0.18, sp: 430, charge: 'boom', bomb: 'rain', co: 'guard', sf: 150 }, col: '#7be08a', codesc: '한 번 막아 주기', info: { role: '4층 대장 · 동료', st: [45, 85, 60], desc: '언니의 장승 몽둥이가 묵직하게 날아갑니다. 모으기는 터지는 장승 기둥, 필살기는 수호 장승진.' } },
+    kit: { shot: 'heavy', shape: 'log', c: '#b07a3a', dmg: 2.4, rate: 0.18, sp: 430, charge: 'boom', bomb: 'rain', co: 'totem', sf: 150 }, col: '#7be08a', codesc: '장승 기둥 세우기', info: { role: '4층 대장 · 동료', st: [45, 85, 60], desc: '언니의 장승 몽둥이가 묵직하게 날아갑니다. 모으기는 터지는 장승 기둥, 필살기는 수호 장승진.' } },
   { name: '설녀', robe: '#9fd0ff', speed: 195, img: 'p7', h: 74, cut: 'cut7x', cutv: 'cutv7x', glow: 'blue', spark: '#e0f4ff', tint: 'rgba(150,210,255,', bomb: '만년설 눈보라', line: '이 눈이 녹는 날을, 나도 기다렸어.', from: 4,
     join: '나도 이 눈을 녹이고 싶었어. 달빛이 돌아오지 않으면 내 산은 영영 겨울이야. 같이 가게 해 줘. 길삯은… 눈 녹은 물로는 안 되겠지?',
     kit: { shot: 'fan', shape: 'shard', c: '#bfe6ff', dmg: 1, rate: 0.11, sp: 560, charge: 'pierce', bomb: 'spiral', co: 'freeze', sf: 1200 }, col: '#bfe6ff', codesc: '탄을 느리게 얼리기', info: { role: '5층 대장 · 동료', st: [70, 55, 95], desc: '얼음 조각이 넓게 퍼집니다. 모으기는 뚫고 지나가는 눈보라, 필살기는 만년설 눈보라.' } },
@@ -512,13 +512,13 @@ const CH = [
     kit: { shot: 'line', shape: 'blade', c: '#7ff0e0', dmg: 1.5, rate: 0.09, sp: 760, charge: 'multi', bomb: 'sweep', co: 'zap', sf: 700 }, col: '#5fe0d0', codesc: '번개 내리치기', info: { role: '6층 대장 · 동료', st: [85, 70, 45], desc: '물 칼날이 곧고 빠르게 나갑니다. 모으기는 다섯 갈래 물줄기, 필살기는 승천하지 못한 파도.' } },
   { name: '용왕의 장수', robe: '#7fd6e6', speed: 180, img: 'p9', h: 78, cut: 'cut9x', cutv: 'cutv9x', glow: 'blue', spark: '#d8fbff', tint: 'rgba(110,220,235,', bomb: '용궁 월도 해일', line: '용궁의 이름으로, 길을 연다.', from: 6,
     join: '왕명을 따랐을 뿐인데, 그 왕이 우리 바다를 빼앗은 자였다니. 장수의 의리는 바다에 있다. 그대들과 함께 가겠다.',
-    kit: { shot: 'fan', shape: 'cres', c: '#a8f4ff', dmg: 1.1, rate: 0.12, sp: 540, charge: 'pierce', bomb: 'sweep', co: 'buff', sf: 900 }, col: '#a8f4ff', codesc: '공격력 올리기', info: { role: '7층 대장 · 동료', st: [55, 70, 80], desc: '월도의 물결이 초승달처럼 퍼집니다. 모으기는 뚫는 큰 물결, 필살기는 용궁 월도 해일.' } },
+    kit: { shot: 'fan', shape: 'cres', c: '#a8f4ff', dmg: 1.1, rate: 0.12, sp: 540, charge: 'pierce', bomb: 'sweep', co: 'tide', sf: 900 }, col: '#a8f4ff', codesc: '물결 방어막', info: { role: '7층 대장 · 동료', st: [55, 70, 80], desc: '월도의 물결이 초승달처럼 퍼집니다. 모으기는 뚫는 큰 물결, 필살기는 용궁 월도 해일.' } },
   { name: '쇠 도깨비', robe: '#e0632e', speed: 185, img: 'p10', h: 68, cut: 'cut10x', cutv: 'cutv10x', glow: 'fire', spark: '#ffd08a', tint: 'rgba(255,130,40,', bomb: '천 자루 칼비', line: '내가 벼린 칼이 얼마나 잘 드는지 볼래?', from: 7,
     join: '왕의 무기를 만든 건 나야. 도깨비들도 살아야 하니까. 그런데 그 칼이 남의 땅을 베는 데 쓰였다면… 내가 도로 부러뜨려야지.',
     kit: { shot: 'home', shape: 'blade', c: '#ffb060', dmg: 1, rate: 0.14, sp: 440, charge: 'multi', bomb: 'rain', co: 'buff', sf: 500 }, col: '#ff9a5a', codesc: '공격력 올리기', info: { role: '8층 대장 · 동료', st: [60, 80, 65], desc: '벼린 칼이 부채꼴로 날아갑니다. 모으기는 다섯 자루 관통 칼, 필살기는 천 자루 칼비.' } },
   { name: '두억시니', robe: '#8a5fd6', speed: 190, img: 'p11', h: 70, cut: 'cut11x', cutv: 'cutv11x', glow: 'purple', spark: '#d9c4ff', tint: 'rgba(150,90,240,', bomb: '검은 달', line: '달을 삼킨 몸이다. 밤은 내 편이지.', from: 8,
     join: '삼킨 달 조각이 빠져나갔군. 속이 다 시원하다. 달 지키는 노릇은 끝이다. 마지막 층까지 내가 길을 보여 주마.',
-    kit: { shot: 'home', shape: 'cres', c: '#c9a8ff', dmg: 1.05, rate: 0.15, sp: 430, charge: 'pierce', bomb: 'spiral', co: 'gust', sf: 330 }, col: '#c9a8ff', codesc: '가까운 탄 지우기', info: { role: '9층 대장 · 동료', st: [65, 75, 70], desc: '검은 초승달이 부채꼴로 날아갑니다. 모으기는 뚫는 검은 달, 필살기는 검은 달.' } },
+    kit: { shot: 'home', shape: 'cres', c: '#c9a8ff', dmg: 1.05, rate: 0.15, sp: 430, charge: 'pierce', bomb: 'spiral', co: 'dusk', sf: 330 }, col: '#c9a8ff', codesc: '어둠 걷기', info: { role: '9층 대장 · 동료', st: [65, 75, 70], desc: '검은 초승달이 부채꼴로 날아갑니다. 모으기는 뚫는 검은 달, 필살기는 검은 달.' } },
   { name: '도깨비 여왕', robe: '#e8b84a', speed: 200, img: 'p12', h: 68, cut: 'cut12x', cutv: 'cutv12x', glow: 'gold', spark: '#fff0b0', tint: 'rgba(255,210,90,', bomb: '금 나와라 뚝딱', line: '후후, 이번엔 훔치지 않고 같이 놀러 가는 거야.', from: 9,
     join: '졌네. 달은 돌려줄게. 밤을 전부 가지려던 건 내 욕심이었어. 한 달에 하루면 충분해. 그날은 같이 놀아 줄 거지?',
     kit: { shot: 'fan', shape: 'coin', c: '#ffd76a', dmg: 1.15, rate: 0.11, sp: 560, charge: 'boom', bomb: 'rain', co: 'gold', sf: 1000 }, col: '#ffd76a', codesc: '골드 더 얻기', info: { role: '10층 대장 · 동료', st: [75, 80, 85], desc: '금 엽전이 넓게 퍼집니다. 모으기는 터지는 금 방망이, 필살기는 금 나와라 뚝딱.' } },
@@ -795,23 +795,42 @@ const patClone = (e, dt) => { // 분신 둘을 불러내고 본체는 느리게 
   if (e.cloneAt !== e.pi) { e.cloneAt = e.pi; for (const dy of [-95, 95]) spawn('illu', e.x - 30, Math.max(40, Math.min(GY - 40, e.y + dy)), { img: e.p2 && ok(IMG[STAGES[G.stage].bossImg2]) ? STAGES[G.stage].bossImg2 : STAGES[G.stage].bossImg }); float('분신!', e.x - 60, e.y - 60, '#ffd98a'); }
   e.cd -= dt; if (e.cd <= 0) { e.cd = 1.1; fan(e, 3, 0.2, 130); } };
 const patSnow = (e, dt) => { e.cd -= dt; if (e.cd <= 0) { e.cd = 0.32; for (let k = 0; k < 2; k++) shootB(W + 8, rnd(10, GY - 30), Math.PI + rnd(-0.28, 0.28), 82, 4); } }; // 눈보라처럼 흩날리는 탄
+/* 기획 5 3-2: 대장마다 고유 기술 하나씩 */
+const patTotem = (e, dt) => { e.cd -= dt; if (e.cd <= 0) { e.cd = 2.3; e.k = (e.k || 0) + 1; // 장승 기둥: 위아래 기둥 사이 틈으로만 지나간다
+  const gy = Math.max(70, Math.min(GY - 70, P.y + (e.k % 2 ? -46 : 46) + rnd(-16, 16)));
+  for (const x0 of [W + 8, W + 25]) for (let y = 9; y < GY; y += 17) if (Math.abs(y - gy) > 44) bullets.push({ x: x0, y, vx: -100 * G.rank, vy: 0, r: 7, kind: 1, col: '#a5763c' }); } };
+const wobble = (b, dt) => { b.t += dt; b.y = b.y0 + Math.sin(b.t * 2.6 + b.ph) * 44; };
+const patWave = (e, dt) => { e.cd -= dt; if (e.cd <= 0) { e.cd = 0.17; e.wv = (e.wv || 0) + 1; // 파도: 아래 바다에서 출렁이는 물결탄
+  for (const base of [GY - 56, GY - 150]) { if (base < GY - 100 && e.wv % 3) continue; bullets.push({ x: W + 8, y: base, y0: base, vx: -118 * G.rank, vy: 0, r: 5, kind: 0, col: '#46d2e6', t: 0, ph: e.wv * 0.32, up: wobble }); } } };
+const splitB = (b, dt) => { b.t += dt; if (b.t > 1.15) { b.dead = true; const a = Math.atan2(b.vy, b.vx); burst(b.x, b.y, 6, '#d8fbff', 90); for (const d of [-0.5, 0.5]) shootB(b.x, b.y, a + d, 150, 5); } };
+const patCrescent = (e, dt) => { e.cd -= dt; if (e.cd <= 0) { e.cd = 1.25; const a = aimAng(e); // 월도: 느린 초승달이 둘로 갈라진다
+  bullets.push({ x: e.x - 30, y: e.y, vx: Math.cos(a) * 92 * G.rank, vy: Math.sin(a) * 92 * G.rank, r: 11, kind: 0, col: '#bff6ff', t: 0, up: splitB }); } };
+const swordB = (b, dt) => { b.t += dt; if (!b.turn && b.t > 0.5) b.tl = 1;
+  if (!b.turn && b.t > 0.85) { b.turn = 1; b.tl = 0; const a = Math.atan2(P.y - b.y, P.x - b.x), v = 225 * G.rank; b.vx = Math.cos(a) * v; b.vy = Math.sin(a) * v; } };
+const patSwords = (e, dt) => { e.cd -= dt; if (e.cd <= 0) { e.cd = 0.45; // 칼비: 위에서 떨어지다 예고선 뒤에 플레이어 쪽으로 꺾인다
+  bullets.push({ x: rnd(Math.min(W - 60, P.x + 70), W - 30), y: -10, vx: 0, vy: 140 * G.rank, r: 4, kind: 1, col: '#e8eef8', t: 0, up: swordB }); } };
+const patEclipse = (e, dt) => { if (e.ecl !== e.pi) { e.ecl = e.pi; darken(4.4, 92); } e.cd -= dt; if (e.cd <= 0) { e.cd = 0.72; fan(e, 5, 0.22, 118); } }; // 검은 달: 달빛 원 안만 보인다
+function darken(t, r) { if (kitCo('dusk')) { if (!G.duskMsg) { G.duskMsg = 1; float('두억시니가 어둠을 걷었다', P.x, P.y - 34, '#d9c4ff'); } return; } G.dark = t; G.darkMax = t; G.darkR = r; }
+function drawDark() { if (!(G.dark > 0) || G.mode !== 'play') return; const a = Math.min(1, G.dark * 2, (G.darkMax - G.dark) * 3) * 0.92;
+  ctx.fillStyle = 'rgba(2,3,12,' + a + ')'; ctx.beginPath(); ctx.rect(-20, -20, W + 40, H + 40); ctx.arc(P.x, P.y, G.darkR || 92, 0, TAU, true); ctx.fill('evenodd');
+  ctx.strokeStyle = 'rgba(200,220,255,' + a * 0.5 + ')'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(P.x, P.y, G.darkR || 92, 0, TAU); ctx.stroke(); }
 const MN = (n, a, b, c) => { STAGES[n].minis = [a, b, c].map((d, i) => ({ name: d[0], img: 'mini' + n + 'abc'[i], pat: d[1] })); };
 const MD = (n, a, b) => { STAGES[n].mids = [a, b].map((d, i) => ({ name: d[0], img: 'mid' + n + 'ab'[i], pats: d[1] })); };
 STAGES[2].minis = [{ name: '죽창 도깨비', img: 'mini2a', pat: 2 }, { name: '대숲 무녀', img: 'mh2', pat: 1 }, { name: '등불 부엉이', img: 'mini2c', pat: 0 }];
 STAGES[2].mids = [{ name: '대숲 지네', img: 'mid2a', pats: [patBurst, patRing] }, { name: '둔갑 여우', mirror: 1, pats: [patFan, patBurst, patSpiral] }];
 STAGES[2].pats = [patFoxfire, patClone]; STAGES[2].pats2 = [patTails, patRing, patClone];
 STAGES[1].pats = [patIron, patBlade]; STAGES[1].pats2 = [patMolten, patRing, patBlade]; MN(3, ['탈춤 도깨비', 1], ['엿장수 도깨비', 0], ['솟대 까마귀', 2]); MD(3, ['도깨비 달구지', [patRock, patBurst]], ['줄광대 요괴', [patSpiral, patFan]]);
-STAGES[3].pats = [patFan, patRock]; STAGES[3].pats2 = [patWall, patRing, patIron];
+STAGES[3].pats = [patTotem, patFan]; STAGES[3].pats2 = [patTotem, patWall, patIron, patRock];
 MN(4, ['눈사람 도깨비', 0], ['고드름 박쥐', 2], ['산 설인', 1]); MD(4, ['눈보라 매', [patBurst, patTails]], ['서리 멧돼지', [patRock, patWall]]);
 STAGES[4].pats = [patSnow, patFan]; STAGES[4].pats2 = [patTails, patSnow, patStream];
 MN(5, ['갈매기 도깨비', 2], ['문어 단지', 1], ['꽃게 장수', 0]); MD(5, ['섬 고래', [patRing, patRock]], ['번개 가오리', [patBlade, patSpiral]]);
-STAGES[5].pats = [patFoxfire, patBlade]; STAGES[5].pats2 = [patMolten, patTails, patStream];
+STAGES[5].pats = [patWave, patStream]; STAGES[5].pats2 = [patWave, patTails, patMolten];
 MN(6, ['새우 병사', 2], ['복어 대감', 0], ['해마 기사', 1]); MD(6, ['초롱 아귀', [patFan, patBurst]], ['소라게 성채', [patWall, patRock]]);
-STAGES[6].pats = [patTails, patWall]; STAGES[6].pats2 = [patRing, patIron, patSpiral];
+STAGES[6].pats = [patCrescent, patWall]; STAGES[6].pats2 = [patCrescent, patRing, patSpiral];
 MN(7, ['풀무 도깨비', 0], ['쇳물 덩이', 1], ['집게 도깨비', 2]); MD(7, ['용광로 거인', [patMolten, patRock]], ['쇠 황소', [patBurst, patIron]]);
-STAGES[7].pats = [patBlade, patFan]; STAGES[7].pats2 = [patMolten, patStream, patRing];
+STAGES[7].pats = [patSwords, patFan]; STAGES[7].pats2 = [patSwords, patMolten, patStream];
 MN(8, ['그림자 무사', 2], ['등롱 귀신', 1], ['달 나방', 0]); MD(8, ['돌 해태', [patRock, patFan]], ['검은 삼족오', [patSpiral, patTails]]);
-STAGES[8].pats = [patSpiral, patWall, patFan]; STAGES[8].pats2 = [patRing, patStream, patTails];
+STAGES[8].pats = [patEclipse, patSpiral]; STAGES[8].pats2 = [patEclipse, patRing, patTails];
 MN(9, ['금 도깨비 근위병', 0], ['방망이 쌍둥이', 2], ['보물 상자 요괴', 1]); MD(9, ['도깨비 대신', [patWall, patRing]], ['근위대장', [patIron, patBurst]]);
 STAGES[9].pats = [patFan, patRing]; STAGES[9].pats2 = [patTails, patSpiral, patStream]; STAGES[9].pats3 = [patMolten, patClone, patSnow, patTails, patBlade, patIron]; // 3단계: 앞선 대장들의 힘(쇠·환영·눈보라·꼬리·물 칼날)을 빌려 쓴다
 ['지우산 처녀', '버들 물귀신', '대숲 무녀', '엿장수 처녀', '설녀의 시녀', '바다 해녀', '용궁 시녀', '풀무 아가씨', '등롱 궁녀', '도깨비 궁 무희'].forEach((nm, i) => { const m = STAGES[i].minis[1]; m.name = nm; m.img = 'mh' + i; }); // 층마다 두 번째 문지기는 여성 인간형 요괴
@@ -1099,7 +1118,7 @@ function advanceTalk() {
   k.i++; k.t = 0; if (k.i >= k.lines.length) { G.talk = null; banner('싸움 시작!', '', 1); }
 }
 function startStage(i, part = 0) {
-  G.part = part; G.pick = i; G.pp = part; G.deaths = 0; G.segDone = false; G.res = false; G.arc = null; G.arcDone = false; G.boon = newBoon();
+  G.part = part; G.pick = i; G.pp = part; G.deaths = 0; G.dark = 0; G.duskMsg = 0; G.totems = []; G.segDone = false; G.res = false; G.arc = null; G.arcDone = false; G.boon = newBoon();
   G.stage = i; G.rank = 1 + 0.05 * i + 0.28 * Math.min(G.loop, 4); if (i === 0 && part === 0 && !G.endless && G.diff === 0) { SAVE.tut.r11 = (SAVE.tut.r11 || 0) + 1; if (SAVE.tut.r11 === 1) G.rank *= 0.85; } /* 처음 1-1은 탄 속도 0.85배 */ G.boon.shield += eqStat(P.ch).shield; G.helped = false; G.bombUsed = false; if (!G.endless && lossN() >= 2) { G.boon.shield++; G.helped = true; G.boon.txt.push('탑의 기운 · 방패 1개'); setTimeout(() => tipFlash('탑의 기운 · 방패 1개를 받았습니다 (이 도움으로 깨면 별은 최대 둘)', 5), 3200); } G.pend = []; G.si = 0; G.wait = 3; G.gate = null; G.nMini = part === 1 ? 3 : 0; G.nMid = part === 1 ? 1 : 0; G.n0 = G.nMini + G.nMid; G.bossCalled = false; G.st = 0; G.boss = null; G.clearT = 0;
   if (G.endless) banner('무한의 탑 ' + G.tf + '층', STAGES[i].boss + ' · ' + STAGES[i].place, 3); else banner(STAGES[i].name + ' ' + (part + 1) + '구간', STAGES[i].place + (G.diff ? ' · ' + DN[G.diff] : ''), 3);
 }
@@ -1210,7 +1229,7 @@ function float(str, x, y, col) { parts.push({ x, y, vx: 0, vy: -26, life: 0.9, m
 function nearest(x, y) { let best = null, bd = 1e9; for (const e of enemies) { if (e.dead || e.inv || e.x > W + 10 || e.x < x) continue; const d = Math.hypot(e.x - x, e.y - y); if (d < bd) { bd = d; best = e; } } return best; }
 function updateBuddy(dt) { // 따라다니는 동료: 자동 지원 사격, 고유 능력, 교대
   P.swapcd -= dt; P.guard -= dt;
-  G.buff = kitCo('buff'); G.goldx = kitCo('gold') ? 1.5 : 1; if (G.slow > 0) G.slow -= dt;
+  G.buff = kitCo('buff'); G.goldx = kitCo('gold') ? 1.5 : 1; if (G.slow > 0) G.slow -= dt; if (G.dark > 0) G.dark -= dt;
   if (P.co < 0) { swapReq = false; return; }
   const tx = Math.max(34, P.x - 38 * SZ.p), oy = 34 * SZ.p, ty = P.y - oy < 24 ? P.y + oy : P.y - oy;
   P.cx += (tx - P.cx) * Math.min(1, dt * 6); P.cy += (ty - P.cy) * Math.min(1, dt * 6);
@@ -1253,12 +1272,30 @@ function updateBuddy(dt) { // 따라다니는 동료: 자동 지원 사격, 고�
     const live = enemies.filter(e => e.x < W && !e.dead && !e.inv); P.cz = 2.4;
     if (live.length) { const e = live[Math.floor(Math.random() * live.length)]; damage(e, 12); parts.push({ x: e.x, y: e.y, vx: 0, vy: 0, life: 0.18, max: 0.18, bolt: 1, col: '#9ff5e6', r: 0 }); fireball(e.x, e.y, 18); tone(1800, 0.12, 'square', 0.06, -1500); noise(0.15, 0.12, { f: 3000, type: 'highpass' }); }
   }
-  if ((P.co === 0 || kitCo('gust')) && (P.cogust -= dt) <= 0) { // 동료 한별: 가끔 바람으로 가까운 탄을 지운다
-    const near = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) < 85);
-    if (near.length) { P.cogust = 5; bullets = bullets.filter(b => !near.includes(b)); for (const b of near) burst(b.x, b.y, 2, '#bffff0', 60); parts.push({ x: P.x, y: P.y, vx: 0, vy: 0, life: 0.3, max: 0.3, ring: 85, col: '#bffff0', r: 0 }); noise(0.2, 0.09, { f: 1200, f2: 3000, q: 1 }); }
+  if (kitCo('tide')) { // 동료 용왕의 장수: 12초마다 앞쪽에 2초 동안 물벽
+    P.tideCd = (P.tideCd === undefined ? 3 : P.tideCd) - dt; if (P.tideT > 0) P.tideT -= dt;
+    if (P.tideCd <= 0) { P.tideCd = 12; P.tideT = 2; float('물결 방어막!', P.x + 40, P.y - 40, '#a8f4ff'); noise(0.3, 0.1, { f: 800, f2: 300 }); }
+    if (P.tideT > 0) { const wx = P.x + 46; bullets = bullets.filter(b => { if (Math.abs(b.x - wx) < 12 && Math.abs(b.y - P.y) < 62) { burst(b.x, b.y, 2, '#a8f4ff', 60); return false; } return true; }); }
+  }
+  if (kitCo('totem')) { // 동료 장승 자매: 14초마다 앞쪽에 기둥 하나, 탄 6개를 막고 부서진다
+    P.totCd = (P.totCd === undefined ? 2 : P.totCd) - dt;
+    if (P.totCd <= 0) { P.totCd = 14; G.totems.push({ x: Math.min(W - 40, P.x + 52), y: P.y, hp: 6, t: 10 }); float('장승 기둥!', P.x + 50, P.y - 40, '#9be08a'); tone(180, 0.2, 'square', 0.08, -60); }
+  }
+  if (G.totems && G.totems.length) { for (const T of G.totems) { T.t -= dt; for (const b of bullets) if (!b.dead && T.hp > 0 && Math.abs(b.x - T.x) < 14 + b.r && Math.abs(b.y - T.y) < 30 + b.r) { b.dead = true; T.hp--; burst(b.x, b.y, 3, '#c9a06a', 70); } }
+    bullets = bullets.filter(b => !b.dead); G.totems = G.totems.filter(T => { if (T.hp <= 0) { burst(T.x, T.y, 14, '#a5763c', 160); return false; } return T.t > 0; }); }
+  const gw = kitCo('dusk'); // 두억시니는 약하게(작은 범위·긴 대기)
+  if ((P.co === 0 || kitCo('gust') || gw) && (P.cogust -= dt) <= 0) { // 동료 한별: 가끔 바람으로 가까운 탄을 지운다
+    const near = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) < (gw ? 60 : 85));
+    if (near.length) { P.cogust = gw ? 8 : 5; bullets = bullets.filter(b => !near.includes(b)); for (const b of near) burst(b.x, b.y, 2, '#bffff0', 60); parts.push({ x: P.x, y: P.y, vx: 0, vy: 0, life: 0.3, max: 0.3, ring: 85, col: '#bffff0', r: 0 }); noise(0.2, 0.09, { f: 1200, f2: 3000, q: 1 }); }
     else P.cogust = 0.2;
   }
 }
+function drawCoFx() { // 동료가 만든 물벽·장승 기둥
+  if (G.mode !== 'play') return;
+  if (kitCo('tide') && P.tideT > 0 && P.deadT <= 0) { const wx = P.x + 46, a = Math.min(1, P.tideT * 3); ctx.fillStyle = 'rgba(120,220,240,' + 0.28 * a + ')'; ctx.fillRect(wx - 8, P.y - 62, 16, 124);
+    ctx.strokeStyle = 'rgba(200,250,255,' + 0.8 * a + ')'; ctx.lineWidth = 2; ctx.beginPath(); for (let y = -62; y <= 62; y += 6) ctx.lineTo(wx + Math.sin(G.time * 12 + y * 0.2) * 4, P.y + y); ctx.stroke(); }
+  for (const T of G.totems || []) { ctx.globalAlpha = Math.min(1, T.t); ctx.fillStyle = '#7a5530'; ctx.fillRect(T.x - 8, T.y - 30, 16, 60); ctx.fillStyle = '#c9a06a'; ctx.fillRect(T.x - 10, T.y - 34, 20, 10);
+    ctx.fillStyle = '#2b1a0c'; ctx.fillRect(T.x - 5, T.y - 30, 3, 3); ctx.fillRect(T.x + 2, T.y - 30, 3, 3); ctx.fillStyle = '#9be08a'; for (let i = 0; i < T.hp; i++) ctx.fillRect(T.x - 9 + i * 3.2, T.y + 33, 2.4, 3); ctx.globalAlpha = 1; } }
 function playerHit() {
   if (P.inv > 0 || P.deadT > 0 || G.clearT > 0) return;
   if (G.arc) { if (G.arc.ph === 1) { G.arc.hits++; P.inv = 1.1; G.shake = 0.3; tone(200, 0.15, 'sawtooth', 0.1, -120); float('앗!', P.x, P.y - 26, '#ff9a8a'); burst(P.x, P.y, 20, '#ffffff', 220); ring(P.x, P.y, 46, '#ff9a8a', 0.3); G.flash = Math.max(G.flash, 0.1); bullets = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) > 40); } return; } // 아케이드에서는 목숨이 줄지 않는다
@@ -1374,7 +1411,7 @@ function update(dt) {
   }
   // 적 탄
   for (const b of bullets) {
-    const bs = G.slow > 0 ? 0.4 : 1; b.x += b.vx * dt * bs; b.y += b.vy * dt * bs;
+    const bs = G.slow > 0 ? 0.4 : 1; if (b.up) { b.up(b, dt * bs); if (b.dead) continue; } b.x += b.vx * dt * bs; b.y += b.vy * dt * bs;
     if (b.x < -12 || b.x > W + 14 || b.y < -12 || b.y > H + 12) b.dead = true;
     else if (P.deadT <= 0 && Math.hypot(b.x - P.x, b.y - P.y) < b.r * 0.6 + 2.5) { b.dead = true; playerHit(); }
   }
@@ -1874,7 +1911,9 @@ function draw() {
   if (G.bombT > 0) drawBomb();
   if (G.slow > 0 && G.mode === 'play') { ctx.fillStyle = 'rgba(150,210,255,' + 0.12 * Math.min(1, G.slow) + ')'; ctx.fillRect(0, 0, W, H); }
   if (G.boss && G.boss.p3 && G.mode === 'play') { const al = allies(); ctx.globalAlpha = 0.75; al.forEach((c, i) => { const y = 36 + i * ((GY - 60) / Math.max(1, al.length - 1 || 1)); glow(CH[c].glow, 24, y, 22, 0.6); spr(look(c).img, 24, y + Math.sin(G.time * 4 + i) * 2, CH[c].h * 0.55, { flip: CH[c].flip }); }); ctx.globalAlpha = 1; }
-  for (const b of bullets) { glow(b.kind ? 'orange' : 'pink', b.x, b.y, b.r * 3.2); ctx.fillStyle = b.kind ? '#ff8a1c' : '#ff2f7b'; circ(b.x, b.y, b.r + 1.2); ctx.fillStyle = '#fff'; circ(b.x, b.y, b.r * 0.6); }
+  for (const b of bullets) { if (b.tl) { ctx.strokeStyle = 'rgba(255,240,200,' + (0.35 + 0.35 * Math.sin(G.time * 30)) + ')'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(b.x, b.y); ctx.lineTo(P.x, P.y); ctx.stroke(); } // 꺾이기 전 예고선
+    glow(b.kind ? 'orange' : 'pink', b.x, b.y, b.r * 3.2); ctx.fillStyle = b.col || (b.kind ? '#ff8a1c' : '#ff2f7b'); circ(b.x, b.y, b.r + 1.2); ctx.fillStyle = '#fff'; circ(b.x, b.y, b.r * 0.6); }
+  drawCoFx(); drawDark();
   for (const p of parts) {
     if (p.delay > 0) continue;
     ctx.globalAlpha = Math.max(0, p.life / p.max);
@@ -2410,7 +2449,7 @@ function start() {
   if (window.ResizeObserver) new ResizeObserver(resize).observe(cv); else addEventListener('resize', resize);
   requestAnimationFrame(frame);
 }
-window.__game = { LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
+window.__game = { darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
 if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start); else start();
 })();
 </script>
