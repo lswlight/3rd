@@ -1875,13 +1875,21 @@ function drawBomb() {
     }
   } else { // 나린: 은하수가 폭포처럼 쏟아지고 물결이 세 번 퍼진다
     const hx = W * 0.55, kk = Math.min(1, k / 0.2), y = -190 + kk * kk * (GY - 125 + 190);
-    if (k < 0.55) { const al = k < 0.4 ? 1 : Math.max(0, (0.55 - k) / 0.15); ctx.globalAlpha = al; glow('blue', hx, Math.min(y, GY) - 40, 170, 0.7); const g = ctx.createLinearGradient(0, 0, 0, Math.min(y, GY)); g.addColorStop(0, 'rgba(160,210,255,0)'); g.addColorStop(1, 'rgba(190,235,255,.85)'); ctx.fillStyle = g; ctx.fillRect(hx - 70, 0, 140, Math.min(y, GY)); for (let i = 0; i < 14; i++) { ctx.fillStyle = 'rgba(255,255,255,' + (0.4 + 0.5 * hs(i)) + ')'; ctx.fillRect(hx - 70 + hs(i + 3) * 140, (hs(i + 9) * GY + G.time * 600) % Math.max(1, Math.min(y, GY)), 2, 12); } ctx.globalAlpha = 1; }
+    { const al = Math.min(1, k * 6, (1 - k) * 3); ctx.save(); ctx.globalCompositeOperation = 'lighter';
+      // 하늘을 가로지르는 은하수 띠
+      ctx.globalAlpha = al * 0.55; ctx.translate(W * 0.5, 40); ctx.rotate(-0.18); const gb = ctx.createLinearGradient(0, -46, 0, 46); gb.addColorStop(0, 'rgba(120,150,255,0)'); gb.addColorStop(0.5, 'rgba(200,225,255,.9)'); gb.addColorStop(1, 'rgba(120,150,255,0)'); ctx.fillStyle = gb; ctx.fillRect(-W, -46, W * 2, 92); ctx.setTransform(SC, 0, 0, SC, 0, 0);
+      // 별빛 물방울이 꼬리를 끌며 비스듬히 쏟아진다
+      for (let i = 0; i < 46; i++) { const st = hs(i) * 0.45, q = (k - st) / 0.4; if (q < 0 || q > 1) continue; const sx = hs(i + 50) * (W + 160) - 40, x0 = sx + 90, y0 = -20, x1 = sx - 60, y1 = GY - 6, px = x0 + (x1 - x0) * q, py = y0 + (y1 - y0) * q;
+        ctx.globalAlpha = al; const tl = ctx.createLinearGradient(px + 30, py - 70, px, py); tl.addColorStop(0, 'rgba(170,220,255,0)'); tl.addColorStop(1, 'rgba(235,248,255,.95)'); ctx.strokeStyle = tl; ctx.lineWidth = 2 + hs(i + 7) * 2.5; ctx.beginPath(); ctx.moveTo(px + 30, py - 70); ctx.lineTo(px, py); ctx.stroke();
+        glow(i % 3 ? 'blue' : 'gold', px, py, 10 + hs(i + 3) * 10, 0.9);
+        if (q > 0.93) glow('blue', x1, y1, 26 + (q - 0.93) * 300, 0.6); } // 땅에 닿는 순간 물보라 빛
+      ctx.restore(); ctx.globalAlpha = 1; }
     for (const k0 of [0.2, 0.42, 0.64]) {
       if (k < k0) continue; const q = Math.min(1, (k - k0) / 0.34);
       ctx.strokeStyle = P.ch === 2 ? 'rgba(170,225,255,' + (1 - q) + ')' : 'rgba(255,200,110,' + (1 - q) + ')';
       for (let i = 0; i < 3; i++) { const R = Math.max(0, q * 740 - i * 50); ctx.lineWidth = 12 - i * 4; ctx.beginPath(); ctx.ellipse(hx, GY, R, R * 0.35, 0, 0, TAU); ctx.stroke(); }
     }
-    if (k >= 0.2) { ctx.globalCompositeOperation = 'lighter'; for (let i = 0; i < 9; i++) { const fx = hs(i * 3) * W, fh = 40 + hs(i + 20) * 90 * Math.abs(Math.sin(G.time * 7 + i)); glow('fire', fx, GY - fh * 0.4, 20 + fh * 0.5, 0.5 * Math.min(1, (1 - k) * 4)); } ctx.globalCompositeOperation = 'source-over'; }
+    if (k >= 0.2) { ctx.globalCompositeOperation = 'lighter'; for (let i = 0; i < 9; i++) { const fx = hs(i * 3) * W, fh = 40 + hs(i + 20) * 90 * Math.abs(Math.sin(G.time * 7 + i)); glow(P.ch === 2 ? 'blue' : 'fire', fx, GY - fh * 0.4, 20 + fh * 0.5, 0.5 * Math.min(1, (1 - k) * 4)); } ctx.globalCompositeOperation = 'source-over'; }
   }
 }
 function wrapText(str, maxW) { const out = []; let line = ''; for (const w of str.split(' ')) { const t = line ? line + ' ' + w : w; if (ctx.measureText(t).width > maxW && line) { out.push(line); line = w; } else line = t; } if (line) out.push(line); return out; }
@@ -2040,15 +2048,13 @@ function draw() {
     if (P.co >= 0) { // 동료와 교대 대기 표시
       const c = CH[P.co], rdy = P.swapcd <= 0;
       ctx.globalAlpha = 0.92; spr(look(P.co).img, P.cx, P.cy + Math.sin(G.time * 4 + 1) * 2, c.h * 0.72 * SZ.p, { flip: c.flip }); ctx.globalAlpha = 1;
-      ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,.22)'; ctx.beginPath(); ctx.arc(P.cx, P.cy, 23 * SZ.p, 0, TAU); ctx.stroke();
-      ctx.strokeStyle = rdy ? (Math.floor(G.time * 3) % 2 ? '#7dffd9' : '#ffffff') : '#e8b84a'; ctx.beginPath(); ctx.arc(P.cx, P.cy, 23 * SZ.p, -Math.PI / 2, -Math.PI / 2 + TAU * Math.min(1, 1 - P.swapcd / SWAPCD)); ctx.stroke();
-      if (P.co === 4) { ctx.strokeStyle = 'rgba(255,190,110,' + (P.coeat > 0 ? 0.9 : 0.3) + ')'; ctx.lineWidth = P.coeat > 0 ? 3 : 1.5; ctx.beginPath(); ctx.arc(P.cx, P.cy, 30, 0, TAU); ctx.stroke(); }
+      if (rdy) { ctx.globalCompositeOperation = 'lighter'; glow(c.glow, P.cx, P.cy, 30 + 4 * Math.sin(G.time * 6), 0.35); ctx.globalCompositeOperation = 'source-over'; } // 교대 준비: 은은한 빛만
+      if (P.co === 4 && P.coeat > 0) { ctx.globalCompositeOperation = 'lighter'; glow('fire', P.cx, P.cy, 34, 0.5); ctx.globalCompositeOperation = 'source-over'; }
       if (P.co === 5 && P.cloneT <= 0) { ctx.globalAlpha = 0.4; for (const dy of [-44, 44]) spr(look(P.ch).img, P.x + 2, P.y + dy, CH[P.ch].h, { flip: CH[P.ch].flip }); ctx.globalAlpha = 1; }
-      if ((P.co === 2 || kitCo('guard')) && P.guard <= 0) { ctx.strokeStyle = 'rgba(159,180,255,' + (0.5 + 0.3 * Math.sin(G.time * 5)) + ')'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(P.x, P.y, 27, 0, TAU); ctx.stroke(); }
     }
     if (!(P.inv > 0 && Math.floor(G.time * 16) % 2)) drawPlayer(P.x, P.y, P.ch);
     if (P.muz > 0) { ctx.globalCompositeOperation = 'lighter'; glow(CH[P.ch].glow, P.x + 24, P.y, 14 + P.muz * 220, 0.9); ctx.globalCompositeOperation = 'source-over'; }
-    { const g = Math.max(0, P.graze || 0) / 0.25, r = 5.5 + g * 3; ctx.fillStyle = '#fff'; circ(P.x, P.y, r - 1.6); ctx.strokeStyle = CH[P.ch].robe; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(P.x, P.y, r, 0, TAU); ctx.stroke(); } // 맞는 곳(흰 점)
+    { const g = Math.max(0, P.graze || 0) / 0.25; ctx.globalCompositeOperation = 'lighter'; glow('jade', P.x, P.y, 9 + g * 8, 0.5); ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = '#fff'; circ(P.x, P.y, 3 + g * 2); } // 맞는 곳(흰 점): 테두리 없이 작은 빛점
     if (P.charge > 0.12) { const full = P.charge >= chgT(); ctx.globalCompositeOperation = 'lighter'; glow(CH[P.ch].glow, P.x, P.y, 24 + P.charge * 34, 0.55); ctx.globalCompositeOperation = 'source-over'; ctx.strokeStyle = full ? '#ffe27a' : 'rgba(255,255,255,.7)'; ctx.lineWidth = full ? 3 : 2; ctx.beginPath(); ctx.arc(P.x, P.y, full ? 20 + Math.sin(G.time * 20) * 2 : 30 - P.charge * 16, -Math.PI / 2, -Math.PI / 2 + TAU * Math.min(1, P.charge / 0.6)); ctx.stroke(); }
   }
   if (G.bombT > 0) drawBomb();
