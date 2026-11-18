@@ -207,8 +207,12 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .sel-step .go:disabled{background:var(--ink2);border-color:var(--line);color:var(--muted);cursor:default}
 .help{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;border-top:1px solid var(--line);padding-top:16px}
 .help > div{min-width:0}
-@media (pointer:coarse){.help .kb{display:none}} /* 터치 기기에서는 키보드 조작 줄을 숨긴다 */
 .helpv{z-index:7}
+.tip{position:absolute;left:50%;top:9%;transform:translateX(-50%);z-index:4;max-width:76%;padding:max(6px,.9cqw) max(14px,2cqw);border-radius:99px;background:rgba(8,10,22,.78);border:1px solid rgba(232,184,74,.7);color:#ffe9a0;font-size:max(13px,2cqw);line-height:1.3;text-align:center;pointer-events:none;animation:tipIn .3s ease-out}
+@keyframes tipIn{from{opacity:0;transform:translate(-50%,-8px)}}
+.tb.pulse{animation:tbPulse .8s ease-in-out infinite alternate}
+@keyframes tbPulse{from{box-shadow:0 0 0 0 rgba(255,215,106,.9);border-color:#ffd76a}to{box-shadow:0 0 0 1.4cqw rgba(255,215,106,0);border-color:#fff}}
+.help-head-btns{display:flex;gap:1cqw}
 .help-body{width:100%;flex:1;min-height:0;overflow-y:auto;text-align:left;margin:0;border-top:0;padding:.6cqw 1cqw 2cqw;gap:max(14px,2.4cqw);-webkit-overflow-scrolling:touch}
 .help-body h3{margin-top:0}.help-body p,.help-body li,.help-body dd,.help-body dt{font-size:max(12px,1.7cqw)}.help-body li{margin:.3em 0}
 h3{font-family:var(--display);font-weight:400;font-size:18px;margin:0 0 8px;color:var(--gold)}
@@ -336,7 +340,7 @@ li+li{margin-top:4px}
       </div>
     </div>
     <div class="overlay shop helpv" id="ovHelp" hidden>
-      <div class="shop-head"><b>도움말</b><button type="button" id="btnHelpX">닫기</button></div>
+      <div class="shop-head"><b>도움말</b><div class="help-head-btns"><button type="button" id="btnTutReset">안내 다시 보기</button><button type="button" id="btnHelpX">닫기</button></div></div>
       <div class="help help-body" id="helpBody"></div>
     </div>
     <div class="overlay shop" id="ovShop" hidden>
@@ -357,6 +361,7 @@ li+li{margin-top:4px}
       <div class="map-head"><b id="mapTitle">도깨비 탑</b><span id="mapSub"></span><button type="button" class="map-go" id="btnMapGo" hidden></button><button type="button" id="btnMapX">닫기</button></div>
       <div class="map-wrap" id="mapWrap"><div class="map-moon"></div><img class="tw dim" src="assets/tower10.webp" alt=""><img class="tw lit" id="mapLit" src="assets/tower10.webp" alt=""><div id="mapFloors"></div><img class="map-hero" id="mapHero" alt=""></div><div class="map-msg" id="mapMsg"></div>
     </div>
+    <div class="tip" id="tip" hidden></div>
     <div class="toast" id="toast" hidden></div>
     <div class="overlay" id="ovOver" hidden>
       <h2>구름에서 떨어졌다</h2>
@@ -375,12 +380,6 @@ li+li{margin-top:4px}
     <div>
       <h3>조작</h3>
       <dl>
-        <dt class="kb">이동</dt><dd class="kb"><kbd>방향키</kbd> 또는 <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></dd>
-        <dt class="kb">쏘기</dt><dd class="kb"><kbd>Z</kbd> 또는 <kbd>Space</kbd> 를 누르고 있기</dd>
-        <dt class="kb">기 모으기</dt><dd class="kb"><kbd>X</kbd> 를 꾹 눌렀다 떼기</dd>
-        <dt class="kb">부적 폭탄</dt><dd class="kb"><kbd>C</kbd></dd>
-        <dt class="kb">동료와 교대</dt><dd class="kb"><kbd>V</kbd> (잠깐 무적, 6초마다)</dd>
-        <dt class="kb">일시정지</dt><dd class="kb"><kbd>P</kbd></dd>
         <dt>휴대폰</dt><dd>화면을 끌어 움직이면 자동으로 쏩니다. 오른쪽 아래 「기」는 꾹 눌렀다 떼고, 「부적」은 폭탄입니다. 「교대」는 동료와 자리를 바꿉니다(잠깐 무적, 6초마다). 오른쪽 위 「멈춤」으로 쉬고, 이 도움말도 거기서 다시 볼 수 있습니다</dd>
       </dl>
     </div>
@@ -622,7 +621,7 @@ try { Object.assign(SAVE, JSON.parse(localStorage.getItem('dokkaebi-save') || '{
 if (!SAVE.stars || typeof SAVE.stars !== 'object') SAVE.stars = {}; if (!SAVE.lv || typeof SAVE.lv !== 'object') SAVE.lv = {};
 if (!Array.isArray(SAVE.tried)) SAVE.tried = []; if (!Number.isInteger(SAVE.trial)) SAVE.trial = -1;
 if (!Array.isArray(SAVE.owned)) SAVE.owned = []; if (!Array.isArray(SAVE.beaten)) SAVE.beaten = []; SAVE.gold = +SAVE.gold || 0;
-if (!Number.isInteger(SAVE.diff)) SAVE.diff = SAVE.hard ? 1 : 0; SAVE.moon = +SAVE.moon || 0; for (const k of ['eq', 'eqd']) if (!SAVE[k] || typeof SAVE[k] !== 'object') SAVE[k] = {}; for (const k of ['mfirst', 'tx']) if (!Array.isArray(SAVE[k])) SAVE[k] = []; SAVE.tower = +SAVE.tower || 0; SAVE.mstar = +SAVE.mstar || 0;
+if (!Number.isInteger(SAVE.diff)) SAVE.diff = SAVE.hard ? 1 : 0; SAVE.moon = +SAVE.moon || 0; for (const k of ['eq', 'eqd']) if (!SAVE[k] || typeof SAVE[k] !== 'object') SAVE[k] = {}; for (const k of ['mfirst', 'tx']) if (!Array.isArray(SAVE[k])) SAVE[k] = []; SAVE.tower = +SAVE.tower || 0; if (!SAVE.tut || typeof SAVE.tut !== 'object') SAVE.tut = {}; SAVE.mstar = +SAVE.mstar || 0;
 G.diff = SAVE.diff; G.hi = SAVE.hi; G.co = Number.isInteger(SAVE.co) ? SAVE.co : 1;
 function saveGame() { SAVE.hi = G.hi; try { localStorage.setItem('dokkaebi-save', JSON.stringify(SAVE)); } catch (e) {} }
 const MAXLV = 10, lvOf = ch => Math.min(MAXLV, SAVE.lv[ch] || 1), upCost = ch => 500 * lvOf(ch); // 강화: 레벨마다 화력 +6%
@@ -1052,7 +1051,7 @@ function advanceTalk() {
 }
 function startStage(i, part = 0) {
   G.part = part; G.pick = i; G.pp = part; G.deaths = 0; G.segDone = false; G.res = false; G.arc = null; G.arcDone = false; G.boon = newBoon();
-  G.stage = i; G.rank = 1 + 0.05 * i + 0.28 * Math.min(G.loop, 4); G.boon.shield += eqStat(P.ch).shield; G.pend = []; G.si = 0; G.wait = 3; G.gate = null; G.nMini = part === 1 ? 3 : 0; G.nMid = part === 1 ? 1 : 0; G.n0 = G.nMini + G.nMid; G.bossCalled = false; G.st = 0; G.boss = null; G.clearT = 0;
+  G.stage = i; G.rank = 1 + 0.05 * i + 0.28 * Math.min(G.loop, 4); if (i === 0 && part === 0 && !G.endless && G.diff === 0) { SAVE.tut.r11 = (SAVE.tut.r11 || 0) + 1; if (SAVE.tut.r11 === 1) G.rank *= 0.85; } /* 처음 1-1은 탄 속도 0.85배 */ G.boon.shield += eqStat(P.ch).shield; G.pend = []; G.si = 0; G.wait = 3; G.gate = null; G.nMini = part === 1 ? 3 : 0; G.nMid = part === 1 ? 1 : 0; G.n0 = G.nMini + G.nMid; G.bossCalled = false; G.st = 0; G.boss = null; G.clearT = 0;
   if (G.endless) banner('무한의 탑 ' + G.tf + '층', STAGES[i].boss + ' · ' + STAGES[i].place, 3); else banner(STAGES[i].name + ' ' + (part + 1) + '구간', STAGES[i].place + (G.diff ? ' · ' + DN[G.diff] : ''), 3);
 }
 const towerLoop = n => 0.4 + 0.12 * n; // 무한의 탑: 층이 오를수록 적 체력과 탄 속도가 오른다
@@ -1144,7 +1143,7 @@ function fire() {
   else { const n = 2 + (p >> 1); for (let i = 0; i < n; i++) { const a = (i - (n - 1) / 2) * 0.13; ps(x, y, Math.cos(a) * 500, Math.sin(a) * 500, 5, 1.1 + p * 0.25, 4); } P.fcd = 0.13; } // 탈 도깨비: 도깨비불
 }
 const CHG = 0.95; // 기를 다 모으는 데 걸리는 시간(초)
-function releaseCharge() {
+function releaseCharge() { tipDone('charge');
   const x = P.x + 16, y = P.y; sfx.charge();
   if (P.ch >= 6) kitCharge(P.ch, x, y);
   else if (P.ch === 0) ps(x + 10, y, 250, 0, 34, 3, 10, { pierce: 1, cd: 0.12, hit: new Map() });
@@ -1164,7 +1163,7 @@ function updateBuddy(dt) { // 따라다니는 동료: 자동 지원 사격, 고�
   if (P.co < 0) { swapReq = false; return; }
   const tx = Math.max(34, P.x - 38 * SZ.p), oy = 34 * SZ.p, ty = P.y - oy < 24 ? P.y + oy : P.y - oy;
   P.cx += (tx - P.cx) * Math.min(1, dt * 6); P.cy += (ty - P.cy) * Math.min(1, dt * 6);
-  if (swapReq && P.swapcd <= 0) { // 교대: 자리를 바꾸고 잠깐 무적, 주변 탄을 지우며 충격파
+  if (swapReq && P.swapcd <= 0) { tipDone('swap'); // 교대: 자리를 바꾸고 잠깐 무적, 주변 탄을 지우며 충격파
     const a = P.ch; P.ch = P.co; P.co = a; const ox = P.x, oy = P.y; P.x = P.cx; P.y = P.cy; P.cx = ox; P.cy = oy;
     P.x = Math.max(32, Math.min(W - 24, P.x)); P.y = Math.max(26, Math.min(GY - 20, P.y));
     P.swapcd = SWAPCD; P.inv = Math.max(P.inv, 0.9); P.charge = 0; P.guard = Math.max(P.guard, 0);
@@ -1226,6 +1225,7 @@ function updatePlayer(dt) {
   if (P.deadT > 0) {
     P.deadT -= dt;
     if (P.deadT <= 0) {
+      if (P.lives < 0 && !G.endless && G.stage === 0 && G.diff === 0 && !SAVE.tut.save1) { SAVE.tut.save1 = 1; saveGame(); P.lives = 0; banner('다시 일어섰다!', '처음 한 번은 탑이 봐줍니다', 2.4); sfx.life(); }
       if (P.lives < 0) { useTrial(); if (G.endless) { SAVE.tower = Math.max(SAVE.tower, G.tf - 1); } G.mode = 'over'; G.overT = 0.8; stageEl.classList.remove('playing'); saveGame(); return; }
       P.x = 110; P.y = H / 2; P.cx = 50; P.cy = H / 2; P.inv = 2.6; P.bombs = Math.max(P.bombs, 2); bullets = [];
     }
@@ -1252,7 +1252,7 @@ function updatePlayer(dt) {
   else if (P.charge > 0) { if (P.charge >= CHG) releaseCharge(); P.charge = 0; }
   // 폭탄
   if (G.arc) bombReq = false;
-  if (bombReq && P.bombs > 0 && G.bombT <= 0) { P.bombs--; mis('bomb'); G.bombT = BD; G.bfx = 0; P.inv = Math.max(P.inv, BD + 1.2); G.flash = 0; G.cut = { t: 0 }; G.bombHit = false; sfx.bomb(); }
+  if (bombReq && P.bombs > 0 && G.bombT <= 0) { tipDone('bomb'); P.bombs--; mis('bomb'); G.bombT = BD; G.bfx = 0; P.inv = Math.max(P.inv, BD + 1.2); G.flash = 0; G.cut = { t: 0 }; G.bombHit = false; sfx.bomb(); }
   bombReq = false;
   updateBuddy(dt);
 }
@@ -1270,7 +1270,7 @@ function update(dt) {
   if (G.offer || G.res) return;
   if (G.talk) { G.talk.t += dt; if (G.talk.t > 3.4) advanceTalk(); return; }
   // 무대 진행
-  G.st += dt;
+  G.st += dt; tutTick(dt);
   for (let i = G.pend.length - 1; i >= 0; i--) if (G.pend[i].t <= G.st) G.pend.splice(i, 1)[0].f();
   if (G.gate) { if (G.gate.dead || G.gate.gone) { G.gate = null; G.wait = 2.2; } }
   else if ((G.wait -= dt) <= 0) runStep();
@@ -1334,7 +1334,7 @@ function update(dt) {
     if (P.deadT <= 0 && (it.auto || d < 70)) { const v = it.auto ? 520 : 300; it.x += (P.x - it.x) / (d || 1) * v * dt; it.y += (P.y - it.y) / (d || 1) * v * dt; }
     else { it.x -= 45 * dt; it.y += Math.sin(it.t * 3) * 14 * dt; }
     if (P.deadT <= 0 && d < 18) {
-      it.dead = true;
+      it.dead = true; tipDone(it.type === 'C' ? 'coin' : 'item');
       if (it.type === 'P') { if (P.power < 4) { P.power++; banner('힘 ' + P.power + '단계', '', 0.9); } else addScore(2000); sfx.item(); }
       else if (it.type === 'B') { if (P.bombs < 5) P.bombs++; else addScore(2000); sfx.item(); }
       else if (it.type === 'L') { if (P.lives < 5) P.lives++; else addScore(5000); banner('목숨 하나 더!', '', 1); sfx.life(); }
@@ -1860,6 +1860,7 @@ $('btnResume').addEventListener('click', () => { if (G.paused) togglePause(); $(
 function openHelp() { const src = document.querySelector('.wrap > .help'); if (src && !$('helpBody').childElementCount) $('helpBody').innerHTML = src.innerHTML; $('helpBody').scrollTop = 0; $('ovHelp').hidden = false; } // 출시판에서는 화면 아래 설명이 숨겨져 있으므로 같은 글을 여기서 보여 준다
 $('btnHelp').addEventListener('click', e => { openHelp(); e.currentTarget.blur(); });
 $('btnHelpX').addEventListener('click', () => { $('ovHelp').hidden = true; });
+$('btnTutReset').addEventListener('click', tutReset);
 $('btnQuit').addEventListener('click', () => { useTrial(); saveGame(); toTitle(); });
 addEventListener('keydown', e => {
   if (e.target && /BUTTON|INPUT|TEXTAREA/.test(e.target.tagName) && (e.code === 'Space' || e.code === 'Enter') && G.mode !== 'play') return;
@@ -2143,6 +2144,45 @@ $('btnMapX').addEventListener('click', () => { const go = mapGo; mapGo = null; c
 $('btnMapGo').addEventListener('click', () => { const go = mapGo; mapGo = null; clearTimeout(mapTimer); $('ovMap').hidden = true; if (go) go(false); });
 $('mapFloors').addEventListener('click', ev => { const d = ev.target.closest('[data-f]'); if (!d || mapGo || d.classList.contains('lock')) return; const i = +d.dataset.f; let p = 0; while (p < 2 && segOpen(i * 3 + p + 1)) p++; G.pick = i; G.pp = segOpen(i * 3 + p) ? p : 0; closeMap(); });
 
+/* ---------- 첫 판 안내 말풍선: 게임을 멈추지 않고, 한 번 본 안내는 다시 나오지 않는다 ---------- */
+const TUT_ON = true; // 개발판(검토용)에서도 안내를 보여 준다. 끄려면 false
+const TIPS = {
+  move: ['화면을 끌어서 움직이세요. 공격은 저절로 나갑니다', null],
+  coin: ['엽전을 주우면 골드가 쌓입니다', null],
+  charge: ['「기」를 꾹 눌렀다 떼면 강한 공격이 나갑니다', 'padCharge'],
+  bomb: ['위험할 땐 「부적」! 탄을 지우고 크게 때립니다', 'padBomb'],
+  hitbox: ['맞는 곳은 몸 가운데 흰 점 하나뿐입니다', null],
+  item: ['붉은 구슬은 힘, 푸른 구슬은 부적, 초록 구슬은 목숨', null],
+  boss: ['대장은 체력이 줄면 모습이 바뀝니다. 부적을 아껴 두세요', null],
+  swap: ['「교대」로 동료와 자리를 바꿉니다. 바꾸는 순간 잠깐 무적!', 'padSwap'],
+};
+const tut = { key: null, t: 0, drag: 0 };
+function tipShow(k) {
+  if (!TUT_ON || SAVE.tut[k] || tut.key) return;
+  tut.key = k; tut.t = 8; const el = $('tip'); el.textContent = TIPS[k][0]; el.hidden = false; el.style.animation = 'none'; el.offsetHeight; el.style.animation = '';
+  if (TIPS[k][1]) $(TIPS[k][1]).classList.add('pulse');
+}
+function tipDone(k) { // 안내한 동작을 해 보면 바로 사라진다. 아직 안 나온 안내도 이미 할 줄 알면 건너뛴다
+  if (!SAVE.tut[k]) { SAVE.tut[k] = 1; saveGame(); }
+  if (tut.key === k) tipHide();
+}
+function tipHide() { if (!tut.key) return; const k = tut.key; SAVE.tut[k] = 1; saveGame(); if (TIPS[k][1]) $(TIPS[k][1]).classList.remove('pulse'); tut.key = null; $('tip').hidden = true; }
+function tutTick(dt) {
+  if (!TUT_ON || G.paused || G.arc || G.talk || G.cut || G.res || G.offer) return;
+  if (tut.key && (tut.t -= dt) <= 0) tipHide();
+  if (touch.down || keys.left || keys.right || keys.up || keys.down) { if ((tut.drag += dt) > 1) tipDone('move'); }
+  const first = G.stage === 0 && !G.endless;
+  if (first && G.part === 0 && G.st > 1) tipShow('move');
+  if (items.some(it => it.type === 'C' && it.x < W - 10)) tipShow('coin');
+  if (items.some(it => it.type !== 'C' && it.x < W - 10)) tipShow('item');
+  if (enemies.some(e => e.type === 'mini' && !e.dead && e.x < W - 20)) tipShow('charge');
+  if (enemies.some(e => e.type === 'mid' && !e.dead && e.x < W - 20) || bullets.length > 40) tipShow('bomb');
+  if (first && G.part === 1 && P.deadT <= 0 && bullets.some(b => Math.hypot(b.x - P.x, b.y - P.y) < (b.r * 0.6 + 2.5) * 3)) tipShow('hitbox');
+  if (first && G.boss) tipShow('boss');
+  if (P.co >= 0 && G.st > 1.5 && (G.stage > 0 || G.endless)) tipShow('swap'); // 교대는 1층을 익힌 뒤(2층부터) 알려 준다
+}
+function tutReset() { SAVE.tut = {}; saveGame(); tipHide(); toast('처음 하는 안내를 다시 보여 줍니다'); }
+
 const starStr = n => '★'.repeat(n) + '<i>' + '★'.repeat(3 - n) + '</i>';
 const DN = ['보통', '어려움', '악몽'], HK = () => G.diff * 30; // 난이도마다 별을 30칸씩 따로 적는다(보통 0~29, 어려움 30~59, 악몽 60~89)
 const diffOpen = d => d === 0 || TEST_UNLOCK || !!SAVE.stars[30 * d - 1], towerOpen = () => TEST_UNLOCK || !!SAVE.stars[29];
@@ -2154,7 +2194,7 @@ function showResult() { // 구간을 깬 뒤: 별과 골드를 보여 주고 이
   $('resText').innerHTML = '이번 구간 골드 <b class="gold">+' + (G.resGold || 0).toLocaleString() + '</b> · 가진 골드 <b class="gold">' + SAVE.gold.toLocaleString() + '</b>';
   $('btnNext').textContent = last ? '결말 보기' : G.part === 2 ? '다음 층으로' : '다음 구간'; $('ovRes').hidden = false; $('btnNext').focus();
 }
-function toTitle() { $('ovHelp').hidden = true; G.endless = false; G.loop = 0; G.mode = 'title'; G.arc = null; G.paused = false; G.cut = null; G.bombT = 0; G.talk = null; G.boss = null; parts = []; $('ovPause').hidden = true; $('btnPause').textContent = '멈춤'; enemies = []; bullets = []; shots = []; items = []; stageEl.classList.remove('playing'); $('ovOver').hidden = true; $('ovRes').hidden = true; G.res = false; $('ovTitle').hidden = false; if (document.activeElement) document.activeElement.blur(); select(sel); pickStage(0); }
+function toTitle() { $('ovHelp').hidden = true; tipHide(); G.endless = false; G.loop = 0; G.mode = 'title'; G.arc = null; G.paused = false; G.cut = null; G.bombT = 0; G.talk = null; G.boss = null; parts = []; $('ovPause').hidden = true; $('btnPause').textContent = '멈춤'; enemies = []; bullets = []; shots = []; items = []; stageEl.classList.remove('playing'); $('ovOver').hidden = true; $('ovRes').hidden = true; G.res = false; $('ovTitle').hidden = false; if (document.activeElement) document.activeElement.blur(); select(sel); pickStage(0); }
 $('btnNext').addEventListener('click', () => { if (!owns(P.ch) || (P.co >= 0 && !owns(P.co))) { $('btnHome').click(); return; } $('ovRes').hidden = true; $('btnNext').blur();
   const go = () => { G.res = false; stageEl.classList.add('playing'); nextStage(); };
   if (G.part === 2 && !STAGES[G.stage].last && !G.endless && G.stage + 1 < STAGES.length) { openMap({ ch: P.ch, from: G.stage, to: G.stage + 1, go: back => { if (back) toTitle(); else go(); } }); return; } // 탑을 한 층 오르는 장면
@@ -2241,7 +2281,7 @@ function start() {
   if (window.ResizeObserver) new ResizeObserver(resize).observe(cv); else addEventListener('resize', resize);
   requestAnimationFrame(frame);
 }
-window.__game = { openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
+window.__game = { tut, tipShow, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
 if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start); else start();
 })();
 </script>
