@@ -1,0 +1,8 @@
+<style>
+/* 앱(출시판) 전용: 게임 화면만 꽉 채우고 안내 글은 숨긴다 */
+html,body{margin:0;height:100%;background:#05060c;overflow:hidden;overscroll-behavior:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:none!important;padding:0!important;margin:0!important;height:100vh;height:100dvh;display:flex;align-items:center;justify-content:center}
+.wrap>.top,.wrap>.help,.wrap>.rotate-hint{display:none!important}
+.stage{width:min(100vw,177.78dvh)!important;max-width:none!important;border:0!important}
+#btnFull{display:none!important}
+</style>

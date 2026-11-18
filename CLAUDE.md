@@ -6,6 +6,7 @@
 
 - `skills/naver-blog-writer/`: 스킬 원본. `.claude/skills/naver-blog-writer` 는 이 폴더를 가리키는 심볼릭 링크이므로 원본만 수정한다.
 - `dist/naver-blog-writer.zip`: claude.ai 업로드용 패키지. 직접 수정하지 말고 `./build.sh` 로 다시 만든다.
+- `game/geumeum/`: 별도 프로젝트인 안드로이드 게임 「그믐: 달을 훔친 자」. 스킬과 무관하며, 설명은 그 폴더의 README.md.
 
 ## 작업 규칙
 

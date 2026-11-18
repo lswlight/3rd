@@ -1,0 +1,8 @@
+{
+  "appId": "com.graftkorea.geumeum",
+  "appName": "그믐: 달을 훔친 자",
+  "webDir": "www",
+  "android": {
+    "backgroundColor": "#05060c"
+  }
+}
