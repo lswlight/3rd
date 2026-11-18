@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <!-- 접붙이기(graft): 굵은 줄기에 새 가지가 이어져 잎을 틔우는 표시 -->
+  <rect x="4" y="4" width="112" height="112" rx="26" fill="none" stroke="#e8d9a8" stroke-width="3"/>
+  <path d="M60 96 V44" stroke="#e8d9a8" stroke-width="7" stroke-linecap="round"/>
+  <path d="M60 66 C60 52 70 40 86 34" stroke="#e8b84a" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <path d="M86 34 C80 22 90 14 100 16 C100 28 94 36 86 34 Z" fill="#7dd3a8"/>
+  <path d="M54 63 L66 69" stroke="#05060c" stroke-width="3"/>
+</svg>
