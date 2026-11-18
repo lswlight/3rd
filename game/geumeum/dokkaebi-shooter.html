@@ -293,6 +293,23 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
 .corner button.ico{width:max(28px,4.2cqw);height:max(28px,4.2cqw);padding:0;border-radius:50%;font-size:max(12px,1.7cqw);display:flex;align-items:center;justify-content:center}
 /* 작은 화면(세로 400px 이하) */
 @media (max-height:400px){#ovTitle .sel-role,.st-comp,#ovTitle .sel-menu span,.pk-sub,#ovPick .sel-desc{display:none}#ovTitle .sel-menu i{font-size:18px}#ovTitle .sel-menu button{padding:5px 0}.lb-card{padding:6px 10px}.lb-right{gap:6px}}
+
+/* 기획 9: 도깨비 오락실 「개장 준비 중」 안내 장표 */
+.arcv{z-index:7;gap:1.1cqw;background:linear-gradient(180deg,rgba(8,8,16,.55),rgba(8,8,16,.72) 60%,rgba(8,8,16,.5)),url(assets/bgS4.jpg) center/cover;text-align:center}
+.arc-kick{font-family:var(--display);font-size:max(10px,1.5cqw);color:var(--gold);letter-spacing:.3em}
+.arcv h2{font-size:max(26px,5.4cqw);line-height:1;color:#ffd76a;text-shadow:0 .3cqw 0 #8a3d0a,0 0 2cqw rgba(255,160,40,.8)}
+.arc-lead{font-size:max(11px,1.75cqw);line-height:1.6;color:var(--paper);margin:0;text-shadow:0 0 .6cqw #000}
+.arc-cards{display:flex;gap:2.2cqw;margin:1.2cqw 0}
+.arc-card{width:14.8cqw;padding:0 0 1.2cqw;border:1px solid rgba(200,170,255,.35);border-radius:1.2cqw;background:linear-gradient(180deg,#2a1e3c,#150f22);display:flex;flex-direction:column;align-items:center;gap:.5cqw;overflow:hidden}
+.arc-sil{position:relative;width:100%;height:13.2cqw;display:flex;align-items:center;justify-content:center}
+.arc-sil img{max-width:88%;max-height:92%;filter:brightness(0) drop-shadow(0 0 .25cqw rgba(232,184,74,.55));opacity:.92}
+.arc-tape{position:absolute;left:-6%;right:-6%;top:58%;height:2.6cqw;transform:rotate(-12deg);background:repeating-linear-gradient(135deg,#ffd24a 0 1.6cqw,#1a1408 1.6cqw 3.2cqw);display:flex;align-items:center;justify-content:center;box-shadow:0 .3cqw .8cqw rgba(0,0,0,.6)}
+.arc-tape b{font-family:var(--display);font-weight:400;font-size:max(10px,1.4cqw);color:#1a1408;background:#ffd24a;padding:.1cqw 1cqw;border-radius:.3cqw}
+.arc-card>b{font-family:var(--display);font-weight:400;font-size:max(11px,1.75cqw);color:#fff}.arc-card>small{font-size:max(9px,1.2cqw);color:var(--muted)}
+.arc-foot{font-size:max(9px,1.3cqw);color:#cfc6b4;margin:0;text-shadow:0 0 .6cqw #000}
+.arc-go{font-family:var(--display);font-size:max(14px,2.4cqw);padding:max(6px,1cqw) max(28px,6cqw);border-radius:1cqw;background:linear-gradient(180deg,#e8613f,#c23b2e);border:1px solid #ff8a6a;color:#fff;box-shadow:0 .5cqw 0 #7a1f17}
+#ovTitle .sel-menu .arc b{position:absolute;right:4%;top:-.9cqw;font-family:var(--body);font-weight:400;font-size:max(8px,1cqw);color:#1a1408;background:#ffd24a;border-radius:.4cqw;padding:0 .4cqw;white-space:nowrap}
+@media (max-height:400px){.arc-lead,.arc-foot{font-size:10px}.arc-sil{height:11cqw}}
 </style>
 
 <main class="wrap">
@@ -387,9 +404,23 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
           <button type="button" id="btnMis"><i>📜</i><span id="misTxt">임무</span></button>
           <button type="button" id="btnTower"><i>🗼</i><span id="towerTxt">무한의 탑</span></button>
           <button type="button" id="btnChar"><i>👥</i><span>캐릭터</span></button>
+          <button type="button" class="arc" id="btnArcade"><i>🕹️</i><span>오락실</span><b>제작 중</b></button>
           <button type="button" class="shop" id="btnShop"><i>🏮</i><span>상점</span></button>
         </div>
       </div>
+    </div>
+    <div class="overlay arcv" id="ovArcade" hidden>
+      <small class="arc-kick">— 개 장 준 비 중 —</small>
+      <h2>도깨비 오락실</h2>
+      <p class="arc-lead">탑을 오를수록 장터에 새 오락기가 하나씩 들어옵니다.<br>지금 도깨비들이 열심히 만들고 있어요.</p>
+      <div class="arc-cards">
+        <div class="arc-card"><div class="arc-sil"><img src="assets/hp1_o0.webp" alt=""><span class="arc-tape"><b>제작 중</b></span></div><b>달래의 달빛 길</b><small>달리기 액션</small></div>
+        <div class="arc-card"><div class="arc-sil"><img src="assets/hp2n.webp" alt=""><span class="arc-tape"><b>제작 중</b></span></div><b>나린의 장터 한판</b><small>골목 격투</small></div>
+        <div class="arc-card"><div class="arc-sil"><img src="assets/p5.webp" alt=""><span class="arc-tape"><b>제작 중</b></span></div><b>구미호 구슬 놀이</b><small>구슬 퍼즐</small></div>
+        <div class="arc-card"><div class="arc-sil"><img src="assets/p8b.webp" alt=""><span class="arc-tape"><b>제작 중</b></span></div><b>이무기 승천</b><small>세로 오르기</small></div>
+      </div>
+      <p class="arc-foot">새 오락기는 업데이트로 찾아옵니다 · 그동안 모은 엽전·의상·동료는 새 오락기에서도 그대로 씁니다</p>
+      <button type="button" class="arc-go" id="btnArcadeX">탑 오르러 가기</button>
     </div>
     <div class="overlay pick" id="ovPick" hidden>
       <div class="pk-box">
@@ -2471,7 +2502,7 @@ function applyUnlocks() { // 첫 화면에서 열린 것만 보이게 하고, �
   const show = (el, on) => { if (el) el.classList.toggle('ui-off', !on); };
   show($('btnChar'), o.pick); show($('stPrev'), o.pick); show($('stNext'), o.pick); $('selArt').classList.toggle('nopick', !o.pick);
   document.querySelectorAll('.sel-row [data-ch]').forEach(b => show(b, +b.dataset.ch < 3 || o.co));
-  show($('coRow'), o.co); show($('btnMap'), o.co); show($('stRec'), o.co);
+  show($('coRow'), o.co); show($('btnMap'), o.co); show($('btnArcade'), o.co); // 오락실 칸은 1층 대장을 깬 뒤부터 show($('stRec'), o.co);
   show($('btnUp'), o.up); show($('btnMis'), o.up);
   show($('eqCard'), o.eq); show($('btnShop'), o.moon); show($('selMoon'), o.moon);
   show($('diffChips'), o.hard); show($('btnTower'), o.hard);
@@ -2499,11 +2530,11 @@ function showResult() { // 구간을 깬 뒤: 별과 골드를 보여 주고 이
   $('btnNext').textContent = last ? '결말 보기' : G.part === 2 ? '다음 층으로' : '다음 구간'; $('ovRes').hidden = false; $('btnNext').focus();
 }
 function toTitle() { $('ovHelp').hidden = true; tipHide(); G.endless = false; G.loop = 0; G.mode = 'title'; G.arc = null; G.paused = false; G.cut = null; G.bombT = 0; G.talk = null; G.boss = null; parts = []; $('ovPause').hidden = true; $('btnPause').textContent = '⏸'; enemies = []; bullets = []; shots = []; items = []; stageEl.classList.remove('playing'); $('ovOver').hidden = true; $('ovRes').hidden = true; G.res = false; $('ovTitle').hidden = false; if (document.activeElement) document.activeElement.blur(); select(sel); pickStage(0); }
-$('btnNext').addEventListener('click', () => { if (!owns(P.ch) || (P.co >= 0 && !owns(P.co))) { $('btnHome').click(); return; } $('ovRes').hidden = true; $('btnNext').blur();
+$('btnNext').addEventListener('click', () => { if (G.stage === 0 && G.part === 2 && !G.endless && !SAVE.tut.arc13) { arcadeOnce('arc13', () => $('btnNext').click()); return; } if (!owns(P.ch) || (P.co >= 0 && !owns(P.co))) { $('btnHome').click(); return; } $('ovRes').hidden = true; $('btnNext').blur();
   const go = () => { G.res = false; stageEl.classList.add('playing'); nextStage(); };
   if (G.part === 2 && !STAGES[G.stage].last && !G.endless && G.stage + 1 < STAGES.length) { openMap({ ch: P.ch, from: G.stage, to: G.stage + 1, go: back => { if (back) toTitle(); else go(); } }); return; } // 탑을 한 층 오르는 장면
   go(); });
-$('btnHome').addEventListener('click', () => { const k = G.stage * 3 + G.part + 1, up = G.part === 2 && !G.endless && k < STAGES.length * 3, from = G.stage, ch = P.ch; if (k < STAGES.length * 3) { G.pick = Math.floor(k / 3); G.pp = k % 3; } toTitle(); if (up) openMap({ ch, from, to: from + 1 }); });
+$('btnHome').addEventListener('click', () => { if (G.stage === 0 && G.part === 2 && !G.endless && !SAVE.tut.arc13) { arcadeOnce('arc13', () => $('btnHome').click()); return; } const k = G.stage * 3 + G.part + 1, up = G.part === 2 && !G.endless && k < STAGES.length * 3, from = G.stage, ch = P.ch; if (k < STAGES.length * 3) { G.pick = Math.floor(k / 3); G.pp = k % 3; } toTitle(); if (up) openMap({ ch, from, to: from + 1 }); });
 function offerHero() { // 층 대장을 이긴 뒤: 그 대장을 동료로 삼을지 묻는다
   const ch = CH.findIndex(c => c.from === G.stage); if (ch < 0 || SAVE.owned.includes(ch)) return false;
   G.offer = true; stageEl.classList.remove('playing');
@@ -2553,7 +2584,7 @@ const PROLOGUE = [
 ];
 function showEnding() { story = ENDING; $('btnStorySkip').hidden = true; G.mode = 'title'; G.ended = true; enemies = []; bullets = []; shots = []; items = []; stageEl.classList.remove('playing'); saveGame(); endI = 0; drawEnding(); $('ovEnd').hidden = false; }
 function drawEnding() { const t = $('endText'), pro = story === PROLOGUE; t.textContent = story[endI]; t.className = (pro ? endI === story.length - 1 : endI >= story.length - 2) ? 'last' : ''; $('endHint').textContent = endI === story.length - 1 ? (pro ? (storyAgain ? '화면을 누르면 돌아갑니다' : '화면을 누르면 탑으로 출발합니다') : '화면을 누르면 처음으로 돌아갑니다') : '화면을 누르면 넘어갑니다'; }
-function nextEnding() { if (++endI >= story.length) { if (story === PROLOGUE) return endPrologue(); $('ovEnd').hidden = true; G.pick = 0; G.pp = 0; toTitle(); return; } drawEnding(); }
+function nextEnding() { if (++endI >= story.length) { if (story === PROLOGUE) return endPrologue(); $('ovEnd').hidden = true; G.pick = 0; G.pp = 0; toTitle(); arcadeOnce('arcEnd'); return; } drawEnding(); }
 let storyAgain = false; // 도움말에서 이야기를 다시 볼 때: 끝나면 하던 곳으로 돌아간다
 function showPrologue() { storyAgain = false; story = PROLOGUE; endI = 0; $('ovCover').hidden = true; $('btnStorySkip').hidden = false; drawEnding(); $('ovEnd').hidden = false; }
 function endPrologue() { // 처음 한 번: 이야기가 끝나면 캐릭터 고르기 없이 한별로 1-1을 바로 시작
@@ -2562,6 +2593,12 @@ function endPrologue() { // 처음 한 번: 이야기가 끝나면 캐릭터 고
   audioInit(); G.pick = 0; G.pp = 0; G.co = -1; sel = 0; newGame(0);
 }
 $('btnStorySkip').addEventListener('click', e => { e.stopPropagation(); endPrologue(); });
+/* 기획 9: 「제작 중」 안내 장표. 1층 대장을 처음 깼을 때·결말을 처음 봤을 때 한 번씩, 그 밖에는 메뉴 「오락실」에서 */
+let arcNext = null;
+function openArcade(then) { arcNext = then || null; $('ovArcade').hidden = false; $('btnArcadeX').focus(); }
+function closeArcade() { $('ovArcade').hidden = true; const f = arcNext; arcNext = null; if (f) f(); }
+function arcadeOnce(key, then) { if (SAVE.tut[key]) { if (then) then(); return; } SAVE.tut[key] = 1; saveGame(); openArcade(then); }
+$('btnArcadeX').addEventListener('click', closeArcade); $('btnArcade').addEventListener('click', () => openArcade());
 $('ovEnd').addEventListener('click', nextEnding);
 function openSelect() { audioInit(); if (!SAVE.tut.prologue && !SAVE.stars[0]) return showPrologue(); $('ovCover').hidden = true; $('ovTitle').hidden = false; refreshShop(); $('btnGo').focus(); }
 $('ovCover').addEventListener('click', openSelect);
@@ -2650,7 +2687,7 @@ function start() {
   if (window.ResizeObserver) new ResizeObserver(() => resize()).observe(cv); else addEventListener('resize', () => resize());
   requestAnimationFrame(frame);
 }
-window.__game = { get shots() { return shots; }, releaseCharge: () => releaseCharge(), openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
+window.__game = { openArcade, get shots() { return shots; }, releaseCharge: () => releaseCharge(), openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
 if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start); else start();
 })();
 </script>
