@@ -451,6 +451,12 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
 #ovD .pk-grid button.dim[data-tag="조종"]::before{background:#7a1f17}
 .d2-scroll{left:34cqw;width:61cqw}
 .tabs button{white-space:nowrap}
+/* 출격 족자(휴대폰 확인 뒤): 구름 출발 버튼은 족자 맨 아래 칸에 고정해 다른 것을 가리지 않게 */
+#ovD .d1-scroll{top:5.4cqw;bottom:7.4cqw;display:flex;flex-direction:column;gap:.45cqw;padding:1.2cqw 2cqw}
+#ovD .d1-scroll h3{margin:0}#ovD .d1-sub{margin:0;flex-wrap:nowrap;white-space:nowrap}#ovD .d1-sub .chip.rec{padding:.1cqw .8cqw;font-size:max(12px,1.3cqw);overflow:hidden;text-overflow:ellipsis;min-width:0}
+#ovD .d1-segs{margin:0}#ovD .d1-sub{font-size:max(13px,1.4cqw)}
+#ovD .d-floors{top:4.6cqw;bottom:10.4cqw}#ovD .d-floors li,#ovD .d-floors button{line-height:1}#ovD .d-floors button{padding:.15cqw .4cqw}#ovD .d1-medal{margin:0}#ovD .d-co{margin-top:0;padding:.35cqw 1.2cqw}#ovD .d-co img{width:3.8cqw;height:3.8cqw}
+#ovD .d1-scroll .d-go{position:static;flex:none;width:100%;height:max(46px,7.4cqw);margin-top:auto;padding-top:.8cqw;font-size:max(20px,2.8cqw)}
 /* 그믐의 맹세(기획 8의 3) */
 .d1-row{display:flex;align-items:center;gap:1cqw;flex-wrap:wrap}#ovD .oath-chip{background:#3a2412;color:#ffe9a0;border-color:#3a2412}#ovD .oath-chip.on{background:#7a3fa0;border-color:#7a3fa0;color:#fff}
 #ovOath{background:rgba(5,6,14,.55);isolation:isolate;padding:5.6cqw 13cqw 4.2cqw;color:#3a2412;z-index:7;gap:.7cqw}
@@ -597,8 +603,7 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
         <div class="d-name"><h2 id="selName">한별</h2><p class="sel-role" id="selRole"></p></div>
         <ol class="d-floors" id="dFloors"></ol>
         <img class="d-tower" id="btnMap" src="assets/tower10.webp" alt="탑 지도">
-        <div class="scroll d1-scroll"><h3 id="d1Title"></h3><p class="d1-sub"><span id="d1Boss"></span><button type="button" class="chip rec" id="stRec"></button></p><div class="d1-segs" id="d1Segs"></div><p class="d1-medal" id="d1Medal" title="무피격 · 소탕 · 구출: 같은 구간을 다른 목표로 다시 해 보세요"></p><div class="d1-row"><div class="lb-diff" id="diffChips"></div><button type="button" class="chip oath-chip" id="btnOath">맹세</button></div><button type="button" id="stPrev" hidden></button><button type="button" class="d-co" id="coRow"><img id="coImg" alt=""><span><b id="coName"></b><em id="coDesc"></em></span><i>바꾸기 ›</i></button><button type="button" id="stNext" hidden></button></div>
-        <button type="button" class="d-go" id="btnGo">구름 타고 출발</button>
+        <div class="scroll d1-scroll"><h3 id="d1Title"></h3><p class="d1-sub"><span id="d1Boss"></span><button type="button" class="chip rec" id="stRec"></button></p><div class="d1-segs" id="d1Segs"></div><p class="d1-medal" id="d1Medal" title="무피격 · 소탕 · 구출: 같은 구간을 다른 목표로 다시 해 보세요"></p><div class="d1-row"><div class="lb-diff" id="diffChips"></div><button type="button" class="chip oath-chip" id="btnOath">맹세</button></div><button type="button" id="stPrev" hidden></button><button type="button" class="d-co" id="coRow"><img id="coImg" alt=""><span><b id="coName"></b><em id="coDesc"></em></span><i>바꾸기 ›</i></button><button type="button" id="stNext" hidden></button><button type="button" class="d-go" id="btnGo">구름 타고 출발</button></div>
       </section>
       <section class="dp dp2">
         <img class="d-art" id="d2Art" alt="">
@@ -3174,7 +3179,7 @@ function pickStage(d) {
   const N = STAGES.length * 3, k = ((G.pick || 0) * 3 + (G.pp || 0) + d + N) % N; G.pick = Math.floor(k / 3); G.pp = k % 3; const S = STAGES[G.pick], el = $('stageName');
   el.textContent = (G.pick + 1) + '-' + (G.pp + 1) + ' ' + S.place;
   $('stSub').innerHTML = '<span class="st-comp">' + segComp(G.pick, G.pp) + ' · </span>' + (segOpen(k) ? '<b>' + starStr(SAVE.stars[k + HK()] || 0) + '</b>' : '잠김');
-  el.classList.toggle('lock', !S.ready || !segOpen(k)); { const rr = $('stRec'), r = recOf(G.pick); rr.textContent = r ? (r.own ? '추천 동료 · ' + CH[r.ch].name : '추천 · ' + CH[r.ch].name + ' 🔒') : '추천 동료 · 없음'; rr.title = recText(G.pick); rr.classList.toggle('no', !r || !r.own); } refreshShop();
+  el.classList.toggle('lock', !S.ready || !segOpen(k)); { const rr = $('stRec'), r = recOf(G.pick); rr.textContent = r ? '추천 · ' + CH[r.ch].name + (r.own ? '' : ' 🔒') : '추천 없음'; rr.title = recText(G.pick); rr.classList.toggle('no', !r || !r.own); } refreshShop();
   if (G.mode === 'title') G.stage = S.ready ? G.pick : 0;
 }
 $('stPrev').addEventListener('click', () => pickStage(-1)); $('stNext').addEventListener('click', () => pickStage(1));
@@ -3247,7 +3252,7 @@ function renderStreet() {
 function renderD1() {
   const P = G.pick || 0, S = STAGES[P];
   $('dFloors').innerHTML = STAGES.map((x, i) => i).reverse().map(i => '<li><button type="button" data-f="' + i + '" class="' + (i === P ? 'on' : '') + (segOpen(i * 3) ? '' : ' lock') + '">' + (i + 1) + '층</button></li>').join('');
-  $('d1Title').textContent = (P + 1) + '층 · ' + S.place; $('d1Boss').textContent = '대장 · ' + S.boss + (G.diff ? ' · ' + DN[G.diff] : '');
+  $('d1Title').textContent = (P + 1) + '층 · ' + S.place; $('d1Boss').textContent = '대장 · ' + S.boss;
   $('d1Segs').innerHTML = [0, 1, 2].map(p => { const k = P * 3 + p, op = segOpen(k), n = SAVE.stars[k + HK()] || 0;
     return '<button type="button" class="seg' + (p === (G.pp || 0) ? ' on' : '') + (op ? '' : ' lock') + '" data-pp="' + p + '"><b>' + (P + 1) + '-' + (p + 1) + '</b><span>' + (p === 2 ? '대장전' : '문지기') + '</span><i>' + (op ? '★'.repeat(n) + '<u>' + '★'.repeat(3 - n) + '</u>' : '🔒') + '</i>' + (op ? '<em class="sm">' + MEDALS.map((d, j) => '<q class="' + (medalOf(k) >> j & 1 ? 'on' : '') + '" title="' + d[0] + '">' + '避掃救'[j] + '</q>').join('') + '</em>' : '') + '</button>'; }).join('');
   { const n = oathScore(), b = $('btnOath'); b.textContent = n ? '맹세 ' + n + '점' : '맹세'; b.classList.toggle('on', n > 0); }
