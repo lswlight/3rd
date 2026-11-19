@@ -434,6 +434,18 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
 #ovShop::before,#ovMis::before{content:'';position:absolute;inset:5cqw 9.5cqw 3.6cqw;background:linear-gradient(180deg,#f7ecd2,#ecdcb6);border-radius:.3cqw;z-index:-1;box-shadow:0 1cqw 3cqw rgba(0,0,0,.55),-1.2cqw 0 0 -.1cqw #6a4020,1.2cqw 0 0 -.1cqw #6a4020}
 #ovShop .shop-list{grid-template-columns:repeat(auto-fill,minmax(max(104px,13.4cqw),1fr));gap:.9cqw;padding-right:.4cqw}#ovShop .card{padding:.7cqw .5cqw}#ovShop .card small{font-size:max(12px,1.25cqw)}#ovShop .shop-head>b,#ovMis h2{color:#7a1f17}#ovShop .shop-tabs button{background:#efe0bd;color:#5a4030;border-color:#c9a86a;border-radius:2cqw}#ovShop .shop-tabs button[aria-selected="true"]{background:#7a1f17;color:#fff3d0;border-color:#7a1f17}
 #ovShop #btnShopX,#ovMis #btnMisX{background:#3a2412;color:#fff3d0;border-color:#3a2412}#ovShop .shop-note{color:#7a6040!important}
+
+/* 캐릭터 탭(휴대폰 확인 뒤): 정보판은 아래 작게, 그림은 가리지 않게. 조종/동료 토글 */
+.dp2 .d-art{left:-2cqw;bottom:6.4cqw;height:46cqw;max-width:36cqw}
+.d2-stat{top:auto;bottom:7.6cqw;left:1.4cqw;width:31cqw;padding:.6cqw 1.2cqw;background:linear-gradient(90deg,rgba(6,7,16,.9) 0 75%,rgba(6,7,16,.55))}
+.d2-stat .pk-who{display:flex;flex-direction:column}.d2-stat .pk-who b{font-size:max(18px,2.4cqw)}.d2-stat .pk-who small{margin:0;font-size:max(13px,1.4cqw);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#pkCo{color:#9fe8ff}
+.d2-stat .sel-stats{grid-template-columns:auto 1fr auto 1fr auto 1fr;gap:.3cqw .6cqw;margin:.4cqw 0 0;font-size:max(12px,1.4cqw)}.d2-stat .sel-desc,.d2-stat .d2-chips{display:none}
+.pk-mode{display:flex;gap:.6cqw;flex:1}#ovD .pk-mode button{font-family:var(--display);font-size:max(15px,1.8cqw);padding:max(4px,.5cqw) max(10px,1.4cqw);border-radius:2cqw;background:#efe0bd;color:#5a4030;border-color:#c9a86a}#ovD .pk-mode button[aria-selected="true"]{background:#7a1f17;color:#fff3d0;border-color:#7a1f17}
+#ovD .pk-grid button{white-space:normal;word-break:keep-all;font-size:max(13px,1.55cqw);line-height:1.05;text-align:center}
+#ovD .pk-grid button[data-tag]:not([data-tag=""])::before{content:attr(data-tag);position:absolute;top:.2cqw;left:.2cqw;font-family:var(--body);font-size:max(10px,1cqw);font-weight:700;background:#2f6e4a;color:#fff;border-radius:.6cqw;padding:0 .5cqw;z-index:1}
+#ovD .pk-grid button.dim[data-tag="조종"]::before{background:#7a1f17}
+.d2-scroll{left:34cqw;width:61cqw}
+.tabs button{white-space:nowrap}
 /* 그믐의 맹세(기획 8의 3) */
 .d1-row{display:flex;align-items:center;gap:1cqw;flex-wrap:wrap}#ovD .oath-chip{background:#3a2412;color:#ffe9a0;border-color:#3a2412}#ovD .oath-chip.on{background:#7a3fa0;border-color:#7a3fa0;color:#fff}
 #ovOath{background:rgba(5,6,14,.55);isolation:isolate;padding:5.6cqw 13cqw 4.2cqw;color:#3a2412;z-index:7;gap:.7cqw}
@@ -585,10 +597,10 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
       </section>
       <section class="dp dp2">
         <img class="d-art" id="d2Art" alt="">
-        <div class="d2-stat" id="pkDetail"><div class="pk-who"><b id="pkName"></b><small id="pkRole"></small></div>
+        <div class="d2-stat" id="pkDetail"><div class="pk-who"><b id="pkName"></b><small id="pkRole"></small><small id="pkCo"></small></div>
           <dl class="sel-stats"><dt title="빠르기">🦶</dt><dd><i id="st0"></i></dd><dt title="화력">🔥</dt><dd><i id="st1"></i></dd><dt title="범위">🎯</dt><dd><i id="st2"></i></dd></dl>
           <p class="sel-desc" id="selDesc"></p><div class="d2-chips"><span class="chip" id="lvChip"></span><span class="chip" id="atkChip"></span></div></div>
-        <div class="scroll d2-scroll"><div class="pk-head"><h3 id="pkTitle">함께 오를 사람</h3><button type="button" id="btnPkNone" hidden>동료 없이 가기</button><button type="button" id="btnPickX" hidden>닫기</button></div>
+        <div class="scroll d2-scroll"><div class="pk-head"><h3 id="pkTitle" hidden>함께 오를 사람</h3><div class="pk-mode" role="tablist"><button type="button" id="pkModeCh" role="tab">조종할 캐릭터</button><button type="button" id="pkModeCo" role="tab">같이 갈 동료</button></div><button type="button" id="btnPkNone" hidden>동료 없이 가기</button><button type="button" id="btnPickX" hidden>닫기</button></div>
           <p class="pk-sub" id="pkSub"></p>
           <div class="sel-row pk-grid">
           <button type="button" data-ch="0" id="pick0"><img src="assets/hp0.webp" alt="">한별<small></small></button>
@@ -3178,22 +3190,22 @@ $('selArt').addEventListener('click', () => { if (uiOpen('pick')) openPick('ch')
 /* 캐릭터·동료 고르기 창 (기획 6 모형 ③): 7칸 × 2줄 */
 let pkMode = 'ch', pkSel = 0;
 function openPick(mode) { pkMode = mode; $('pkTitle').textContent = mode === 'co' ? '같이 갈 동료' : '캐릭터 고르기';
-  $('pkSub').textContent = mode === 'co' ? '교대하며 함께 싸울 동료를 고르세요. 지금 조종하는 캐릭터는 고를 수 없습니다.' : '조종할 캐릭터를 누르세요. 잠긴 동료는 그 층 대장을 이기면 데려올 수 있습니다.';
-  $('btnPkNone').hidden = mode !== 'co'; refreshShop();
-  picks.forEach(b => { const c = +b.dataset.ch; b.classList.toggle('dim', mode === 'co' && c === sel); b.setAttribute('aria-pressed', String(mode === 'co' ? c === G.co : c === sel)); });
+  $('pkSub').textContent = mode === 'co' ? '누르면 바로 같이 갑니다 · 지금 조종하는 캐릭터는 빼고' : '조종할 캐릭터를 누르세요 · 잠긴 동료는 그 층 대장을 이기면 데려옵니다';
+  $('btnPkNone').hidden = mode !== 'co'; $('pkModeCh').setAttribute('aria-selected', String(mode !== 'co')); $('pkModeCo').setAttribute('aria-selected', String(mode === 'co')); $('pkModeCo').hidden = !uiOpen('co'); refreshShop();
+  picks.forEach(b => { const c = +b.dataset.ch; b.classList.toggle('dim', mode === 'co' && c === sel); b.setAttribute('aria-pressed', String(mode === 'co' ? c === G.co : c === sel)); b.dataset.tag = mode === 'co' ? (c === sel ? '조종' : '') : (c === G.co && c !== sel ? '동료' : ''); });
   dOpen(2); pkShow(mode === 'co' ? (G.co >= 0 ? G.co : -1) : sel); }
-function pkShow(c) { pkSel = c; const d = $('pkDetail'); { const a = $('d2Art'), k = c < 0 ? sel : c; a.src = 'assets/' + look(k).cut + '.webp'; a.style.transform = CH[k].flip ? 'scaleX(-1)' : ''; a.style.filter = owns(k) ? '' : 'brightness(.6)'; } if (c < 0) { $('pkName').textContent = '동료 없음'; $('pkRole').textContent = ''; $('selDesc').textContent = '카드를 누르면 능력이 보입니다.'; $('pkBtns').innerHTML = ''; [0, 1, 2].forEach(i => { $('st' + i).style.width = '0%'; }); return; }
-  $('pkName').textContent = CH[c].name; $('pkName').style.color = SELCOL[c]; $('pkRole').textContent = INFO[c].role + (owns(c) ? ' · Lv ' + lvOf(c) : '') + (c >= 3 || pkMode === 'co' ? ' · 동료 능력: ' + CODESC[c] : '');
+function pkShow(c) { pkSel = c; const d = $('pkDetail'); { const a = $('d2Art'), k = c < 0 ? sel : c; a.src = 'assets/' + look(k).cut + '.webp'; a.style.transform = CH[k].flip ? 'scaleX(-1)' : ''; a.style.filter = owns(k) ? '' : 'brightness(.6)'; } if (c < 0) { $('pkName').textContent = '동료 없음'; $('pkRole').textContent = ''; $('pkCo').textContent = ''; $('selDesc').textContent = '카드를 누르면 능력이 보입니다.'; $('pkBtns').innerHTML = ''; [0, 1, 2].forEach(i => { $('st' + i).style.width = '0%'; }); return; }
+  $('pkName').textContent = CH[c].name; $('pkName').style.color = SELCOL[c]; $('pkRole').textContent = INFO[c].role.replace(' · 동료', '') + (owns(c) ? ' · Lv ' + lvOf(c) + ' · 화력 +' + (lvOf(c) - 1) * 6 + '%' : ' · 🔒'); $('pkCo').textContent = '동료 능력 · ' + CODESC[c];
   INFO[c].st.forEach((v, i) => { $('st' + i).style.width = v + '%'; }); $('selDesc').textContent = INFO[c].desc;
   const own = owns(c), beat = CH[c].from !== undefined && SAVE.beaten.includes(CH[c].from); let h = '';
-  if (pkMode === 'co') h = c === sel ? '<small>지금 조종하는 캐릭터입니다</small>' : own ? '<button type="button" class="buy" data-pk="co">같이 가기</button>' : '<small>' + (CH[c].from + 1) + '층 대장을 이기면 데려올 수 있습니다</small>';
+  if (pkMode === 'co') h = c === sel ? '<small>지금 조종하는 캐릭터입니다</small>' : own ? '<button type="button" class="buy" data-pk="co">' + (G.co === c ? '이 동료로 출격 화면으로' : '같이 가기') + '</button>' : '<small>' + (CH[c].from + 1) + '층 대장을 이기면 데려올 수 있습니다</small>';
   else if (own) h = '<button type="button" class="buy" data-pk="pick">고르기</button>';
   else { if (beat) h += '<button type="button" class="buy" data-pk="gold"' + (SAVE.gold >= priceOf(c) ? '' : ' disabled') + '>골드로 데려오기 · ' + won(priceOf(c)) + '</button>';
     if (uiOpen('moon')) h += '<button type="button" data-pk="moon"' + (SAVE.moon >= moonPriceOf(c) ? '' : ' disabled') + '>달조각으로 데려오기 · ' + moonPriceOf(c) + '</button>';
     if (beat && !SAVE.tried.includes(c)) h += '<button type="button" data-pk="try">한 판 써 보기</button>';
     if (!beat) h += '<small>' + (CH[c].from + 1) + '층 대장을 이기면 골드로 데려올 수 있습니다</small>'; }
   $('pkBtns').innerHTML = h; }
-for (const b of picks) b.addEventListener('click', () => { const c = +b.dataset.ch; if (pkMode === 'co') { if (c === sel) return; picks.forEach(o => o.setAttribute('aria-pressed', String(o === b))); pkShow(c); return; } select(c); pkShow(c); });
+for (const b of picks) b.addEventListener('click', () => { const c = +b.dataset.ch; if (pkMode === 'co') { if (c === sel) return; picks.forEach(o => o.setAttribute('aria-pressed', String(o === b))); if (owns(c)) { G.co = c; SAVE.co = c; saveGame(); coRender(); toast(CH[c].name + '이(가) 같이 갑니다'); picks.forEach(o => { o.dataset.tag = +o.dataset.ch === sel ? '조종' : ''; }); } pkShow(c); return; } select(c); pkShow(c); });
 $('pkBtns').addEventListener('click', ev => { const b = ev.target.closest('[data-pk]'); if (!b || b.disabled) return; const k = b.dataset.pk, c = pkSel;
   if (k === 'pick') { closePick(); return; }
   if (k === 'co') { G.co = c; SAVE.co = c; saveGame(); coRender(); closePick(); return; }
@@ -3202,7 +3214,8 @@ $('pkBtns').addEventListener('click', ev => { const b = ev.target.closest('[data
   else if (k === 'try') { SAVE.tried.push(c); SAVE.trial = c; saveGame(); toast('한 판 써 볼 수 있습니다 · 이 판이 끝나면 다시 잠깁니다'); select(c); }
   refreshShop(); pkShow(c); });
 function closePick() { select(sel); dOpen(1); }
-$('btnPickX').addEventListener('click', closePick); $('btnPkNone').addEventListener('click', () => { G.co = -1; SAVE.co = -1; saveGame(); coRender(); closePick(); });
+$('btnPickX').addEventListener('click', closePick); $('pkModeCh').addEventListener('click', () => openPick('ch')); $('pkModeCo').addEventListener('click', () => openPick('co'));
+$('btnPkNone').addEventListener('click', () => { G.co = -1; SAVE.co = -1; saveGame(); coRender(); closePick(); });
 const go = () => { if (!owns(sel)) { if (buyHero(sel)) select(sel); return; } if (!STAGES[G.pick || 0].ready || !segOpen((G.pick || 0) * 3 + (G.pp || 0))) return; audioInit(); newGame(sel); if (document.activeElement) document.activeElement.blur(); };
 $('btnGo').addEventListener('click', go);
 /* ---------- 기획 10: 장터 거리(메인) · 부적 탭 D 화면 ---------- */
