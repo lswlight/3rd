@@ -379,7 +379,7 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
 .scroll h3{font-family:var(--display);font-weight:400;font-size:max(16px,2.6cqw);color:#7a1f17;margin:0 0 .5cqw}
 .scroll .chip{background:#efe0bd;color:#5a4030;border-color:#c9a86a}.scroll button.chip.on{background:#7a1f17;color:#fff3d0;border-color:#7a1f17}
 .tabs{position:absolute;left:50%;bottom:0;transform:translateX(-50%);display:flex;gap:1.6cqw;z-index:6}
-.tabs button{width:14.8cqw;height:6.4cqw;border-radius:.4cqw .4cqw 0 0;background:linear-gradient(180deg,#f8e6a8,#e8c66e);border:1px solid #b48a3a;border-bottom:0;color:#7a1f17;font-family:var(--display);font-size:max(13px,2cqw);display:flex;align-items:center;gap:1cqw;padding:0 1.3cqw;transition:transform .15s,box-shadow .15s}
+.tabs button{width:13.6cqw;height:6.4cqw;border-radius:.4cqw .4cqw 0 0;background:linear-gradient(180deg,#f8e6a8,#e8c66e);border:1px solid #b48a3a;border-bottom:0;color:#7a1f17;font-family:var(--display);font-size:max(13px,2cqw);display:flex;align-items:center;gap:1cqw;padding:0 1.3cqw;transition:transform .15s,box-shadow .15s}
 .tabs button b{display:inline-flex;align-items:center;justify-content:center;width:3.6cqw;height:3.6cqw;flex:none;border-radius:50%;border:.25cqw solid #b8322a;color:#b8322a;font-weight:400;font-size:max(13px,1.9cqw)}
 .tabs button.on{transform:translateY(-1.2cqw) rotate(-1.2deg);box-shadow:0 0 2cqw rgba(255,215,106,.8)}.tabs button.lock{filter:grayscale(1) brightness(.6)}
 .dp1 .sel-art{left:-3cqw;bottom:6.4cqw;height:46cqw;max-width:40cqw;object-fit:contain;object-position:left bottom;cursor:pointer;z-index:1}
@@ -434,6 +434,26 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
 #ovShop::before,#ovMis::before{content:'';position:absolute;inset:5cqw 9.5cqw 3.6cqw;background:linear-gradient(180deg,#f7ecd2,#ecdcb6);border-radius:.3cqw;z-index:-1;box-shadow:0 1cqw 3cqw rgba(0,0,0,.55),-1.2cqw 0 0 -.1cqw #6a4020,1.2cqw 0 0 -.1cqw #6a4020}
 #ovShop .shop-list{grid-template-columns:repeat(auto-fill,minmax(max(104px,13.4cqw),1fr));gap:.9cqw;padding-right:.4cqw}#ovShop .card{padding:.7cqw .5cqw}#ovShop .card small{font-size:max(12px,1.25cqw)}#ovShop .shop-head>b,#ovMis h2{color:#7a1f17}#ovShop .shop-tabs button{background:#efe0bd;color:#5a4030;border-color:#c9a86a;border-radius:2cqw}#ovShop .shop-tabs button[aria-selected="true"]{background:#7a1f17;color:#fff3d0;border-color:#7a1f17}
 #ovShop #btnShopX,#ovMis #btnMisX{background:#3a2412;color:#fff3d0;border-color:#3a2412}#ovShop .shop-note{color:#7a6040!important}
+/* 요괴 도감(기획 8의 6-1) · 책방 */
+.b-dex{left:1.6cqw;top:42cqw}
+.books{position:relative;display:flex;gap:.25cqw;align-items:flex-end;width:9.6cqw;height:6.4cqw;margin-top:2cqw;padding:0 .7cqw .5cqw;background:linear-gradient(180deg,#6a3e1c,#4a2a12);border:.3cqw solid #2e1a0a;border-radius:.3cqw}
+.books::before{content:'';position:absolute;left:-1.2cqw;right:-1.2cqw;top:-2.2cqw;height:2cqw;background:linear-gradient(180deg,#3d4a5c,#232b38);clip-path:polygon(6% 100%,0 35%,50% 0,100% 35%,94% 100%)}
+.books::after{content:'冊';position:absolute;top:-1.9cqw;left:50%;transform:translateX(-50%);font-size:max(10px,1.2cqw);color:#ffd76a;font-family:var(--display)}
+.books b{flex:1;border-radius:.2cqw .2cqw 0 0;background:#b8322a;height:80%}.books b:nth-child(2){background:#2a5aa8;height:95%}.books b:nth-child(3){background:#e8b84a;height:70%}.books b:nth-child(4){background:#2f6e4a;height:88%}.books b:nth-child(5){background:#7a3fa0;height:76%}
+#ovDex{background:rgba(5,6,14,.55);isolation:isolate;padding:6.2cqw 11cqw 4.6cqw;color:#3a2412;z-index:7}
+#ovDex::before{content:'';position:absolute;inset:4.4cqw 8.6cqw 3cqw;background:linear-gradient(180deg,#f7ecd2,#ecdcb6);border-radius:.3cqw;z-index:-1;box-shadow:0 1cqw 3cqw rgba(0,0,0,.55),-1.2cqw 0 0 -.1cqw #6a4020,1.2cqw 0 0 -.1cqw #6a4020}
+#ovDex .shop-head>b{color:#7a1f17;flex:none;font-size:max(18px,2.4cqw)}#ovDex .shop-head>span{flex:1;color:#7a6040;font-size:max(13px,1.35cqw)}
+#ovDex .shop-tabs button{background:#efe0bd;color:#5a4030;border-color:#c9a86a;border-radius:2cqw}#ovDex .shop-tabs button[aria-selected="true"]{background:#7a1f17;color:#fff3d0;border-color:#7a1f17}#ovDex #btnDexX{background:#3a2412;color:#fff3d0;border-color:#3a2412}
+.dex-body{display:flex;gap:1.4cqw;width:100%;flex:1;min-height:0}
+.dex-grid{flex:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(max(78px,8.4cqw),1fr));gap:.7cqw;overflow-y:auto;align-content:start;padding:.2cqw .4cqw .6cqw .2cqw}
+.dex-grid button{display:flex;flex-direction:column;align-items:center;gap:.1cqw;padding:.4cqw .2cqw;background:#f9f0da;border:.2cqw solid #c9a86a;border-radius:.8cqw;color:#3a2412;font-family:var(--display);font-size:max(13px,1.3cqw);line-height:1.15;min-width:0}
+.dex-grid button img{width:100%;height:max(52px,6cqw);object-fit:contain}.dex-grid button span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.dex-grid button.no img{filter:brightness(0) opacity(.35)}.dex-grid button.no span{color:#a8946c}.dex-grid button.on{border-color:#b8322a;box-shadow:inset 0 0 0 .2cqw #b8322a}
+.dex-grid button small{font-family:var(--body);font-size:max(11px,1.1cqw);color:#7a6040}
+.dex-info{width:30cqw;flex:none;display:flex;flex-direction:column;gap:.5cqw;background:#f9f0da;border:.2cqw solid #c9a86a;border-radius:1cqw;padding:1cqw 1.4cqw;overflow-y:auto;text-align:left}
+.dex-info img{width:100%;height:13cqw;object-fit:contain;filter:drop-shadow(0 .4cqw .6cqw rgba(0,0,0,.35))}.dex-info.no img{filter:brightness(0) opacity(.35)}
+.dex-info h3{margin:0;font-family:var(--display);font-weight:400;font-size:max(18px,2.2cqw);color:#7a1f17}.dex-info .fl{font-size:max(13px,1.3cqw);color:#7a6040}
+.dex-info p{margin:0;font-size:max(14px,1.4cqw);line-height:1.45;color:#3a2412}.dex-info p.lk{color:#a8946c}
 #ovMis li{background:#f9f0da;border-color:#c9a86a;color:#3a2412}#ovMis li.done{border-color:#b8322a;color:#7a1f17}#ovMis p{color:#7a6040}
 
 .arc-card.play{cursor:pointer;border-color:#ffd76a;box-shadow:0 0 1.6cqw rgba(255,215,106,.45);color:inherit;font:inherit}
@@ -516,6 +536,7 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
       <button type="button" class="bld b-shop" id="btnShop" aria-label="복주머니 가게"><i class="wisp"></i><img src="assets/eq/a1.webp" alt=""><span class="nm">복주머니 가게</span></button>
       <button type="button" class="bld b-pav" id="btnChar" aria-label="정자"><i class="wisp"></i><span class="pav" id="stPav"></span><span class="nm">정자 · 동료</span></button>
       <button type="button" class="bld b-board" id="btnMis" aria-label="게시판"><i class="wisp"></i><span class="board"><b></b><b></b><b></b></span><span class="nm" id="misTxt">게시판 · 임무</span></button>
+      <button type="button" class="bld b-dex" id="btnDex" aria-label="책방"><i class="wisp"></i><span class="books"><b></b><b></b><b></b><b></b><b></b></span><span class="nm">책방 · 요괴 도감</span></button>
       <button type="button" class="bld b-arc" id="btnArcade" aria-label="오락실"><span class="cab"><span class="cab-top">오락</span><em>짝 맞추기</em></span><span class="nm">오락실</span></button>
       <button type="button" class="st-hero" id="stHero" aria-label="주인공"><span class="bubble" id="stBubble" hidden></span><img id="stHeroImg" src="assets/hp0.webp" alt=""></button>
       <div hidden><span id="selEq"></span><span id="stageName"></span><span id="stSub"></span></div>
@@ -552,7 +573,7 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
         <div class="scroll d3-scroll"><h3 id="eqTitle"></h3><div class="eq-looks" id="eqLooks" hidden></div><div class="shop-list" id="eqList"></div><button type="button" id="btnEqX" hidden>닫기</button></div>
       </section>
       <nav class="tabs" aria-label="화면">
-        <button type="button" data-p="0"><b>市</b>장터로</button><button type="button" data-p="1"><b>出</b>출격</button><button type="button" data-p="2" id="tabChar"><b>人</b>캐릭터</button><button type="button" data-p="3" id="tabEq"><b>裝</b>장비</button>
+        <button type="button" data-p="0"><b>市</b>장터로</button><button type="button" data-p="1"><b>出</b>출격</button><button type="button" data-p="2" id="tabChar"><b>人</b>캐릭터</button><button type="button" data-p="3" id="tabEq"><b>裝</b>장비</button><button type="button" data-p="4" id="tabDex"><b>書</b>도감</button>
       </nav>
     </div>
     <div class="overlay arcv" id="ovArcade" hidden>
@@ -597,6 +618,10 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
     <div class="overlay shop helpv" id="ovHelp" hidden>
       <div class="shop-head"><b>도움말</b><div class="help-head-btns"><button type="button" id="btnStoryAgain">이야기 다시 보기</button><button type="button" id="btnTutReset">안내 다시 보기</button><button type="button" id="btnHelpX">닫기</button></div></div>
       <div class="help help-body" id="helpBody"></div>
+    </div>
+    <div class="overlay shop" id="ovDex" hidden>
+      <div class="shop-head"><b>요괴 도감</b><span id="dexSum"></span><div class="shop-tabs" id="dexTabs" role="tablist"></div><button type="button" id="btnDexX">닫기</button></div>
+      <div class="dex-body"><div class="dex-grid" id="dexGrid"></div><div class="dex-info" id="dexInfo"></div></div>
     </div>
     <div class="overlay shop" id="ovShop" hidden>
       <div class="shop-head"><b id="shopWallet"></b><div class="shop-tabs" role="tablist"><button type="button" data-tab="moon">달조각</button><button type="button" data-tab="eq">장비</button><button type="button" data-tab="hero">동료</button></div><button type="button" id="btnShopX">닫기</button></div>
@@ -1082,6 +1107,66 @@ STAGES[9].pats = [patFan, patRing]; STAGES[9].pats2 = [patTails, patSpiral, patS
 // 기획 5 4번: 대장마다 고유 기술. 어려움은 2단계에 겹쳐 쓰고, 악몽은 3단계에서 앞 층 대장 기술을 빌린다
 [patWall, patIron, patFoxfire, patTotem, patSnow, patWave, patCrescent, patSwords, patEclipse, patTails].forEach((f, i) => { STAGES[i].sig = f; });
 ['지우산 처녀', '버들 물귀신', '대숲 무녀', '엿장수 처녀', '설녀의 시녀', '바다 해녀', '용궁 시녀', '풀무 아가씨', '등롱 궁녀', '도깨비 궁 무희'].forEach((nm, i) => { const m = STAGES[i].minis[1]; m.name = nm; m.img = 'mh' + i; }); // 층마다 두 번째 문지기는 여성 인간형 요괴
+/* 요괴 도감 (기획 8의 6-1): 처음 잡으면 등록, 잡은 수에 따라 설명 두 줄이 하나씩 열린다. [그림, 이름, 층(-1 여러 층), 설화 한 줄, 게임 속 사연 한 줄] */
+const DEX = {
+  mob: [
+    ['mw_wisp', '도깨비불', -1, '비 오는 밤 들판과 무덤가를 떠도는 푸른 불. 사람을 홀려 길을 잃게 한다는 옛말이 있다.', '달이 사라진 뒤로 탑 둘레를 무리 지어 떠돌며 구름 위 나그네를 막는다.'],
+    ['mw_kite', '방패연 요괴', -1, '정월에 날려 보낸 액막이 연이 줄이 끊겨 떠돌다 요괴가 되었다고 한다.', '바람을 타고 높이 떠서 위에서 탄을 흩뿌린다.'],
+    ['mw_drum', '북 도깨비', -1, '도깨비는 풍물 소리를 좋아해 밤새 북을 치며 논다는 이야기가 전한다.', '북소리에 맞춰 탄을 쏘고, 잡으면 힘 구슬을 떨어뜨린다.'],
+    ['mw_jar', '불 항아리', -1, '오래 묵은 장독에 혼이 깃들면 밤에 스스로 걸어 다닌다는 옛말.', '땅에 붙어 굴러오다 불덩이를 토해 낸다.'],
+    ['mw_lantern', '초롱 요괴', -1, '버려진 청사초롱이 혀를 내밀고 웃는다는 장난스러운 요괴 이야기.', '잡으면 힘이나 부적을 떨어뜨리는 고마운 녀석이기도 하다.'],
+    ['mw_dasher', '돌진 까치', -1, '반가운 손님을 알린다는 까치도 그믐밤에는 길을 잃는다.', '잠깐 멈췄다가 쏜살같이 들이받는다. 붉은 선이 보이면 피할 것.'],
+    ['mw_carp', '잉어 요괴', 1, '용문을 거슬러 오른 잉어는 용이 된다는 등용문 이야기의 주인공.', '용이 되지 못한 잉어들이 강나루 하늘을 헤엄친다.'],
+    ['mw_fox', '꼬마 여우', 2, '여우는 백 년을 살면 꼬리가 하나씩 는다는 옛말이 있다.', '아직 꼬리가 하나뿐인 구미호의 어린 부하들. 통통 튀며 두 갈래로 쏜다.'],
+    ['zk3', '짚신 요괴', 3, '오래 신은 짚신을 함부로 버리면 도깨비가 되어 돌아온다고 한다.', '장터 마을 길바닥을 혀를 내밀고 뛰어다닌다.'],
+    ['zk4', '눈뭉치 요괴', 4, '한겨울 산길에서 굴러 내려오는 눈덩이에 혼이 깃든 것.', '설녀의 입김을 받아 움직인다. 눈 덮인 산길의 잔챙이.'],
+    ['zk5', '날치 요괴', 5, '물 위를 나는 물고기는 폭풍을 알린다는 뱃사람들의 말.', '이무기가 일으킨 파도를 타고 절벽 위까지 날아오른다.'],
+    ['zk6', '해파리 요괴', 6, '용궁의 등불은 해파리가 밝힌다는 바닷가 마을의 이야기.', '용궁 하늘을 떠다니며 해류를 따라 흔들린다.'],
+    ['zk7', '불씨 도깨비', 7, '대장간 화로에서 튄 불똥이 도깨비가 된다는 옛말.', '쇠 도깨비의 골짜기에서 뜨겁게 굴러다닌다.'],
+    ['zk8', '검은 달토끼', 8, '달에서 방아를 찧는 토끼 이야기. 달이 사라지자 그림자만 남았다.', '두억시니의 어둠 속에서 방망이를 휘두른다.'],
+    ['zk9', '엽전 요괴', 9, '도깨비 방망이를 두드리면 금은보화가 쏟아진다는 옛이야기.', '도깨비 궁의 보물에서 굴러 나왔다. 잡으면 엽전이 짤랑.'],
+  ],
+  mini: [], mid: [], boss: [],
+};
+const DEX_TXT = { // 문지기·수문장·대장 설명: 그림 이름 → [설화, 사연]
+  mini0a: ['외눈박이 도깨비는 눈이 하나라 셈을 잘 못한다는 옛이야기.', '새벽 산마루 첫 길목을 지키는 문지기.'], mh0: ['기름 먹인 종이 우산 지우산을 쓰고 비 오는 날 나타나는 처녀 귀신 이야기.', '탈 도깨비 대장의 명으로 산마루 둘째 길목을 지킨다.'], mini0c: ['부엌 빗자루가 오래되면 도깨비가 된다는 가장 흔한 도깨비 이야기.', '빗자루를 타고 산마루를 쓸고 다닌다.'],
+  mini1a: ['강과 늪에 사는 물도깨비는 사람을 물로 끌어들인다고 한다.', '노을 강나루의 첫 문지기.'], mh1: ['물가 버드나무 아래 머리를 풀고 나타난다는 물귀신.', '강나루 버들숲에서 나그네를 홀린다.'], mini1c: ['너구리가 사람으로 둔갑해 나루를 건네준다는 이야기.', '삯을 받지 않고 탄만 건넨다.'],
+  mini2a: ['대나무로 깎은 죽창을 든 도깨비. 대숲에는 도깨비가 많다고 했다.', '대나무 숲 입구를 지킨다.'], mh2: ['대숲 깊은 곳 신당에서 굿을 하는 무녀 이야기.', '구미호의 홀림에 걸려 길을 막는다.'], mini2c: ['밤에 우는 부엉이는 귀신을 본다는 옛말.', '등불을 달고 숲길을 비추며 탄을 쏜다.'],
+  mini3a: ['탈을 쓰면 다른 존재가 된다는 탈춤 마당의 이야기.', '장터 마을 마당에서 춤추며 길을 막는다.'], mh3: ['가위 소리로 손님을 부르는 엿장수 이야기.', '엿 대신 탄을 판다. 장터 마을의 둘째 문지기.'], mini3c: ['마을 어귀 솟대 끝의 새는 하늘과 마을을 잇는 심부름꾼.', '장승 자매의 명으로 하늘에서 내려다본다.'],
+  mini4a: ['아이들이 만든 눈사람에 도깨비가 깃들었다.', '눈 덮인 산길 첫 길목에 서 있다.'], mh4: ['설녀를 모시는 시녀들. 차가운 입김으로 길손을 얼린다.', '설녀의 산길을 지키는 둘째 문지기.'], mini4c: ['깊은 산에 산다는 털북숭이 설인 이야기.', '산길 끝에서 눈덩이를 던진다.'],
+  mini5a: ['갈매기 떼는 뱃사람에게 날씨를 알려 준다.', '바닷가 절벽 하늘을 지킨다.'], mh5: ['제주 바다의 해녀는 숨 하나로 바닷속을 누빈다.', '이무기의 파도에 홀려 절벽을 지킨다.'], mini5c: ['게는 옆으로 걸어 장사 수완이 좋다는 우스개.', '꽃게를 팔다 말고 탄을 판다.'],
+  mini6a: ['용궁에는 새우·게·자라가 병사로 있다는 별주부전 이야기.', '용궁 첫 문을 지키는 병사.'], mh6: ['용왕을 모시는 용궁 시녀들.', '용왕의 장수 곁을 지킨다.'], mini6c: ['해마는 용의 새끼라는 바닷가 옛말.', '해마를 탄 기사. 용궁의 셋째 문지기.'],
+  mini7a: ['풀무질로 화로의 불을 살리는 대장간 도깨비.', '불타는 골짜기 첫 길목.'], mh7: ['대장간 풀무를 돌리는 아가씨.', '쇠 도깨비의 화로를 지킨다.'], mini7c: ['달군 쇠를 집는 집게에 깃든 도깨비.', '집게로 탄을 집어 던진다.'],
+  mini8a: ['성곽 그림자에 숨어 사는 무사 귀신 이야기.', '달밤 성곽의 첫 문지기.'], mh8: ['궁궐 등롱을 든 궁녀 귀신.', '두억시니의 어둠 속에서 등롱을 흔든다.'], mini8c: ['달빛을 따라 모여드는 나방. 달이 없으니 길을 잃었다.', '성곽 위를 어지럽게 난다.'],
+  mini9a: ['도깨비 궁을 지키는 금빛 근위병.', '구름 위 도깨비 궁의 첫 문지기.'], mh9: ['도깨비 궁 잔치에서 춤추는 무희.', '여왕의 잔치를 지키는 둘째 문지기.'], mini9c: ['보물 상자에 깃든 욕심 많은 요괴.', '열면 보물 대신 탄이 쏟아진다.'],
+  mid0a: ['산을 옮긴다는 바위 거인 이야기.', '산마루 첫 수문장. 돌을 굴리고 벽을 세운다.'], mid0b: ['산군이라 불린 호랑이. 불 호랑이는 산불을 몰고 다닌다.', '산마루 둘째 수문장.'],
+  mid1a: ['탑을 등에 진 자라. 강을 지키는 수호신 이야기.', '강나루 첫 수문장.'], mid1b: ['도깨비불을 싣고 밤 강을 건너는 귀신 배.', '강나루 둘째 수문장.'],
+  mid2a: ['대숲에 사는 큰 지네는 용과 다툰다는 옛이야기.', '대나무 숲의 수문장.'],
+  mid3a: ['장터를 오가는 달구지에 도깨비가 탔다.', '장터 마을 첫 수문장.'], mid3b: ['줄 위를 걷는 줄광대 놀음.', '장터 마을 둘째 수문장.'],
+  mid4a: ['눈보라를 몰고 오는 큰 매.', '눈 덮인 산길 첫 수문장.'], mid4b: ['서리 내린 산에 사는 큰 멧돼지.', '산길 둘째 수문장.'],
+  mid5a: ['섬인 줄 알고 올라섰더니 고래 등이었다는 이야기.', '바닷가 절벽 첫 수문장.'], mid5b: ['번개를 품은 가오리.', '절벽 둘째 수문장.'],
+  mid6a: ['깊은 바다에서 초롱을 단 아귀.', '용궁 첫 수문장.'], mid6b: ['소라 껍데기를 성처럼 진 큰 게.', '용궁 둘째 수문장.'],
+  mid7a: ['쇳물을 끓이는 용광로에 깃든 거인.', '대장간 골짜기 첫 수문장.'], mid7b: ['쇠로 만든 황소.', '골짜기 둘째 수문장.'],
+  mid8a: ['불을 막는다는 상상의 동물 해태.', '달밤 성곽 첫 수문장.'], mid8b: ['해에 산다는 세 발 까마귀. 그믐에는 검게 물들었다.', '성곽 둘째 수문장.'],
+  mid9a: ['도깨비 궁의 정사를 맡은 대신.', '도깨비 궁 첫 수문장.'], mid9b: ['여왕을 지키는 근위대장.', '도깨비 궁 둘째 수문장.'],
+  B0: ['탈을 쓴 도깨비들의 우두머리. 탈춤의 말뚝이처럼 장난이 심하다.', '그믐밤 달을 훔치는 데 맨 먼저 앞장섰다.'], B1: ['쇠를 먹고 자라 끝이 없다는 불가사리 이야기.', '노을 강나루의 쇠붙이를 다 먹어 치웠다.'],
+  B2: ['천 년을 산 구미호는 사람으로 둔갑한다.', '대나무 숲에 환영을 펼쳐 길을 감춘다.'], B3: ['마을 어귀를 지키는 장승. 천하대장군과 지하여장군.', '홀림에 걸려 마을을 지키던 몽둥이를 나그네에게 휘두른다.'],
+  B4: ['눈보라 치는 밤 나타나는 눈의 여인.', '산길을 얼려 탑으로 가는 길을 막았다.'], B5: ['천 년을 기다려 용이 되려 한 이무기.', '여의주 대신 달을 노렸다.'],
+  B6: ['용왕을 섬기는 장수. 월도를 든 바다의 장군.', '용궁 문을 굳게 지킨다.'], B7: ['쇠를 두드려 천 자루 칼을 만든 도깨비.', '달을 묶을 사슬을 벼려 냈다.'],
+  B8: ['어둠 속에서 사람을 짓누른다는 두억시니.', '달밤 성곽을 검은 달로 뒤덮었다.'], B9: ['금 나와라 뚝딱, 도깨비 방망이의 주인.', '달을 훔친 자. 구름 위 궁에서 그믐밤을 다스린다.'],
+};
+const DEX_LV = { mob: [1, 10, 100], mini: [1, 3, 10], mid: [1, 3, 10], boss: [1, 2, 5] }, DEX_KIND = [['mob', '잔챙이'], ['mini', '문지기'], ['mid', '수문장'], ['boss', '대장']], DEX_PRIZE = [[10, 20], [30, 30], [50, 50], [70, 100]];
+STAGES.forEach((S, i) => { // 문지기·수문장·대장 목록은 층 정보에서 만든다(둔갑 여우처럼 내 모습을 베끼는 것은 빼고)
+  for (const d of S.minis || []) DEX.mini.push([d.img, d.name, i, ...(DEX_TXT[d.img] || ['', ''])]);
+  for (const d of S.mids || []) if (!d.mirror) DEX.mid.push([d.img, d.name, i, ...(DEX_TXT[d.img] || ['', ''])]);
+  DEX.boss.push(['B' + i, S.boss, i, ...(DEX_TXT['B' + i] || ['', ''])]); });
+const dexImg = (k, d) => k === 'boss' ? STAGES[d[2]].bossImg : d[0], dexAll = () => DEX_KIND.reduce((a, [k]) => a + DEX[k].length, 0);
+const dexN = key => (SAVE.dex || {})[key] || 0, dexSeen = () => Object.keys(SAVE.dex || {}).length;
+function dexKey(e) { if (e.type === 'boss') return 'B' + G.stage; if (e.type === 'mini' || e.type === 'mid') return e.def && !e.def.mirror ? e.def.img : null;
+  if (e.type === 'zk') return e.img === 'wisp' ? 'mw_wisp' : e.img; return MOB_NEW[e.type] ? 'mw_' + e.type : null; }
+function dexAdd(e) { const k = dexKey(e); if (!k) return; SAVE.dex = SAVE.dex || {}; const n = (SAVE.dex[k] || 0) + 1; SAVE.dex[k] = n;
+  if (n === 1) { const d = DEX_KIND.map(([q]) => DEX[q].find(x => x[0] === k)).find(Boolean); if (d) float('도감 등록 · ' + d[1], e.x, e.y - 44, '#c9e8ff'); dexPrize(); } }
+function dexPrize() { SAVE.dexPaid = SAVE.dexPaid || 0; const n = dexSeen(); for (const [need, moon] of DEX_PRIZE) if (n >= need && SAVE.dexPaid < need) { SAVE.dexPaid = need; addMoon(moon, '도감 ' + need + '종'); } }
 
 const BOSS_K = 0.17; // 대장 체력이 층마다 오르는 폭 (기획 5: 0.25 → 0.17, 측정 뒤 다시 맞춘다)
 /* 층별 추천 동료(기획 5 3-5): 안 데려가도 깰 수 있지만 데려가면 편하다. 목록 앞쪽부터 가진 동료를 고른다 */
@@ -1428,6 +1513,7 @@ function damage(e, d) {
 function kill(e) {
   if (e.type === 'lan') { e.dead = true; G.rescued = true; sfx.life(); burst(e.x, e.y, 30, '#ffd76a', 200); ring(e.x, e.y, 50, '#ffe9a0', 0.4); float('마을 사람을 구했다!', e.x, e.y - 30, '#ffe9a0'); for (let i = 0; i < 3; i++) items.push({ x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), type: 'C', t: 0 }); return; }
   if (!MEDAL_X[e.type] && !G.endless) G.mobK = (G.mobK || 0) + 1;
+  dexAdd(e);
   e.dead = true; const T = ET[e.type]; addScore(T.score); if (e.type === 'mini') mis('mini'); if (e.type === 'boss') mis('boss');
   burst(e.x, e.y, e.type === 'boss' ? 80 : 8 + e.r, e.type === 'wisp' ? '#8fd8ff' : '#ffc46b', e.type === 'boss' ? 320 : 140);
   fireball(e.x, e.y, e.type === 'boss' ? 70 : e.r);
@@ -1868,8 +1954,8 @@ function drawLan(e) { // 청사초롱 속 마을 사람 (그림 대신 캔버스
   glow('gold', x, y, 64, 0.6 * fl); ctx.save(); ctx.translate(x, y); ctx.rotate(sw); ctx.scale(1.4, 1.4);
   ctx.strokeStyle = '#3a2412'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(0, -30); ctx.lineTo(0, -22); ctx.stroke(); // 고리
   ctx.fillStyle = '#c99a2e'; ctx.fillRect(-11, -23, 22, 4); ctx.fillRect(-11, 18, 22, 4); // 금 테
-  const g = ctx.createLinearGradient(0, -19, 0, 18); g.addColorStop(0, '#2f5fb8'); g.addColorStop(0.45, '#4a7ad0'); g.addColorStop(0.5, '#d8423a'); g.addColorStop(1, '#a8241e');
-  ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(0, 0, 15, 19, 0, 0, TAU); ctx.fill(); // 푸른 위 · 붉은 아래 비단
+  const g = ctx.createLinearGradient(0, -19, 0, 18); g.addColorStop(0, '#fff8e2'); g.addColorStop(0.6, '#f6e2b0'); g.addColorStop(1, '#e2bf78');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(0, 0, 15, 19, 0, 0, TAU); ctx.fill(); // 흰 한지 초롱 (적으로 나오는 청사초롱 요괴와 헷갈리지 않게)
   ctx.globalAlpha = 0.55 * fl; ctx.fillStyle = '#ffe9a0'; ctx.beginPath(); ctx.ellipse(0, 1, 10, 14, 0, 0, TAU); ctx.fill(); ctx.globalAlpha = 1; // 안의 불빛
   ctx.fillStyle = 'rgba(40,22,10,.85)'; circ(0, -5, 3.6); ctx.beginPath(); ctx.moveTo(-6, 11); ctx.quadraticCurveTo(0, -4, 6, 11); ctx.closePath(); ctx.fill(); // 갇힌 사람 그림자
   ctx.beginPath(); ctx.moveTo(-4, 1); ctx.lineTo(-9, -6); ctx.lineTo(-8, -7); ctx.lineTo(-3, -1); ctx.fill(); ctx.beginPath(); ctx.moveTo(4, 1); ctx.lineTo(9, -6); ctx.lineTo(8, -7); ctx.lineTo(3, -1); ctx.fill(); // 손을 든 모습
@@ -2563,6 +2649,23 @@ $('shopList').addEventListener('click', ev => {
 });
 function closeShop() { $('ovShop').hidden = true; refreshShop(); if (!$('ovOver').hidden) reviveUI(); if (sel !== undefined) select(sel); }
 $('btnShop').addEventListener('click', () => openShop('moon')); $('btnShopX').addEventListener('click', closeShop);
+/* 요괴 도감 창 */
+let dexTab = 'mob', dexSel = null;
+function openDex() { if (!uiOpen('dex')) return toast('1-1을 깨면 책방이 열립니다'); $('ovDex').hidden = false; renderDex(); }
+function renderDex() {
+  const nx = DEX_PRIZE.find(x => x[0] > (SAVE.dexPaid || 0));
+  $('dexSum').textContent = '등록 ' + dexSeen() + ' / ' + dexAll() + (nx ? ' · ' + nx[0] + '종에 달조각 ' + nx[1] : ' · 모두 받음');
+  $('dexTabs').innerHTML = DEX_KIND.map(([k, nm]) => '<button type="button" data-k="' + k + '" aria-selected="' + (k === dexTab) + '">' + nm + ' ' + DEX[k].filter(d => dexN(d[0])).length + '/' + DEX[k].length + '</button>').join('');
+  const L = DEX[dexTab]; if (!L.some(d => d[0] === dexSel)) dexSel = (L.find(d => dexN(d[0])) || L[0])[0];
+  $('dexGrid').innerHTML = L.map(d => { const n = dexN(d[0]); return '<button type="button" data-d="' + d[0] + '" class="' + (n ? '' : 'no') + (d[0] === dexSel ? ' on' : '') + '"><img src="assets/' + dexImg(dexTab, d) + '.webp" alt="" loading="lazy"><span>' + (n ? d[1] : '???') + '</span><small>' + (d[2] < 0 ? '여러 층' : (d[2] + 1) + '층') + '</small></button>'; }).join('');
+  const d = L.find(x => x[0] === dexSel), n = dexN(d[0]), lv = DEX_LV[dexTab], el = $('dexInfo');
+  el.className = 'dex-info' + (n ? '' : ' no');
+  el.innerHTML = '<img src="assets/' + dexImg(dexTab, d) + '.webp" alt=""><h3>' + (n ? d[1] : '???') + '</h3><span class="fl">' + (d[2] < 0 ? '여러 층' : (d[2] + 1) + '층 · ' + STAGES[d[2]].place) + ' · 잡은 수 ' + n + '</span>' +
+    (n ? '' : '<p class="lk">처음 잡으면 등록됩니다</p>') + [3, 4].map((c, i) => n >= lv[i + 1] ? '<p>' + d[c] + '</p>' : n ? '<p class="lk">🔒 ' + lv[i + 1] + (dexTab === 'boss' ? '번' : '마리') + ' 잡으면 열림</p>' : '').join('');
+}
+$('dexTabs').addEventListener('click', ev => { const b = ev.target.closest('[data-k]'); if (!b) return; dexTab = b.dataset.k; dexSel = null; renderDex(); });
+$('dexGrid').addEventListener('click', ev => { const b = ev.target.closest('[data-d]'); if (!b) return; dexSel = b.dataset.d; renderDex(); });
+$('btnDexX').addEventListener('click', () => { $('ovDex').hidden = true; }); $('btnDex').addEventListener('click', openDex);
 /* 장비 창: 고른 캐릭터에게 무기·부적·장신구를 하나씩 */
 let eqSlot = 'w';
 const eqOf = (ch, sl) => eqById((SAVE.eqd[ch] || {})[sl] || (sl === 'o' ? 'o0' : '')); // 옷 칸이 비면 기본옷
@@ -2728,6 +2831,7 @@ const UNLOCKS = [ // [키, 열리는 조건, 열릴 때 한 줄 안내]
     '장비는 모든 캐릭터가 함께 씁니다'],
   ['moon', () => !!SAVE.moonSeen || SAVE.moon > 0, '달조각으로 동료를 바로 데려올 수 있습니다'],
   ['hard', () => !!SAVE.stars[29], '어려움 난이도가 열렸습니다'],
+  ['dex', () => !!SAVE.stars[0], '장터에 책방이 열렸습니다. 잡은 요괴가 도감에 모입니다'],
 ];
 const uiOpen = k => { if (TEST_UNLOCK) return true; const u = UNLOCKS.find(x => x[0] === k); return !!(u && u[1]()); };
 function applyUnlocks() { // 첫 화면에서 열린 것만 보이게 하고, 처음 열린 것은 금색으로 깜빡인다
@@ -2739,7 +2843,7 @@ function applyUnlocks() { // 첫 화면에서 열린 것만 보이게 하고, �
   document.querySelectorAll('.sel-row [data-ch]').forEach(b => show(b, +b.dataset.ch < 3 || o.co));
   show($('coRow'), o.co); show($('btnMap'), o.co); show($('stRec'), o.co); shut($('btnArcade'), o.co, '1층 대장을 이기면 열립니다');
   show($('btnUp'), o.up); shut($('btnMis'), o.up, '2층 대장을 이기면 열립니다'); $('btnMem').classList.toggle('lock', !o.up); // 짝 맞추기는 오락실의 첫 오락기
-  shut($('eqCard'), o.eq, '3층 대장을 이기면 열립니다'); $('tabEq').classList.toggle('lock', !o.eq);
+  shut($('eqCard'), o.eq, '3층 대장을 이기면 열립니다'); shut($('btnDex'), o.dex, '1-1을 깨면 열립니다'); $('tabDex').classList.toggle('lock', !o.dex); $('tabEq').classList.toggle('lock', !o.eq);
   shut($('btnShop'), o.moon, '달조각을 처음 얻으면 열립니다'); show($('selMoon'), o.moon); show($('dMoon'), o.moon);
   show($('diffChips'), o.hard);
   if (!o.pick && sel !== 0) select(0);
@@ -2747,7 +2851,7 @@ function applyUnlocks() { // 첫 화면에서 열린 것만 보이게 하고, �
   if (TEST_UNLOCK) return;
   SAVE.uiSeen = SAVE.uiSeen || {}; const fresh = UNLOCKS.filter(([k]) => o[k] && !SAVE.uiSeen[k]);
   if (!fresh.length || G.mode !== 'title') return;
-  const els = { pick: ['#btnChar'], co: ['#btnArcade', '#coRow'], up: ['#btnMis', '#btnArcade', '#btnUp'], eq: ['#eqCard'], moon: ['#btnShop'], hard: ['#diffChips'] };
+  const els = { pick: ['#btnChar'], co: ['#btnArcade', '#coRow'], up: ['#btnMis', '#btnArcade', '#btnUp'], eq: ['#eqCard'], moon: ['#btnShop'], dex: ['#btnDex'], hard: ['#diffChips'] };
   for (const [k, , msg] of fresh) { SAVE.uiSeen[k] = 1; for (const q of els[k]) { const el = document.querySelector(q); if (el) { el.classList.remove('ui-new'); void el.offsetWidth; el.classList.add('ui-new'); setTimeout(() => el.classList.remove('ui-new'), 6000); } } }
   // 처음 실행이 아니라면(이미 진행한 기록) 안내 문구 없이 표시만
   toast(fresh[fresh.length - 1][2]); saveGame();
@@ -2911,7 +3015,7 @@ function showD(p) { if (p === 2) return openPick('ch'); if (p === 3) return open
 function hideD() { $('ovD').hidden = true; select(sel); }
 $('ovD').querySelector('.tabs').addEventListener('click', ev => { const b = ev.target.closest('[data-p]'); if (!b) return; const p = +b.dataset.p;
   if (p === 0) return hideD(); if (p === 2 && !uiOpen('pick')) return toast('1-1을 깨면 캐릭터를 고를 수 있습니다'); if (p === 3 && !uiOpen('eq')) return toast('3층 대장을 이기면 장비가 열립니다');
-  if (p === 1) closePick(); else showD(p); });
+  if (p === 4) return openDex(); if (p === 1) closePick(); else showD(p); });
 $('ovTitle').addEventListener('click', ev => { const b = ev.target.closest('.bld.shut'); if (!b) return; ev.stopPropagation(); ev.preventDefault(); toast(b.dataset.lock || '아직 닫혀 있습니다'); }, true);
 $('stGo').addEventListener('click', () => showD(1)); $('stTower').addEventListener('click', () => showD(1));
 $('eqCard').addEventListener('click', () => openEq());
@@ -2969,7 +3073,7 @@ function start() {
   if (window.ResizeObserver) new ResizeObserver(() => resize()).observe(cv); else addEventListener('resize', () => resize());
   requestAnimationFrame(frame);
 }
-window.__game = { showD, hideD, openMem, mem, openArcade, get shots() { return shots; }, releaseCharge: () => releaseCharge(), openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, spawnLan, segMedals, medalCount, showResult, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
+window.__game = { showD, hideD, openMem, mem, openArcade, get shots() { return shots; }, releaseCharge: () => releaseCharge(), openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, spawnLan, openDex, DEX, dexSeen, segMedals, medalCount, showResult, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
 if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start); else start();
 })();
 </script>
