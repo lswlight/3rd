@@ -91,6 +91,7 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .tb-sk{right:2cqw;bottom:3.4cqw;width:11.5cqw;height:11.5cqw;font-size:2.1cqw;background:radial-gradient(circle at 40% 35%,#3fae8a,#1f6e58);border-color:#a8f4d8}
 .tb.ping{animation:tbping .55s ease-out}@keyframes tbping{0%{box-shadow:0 0 0 0 rgba(255,240,180,.95);filter:brightness(1.8)}100%{box-shadow:0 0 0 2.4cqw rgba(255,240,180,0);filter:none}}
 .tb-wp{right:14.6cqw;bottom:1.6cqw;width:8.4cqw;height:8.4cqw;font-size:1.7cqw;background:radial-gradient(circle at 40% 35%,#7a5ab0,#3e2a6a);border-color:#d8c4ff}
+.tb-co.coready{filter:brightness(1.3)}.tb-co.coready::before{content:'';position:absolute;inset:-.7cqw;border-radius:50%;border:.45cqw dashed #ffe9a0;animation:cospin 2.2s linear infinite;pointer-events:none}@keyframes cospin{to{transform:rotate(360deg)}}
 .tb-co{right:15cqw;bottom:13.2cqw;width:8.4cqw;height:8.4cqw;font-size:1.7cqw;background:#2a4a6a center/cover;border-color:#9fd0ff}.tb-co>span{background:rgba(10,20,40,.45);border-radius:1cqw;padding:.2cqw .4cqw}
 .tb-bomb{right:4.4cqw;bottom:17.6cqw;width:7.2cqw;height:7.2cqw;font-size:1.6cqw;background:radial-gradient(circle at 40% 35%,#e8b84a,#a8740a);border-color:#fff3b0;color:#5a2a08}
 .tb-swap{right:15.6cqw;bottom:24.8cqw;width:6.6cqw;height:6.6cqw;font-size:1.5cqw;background:rgba(58,36,18,.85);border-color:rgba(255,255,255,.55)}
@@ -3254,7 +3255,7 @@ function renderYk() { const sel = SAVE.yokaiSel = (SAVE.yokaiSel || []).filter(y
 $('ykGrid').addEventListener('click', ev => { const b = ev.target.closest('[data-y]'); if (!b) return; const k = b.dataset.y; if (!ykHas(k)) return toast('아직 봉인하지 못한 요괴입니다'); const s = SAVE.yokaiSel = SAVE.yokaiSel || []; const i = s.indexOf(k); if (i >= 0) s.splice(i, 1); else { if (s.length >= 2) s.shift(); s.push(k); } saveGame(); renderYk(); renderD1(); });
 $('btnYkX').addEventListener('click', () => { $('ovYk').hidden = true; renderD1(); }); $('btnYk').addEventListener('click', openYk);
 /* ---------- 기획 16-1: 공격 비중 다시 잡기. 기본 공격 약하게·덜 가리게, 무기 스킬 3배·눈에 띄게, ?dps=1 공격별 피해 비중 ---------- */
-const BAL16 = { basicK: 0.5, powDmg: 0.15, powR: 0.12, famK: 0.5, famR: 0.5, basicA: 0.7, wpK: 3, wpStop: 0.05, wpShake: 0.25 };
+const BAL16 = { coHit: 30, cofireK: 0.3, coCut: 0.6, basicK: 0.5, powDmg: 0.15, powR: 0.12, famK: 0.5, famR: 0.5, basicA: 0.7, wpK: 3, wpStop: 0.05, wpShake: 0.25 };
 const DPSQ = TEST_UNLOCK && /[?&]dps=1/.test(location.search);
 const WPCOL = { '': '#ffffff', w1: '#e8f0ff', w2: '#ffe08a', w3: '#c8d0ec', w4: '#fff07a', w5: '#ffd76a', w6: '#c9a8ff', w7: '#9fe08a', w8: '#ff8a3a', w9: '#9fe0ff', w10: '#ff6a3a' };
 const wpCol = () => WPCOL[wpKey(eqOf(P.ch, 'w'))] || '#ffffff';
@@ -3262,7 +3263,8 @@ function withSrc(tag, f) { const sv = G.srcCtx; G.srcCtx = tag; try { return f()
 function dpsRec(e, d, rxM) { if (!(d > 0) || !G.dps) return; const dd = Math.min(d, Math.max(0, e.hp)); if (!dd) return;
   const src = (G.hitO && G.hitO.src) || G.srcCtx || 'other', base = rxM > 1 ? dd / rxM : dd, add = (o, k, v) => { o[k] = (o[k] || 0) + v; };
   if (e.type === 'boss' && !G.dps.b0) G.dps.b0 = G.time; for (const o of e.type === 'boss' ? [G.dps.all, G.dps.boss] : [G.dps.all]) { add(o, src, base); if (rxM > 1) add(o, 'rx', dd - base); }
-  if (src === 'wp' && (e.wpT || 0) < G.time) { e.wpT = G.time + 0.12; G.hstop = Math.max(G.hstop || 0, BAL16.wpStop); G.shake = Math.max(G.shake, BAL16.wpShake); (G.wpNum = G.wpNum || []).push({ x: e.x + rnd(-10, 10), y: e.y - e.r * 0.6, n: Math.round(d), t: 0, col: wpCol() }); } }
+  if (src === 'wp' && (e.wpT || 0) < G.time) { e.wpT = G.time + 0.12; G.hstop = Math.max(G.hstop || 0, BAL16.wpStop); G.shake = Math.max(G.shake, BAL16.wpShake); (G.wpNum = G.wpNum || []).push({ x: e.x + rnd(-10, 10), y: e.y - e.r * 0.6, n: Math.round(d), t: 0, col: wpCol() }); }
+  if (src === 'co' && P.co >= 0 && (e.coT || 0) < G.time) { e.coT = G.time + 0.2; (G.wpNum = G.wpNum || []).push({ x: e.x + rnd(-10, 10), y: e.y - e.r * 0.4, n: Math.round(d), t: 0, col: coCol(P.co) }); } }
 const DPSG = [['기본 공격(자동)', ['basic', 'cofire'], 35], ['캐릭터 스킬', ['sk'], 20], ['무기 스킬', ['wp'], 20], ['협력 스킬·등장 일격', ['co', 'entry'], 10], ['연계·부적·각성·요괴·기타', ['rx', 'bomb', 'awk', 'yk', 'combo', 'other'], 15]];
 const DPSN = { basic: '기본 공격', cofire: '동료 자동 사격', sk: '캐릭터 스킬', wp: '무기 스킬', co: '협력 스킬', entry: '등장 일격', rx: '연계 추가 피해', bomb: '부적', awk: '각성', yk: '요괴 소환', combo: '합체', other: '기타' };
 function dpsTable(o) { const tot = Object.values(o).reduce((a, b) => a + b, 0) || 1; return { tot: Math.round(tot), groups: DPSG.map(([n, ks, goal]) => ({ n, goal, pct: Math.round(ks.reduce((a, k) => a + (o[k] || 0), 0) / tot * 100) })), each: Object.entries(o).sort((a, b) => b[1] - a[1]).map(([k, v]) => ({ k: DPSN[k] || k, pct: Math.round(v / tot * 100), v: Math.round(v) })) }; }
@@ -3277,13 +3279,28 @@ function drawWpFx() { const f = G.wpFl; if (f) { f.t += 1 / 60; const k = f.t / 
   G.wpNum = L.filter(n => n.t < 0.8); }
 { const ws0 = weaponSkill; weaponSkill = function (w) { const n0 = shots.length; withSrc('wp', () => skMul(BAL16.wpK, () => ws0(w))); for (const s of shots.slice(n0)) { if (s.src === 'wp') continue; s.src = 'wp'; s.dmg *= BAL16.wpK; } const k = wpKey(w); if (k) needImg('eq/' + k); G.wpFl = { id: k || 'w1', t: 0, col: WPCOL[k] || '#fff', name: wpName(w) }; }; }
 { const a = charSkill; charSkill = function (ch) { return withSrc('sk', () => a(ch)); }; }
-{ const a = coSkill; coSkill = function (c) { return withSrc('co', () => a(c)); }; }
+{ const a = coSkill; coSkill = function (c) { P.cx = Math.min(W - 60, P.x + 64); P.cy = P.y - 4; burst(P.cx, P.cy, 14, coCol(c), 200); ring(P.cx, P.cy, 50, coCol(c), 0.3); G.coCut = { c, t: 0 }; needImg(look(c).img);
+  if (!TEST_UNLOCK && !SAVE.tut.coSk) { SAVE.tut.coSk = 1; saveGame(); tipFlash('협력 스킬: ' + CH[c].name + '의 「' + CONAME[c] + '」 · 쿨이 끝나면 버튼이 빛납니다', 4); }
+  return withSrc('co', () => { a(c); coStrike(c); }); }; }
+const coCol = c => CH[c] ? CH[c].spark || CH[c].robe : '#9fd0ff';
+function coStrike(c) { // 기획 16-2: 협력 스킬마다 동료 색 일격(피해 비중 10%를 맞추려고)
+  const ts = enemies.filter(e => !e.dead && !e.inv && e.x < W - 4).sort((a, b) => (b.type === 'boss') - (a.type === 'boss') || b.hp - a.hp).slice(0, 3); if (!ts.length) return;
+  const el = typeof SKEL !== 'undefined' ? SKEL[c] : null; for (const t of ts) { fx2({ k: 'line', x: P.cx, y: P.cy, tx: t.x, ty: t.y, d: 0.3, col: coCol(c) }); burst(t.x, t.y, 10, coCol(c), 180); hitEl(t, BAL16.coHit / ts.length, el); } }
+function drawCoCut() { const q = G.coCut; if (!q) return; q.t += 1 / 60; const D = BAL16.coCut; if (q.t > D) { G.coCut = null; return; }
+  const k = q.t < 0.1 ? q.t / 0.1 : q.t > D - 0.12 ? (D - q.t) / 0.12 : 1, x0 = -220 + 220 * Math.min(1, q.t / 0.1), y = GY - 70, col = coCol(q.c), im = IMG[look(q.c).img];
+  ctx.save(); ctx.globalAlpha = k; const g = ctx.createLinearGradient(x0, 0, x0 + 360, 0); g.addColorStop(0, 'rgba(10,12,24,.9)'); g.addColorStop(0.75, 'rgba(10,12,24,.75)'); g.addColorStop(1, 'rgba(10,12,24,0)'); ctx.fillStyle = g; ctx.fillRect(x0, y, 360, 52);
+  ctx.fillStyle = col; ctx.fillRect(x0, y, 360 * k, 2.5); ctx.fillRect(x0, y + 50, 300 * k, 2.5);
+  if (ok(im)) { ctx.save(); ctx.beginPath(); ctx.rect(x0 + 6, y - 22, 96, 74); ctx.clip(); const s = 120 / im.width; ctx.drawImage(im, x0 + 54 - im.width * s / 2, y - 20, im.width * s, im.height * s); ctx.restore(); }
+  ctx.font = 'bold 19px ' + FONT; ctx.textAlign = 'left'; ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(0,0,0,.8)'; const s1 = CONAME[q.c] + '!'; ctx.strokeText(s1, x0 + 110, y + 32); ctx.fillStyle = col; ctx.fillText(s1, x0 + 110, y + 32);
+  ctx.font = '11px ' + FONT; ctx.fillStyle = '#f4e3c0'; ctx.fillText('협력 · ' + CH[q.c].name, x0 + 112, y + 14); ctx.restore(); }
+{ const a = drawTalk2; drawTalk2 = function () { a(); if (G.mode === 'play') drawCoCut(); }; }
+{ const a = skillUi; skillUi = function (dt) { a(dt); const C = P.cd || {}, rd = P.co >= 0 && uiOpen('coskill') && !(C.co > 0) && hpOf(P.co).hp > 0 && G.mode === 'play'; $('padCo').classList.toggle('coready', rd); if (rd && !G.coRd) { G.coRd = 1; if (G.coSayAt === undefined || G.time - G.coSayAt > 3) { G.coSayAt = G.time; G.coBub = { text: '지금이야!', t: 1.4 }; } tone(1568, 0.08, 'sine', 0.05); } else if (!rd) G.coRd = 0; }; }
 { const a = entryStrike; entryStrike = function (ch) { return withSrc('entry', () => a(ch)); }; }
 { const a = awakeJoint; awakeJoint = function () { return withSrc('awk', () => a()); }; }
 { const a = awakeFire; awakeFire = function () { return withSrc('awk', () => a()); }; }
 { const a = ykUpd; ykUpd = function (dt) { return withSrc('yk', () => a(dt)); }; }
 { const a = skillFxUpd; skillFxUpd = function (dt) { return withSrc(G.srcCtx, () => a(dt)); }; }
-{ const a = updateBuddy; updateBuddy = function (dt) { const n0 = shots.length; withSrc('cofire', () => a(dt)); for (const s of shots.slice(n0)) if (s.src === 'cofire') s.faint = 1; }; }
+{ const a = updateBuddy; updateBuddy = function (dt) { const n0 = shots.length; withSrc('cofire', () => a(dt)); for (const s of shots.slice(n0)) if (s.src === 'cofire') { s.faint = 1; s.dmg *= BAL16.cofireK; } }; } // 기획 16-2: 동료 자동 사격 30%
 G.wpPrev = 0;
 function wpReadyPing() { const c = P.cd ? P.cd.wp || 0 : 0; if (G.wpPrev > 0 && c <= 0 && G.mode === 'play') { tone(2637, 0.06, 'triangle', 0.06); tone(3520, 0.18, 'sine', 0.05, 0, 0.04); const b = $('padWeapon'); b.classList.remove('ping'); void b.offsetWidth; b.classList.add('ping'); } G.wpPrev = c; }
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
