@@ -89,6 +89,7 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .tb em{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:1.25em;color:#fff;z-index:3;pointer-events:none;text-shadow:0 0 .4cqw #000}.tb em:empty{display:none}.tb.cool>span{opacity:.25}
 .tb small{position:absolute;left:50%;top:100%;transform:translateX(-50%);margin-top:.1cqw;font-family:var(--body);font-size:max(9px,1.05cqw);color:#f3e9d2;white-space:nowrap;text-shadow:0 0 .4cqw #000,0 0 .2cqw #000;pointer-events:none}
 .tb-sk{right:2cqw;bottom:3.4cqw;width:11.5cqw;height:11.5cqw;font-size:2.1cqw;background:radial-gradient(circle at 40% 35%,#3fae8a,#1f6e58);border-color:#a8f4d8}
+.tb.ping{animation:tbping .55s ease-out}@keyframes tbping{0%{box-shadow:0 0 0 0 rgba(255,240,180,.95);filter:brightness(1.8)}100%{box-shadow:0 0 0 2.4cqw rgba(255,240,180,0);filter:none}}
 .tb-wp{right:14.6cqw;bottom:1.6cqw;width:8.4cqw;height:8.4cqw;font-size:1.7cqw;background:radial-gradient(circle at 40% 35%,#7a5ab0,#3e2a6a);border-color:#d8c4ff}
 .tb-co{right:15cqw;bottom:13.2cqw;width:8.4cqw;height:8.4cqw;font-size:1.7cqw;background:#2a4a6a center/cover;border-color:#9fd0ff}.tb-co>span{background:rgba(10,20,40,.45);border-radius:1cqw;padding:.2cqw .4cqw}
 .tb-bomb{right:4.4cqw;bottom:17.6cqw;width:7.2cqw;height:7.2cqw;font-size:1.6cqw;background:radial-gradient(circle at 40% 35%,#e8b84a,#a8740a);border-color:#fff3b0;color:#5a2a08}
@@ -1063,7 +1064,7 @@ function shootB(x, y, ang, sp, r = 4, kind = 0) {
 const aimAng = e => Math.atan2(P.y - e.y, P.x - e.x);
 function aim(e, sp) { shootB(e.x - e.r * 0.5, e.y, aimAng(e), sp); }
 function fan(e, n, spread, sp) { const a = aimAng(e); for (let i = 0; i < n; i++) shootB(e.x - e.r * 0.4, e.y, a + (i - (n - 1) / 2) * spread, sp); }
-function ps(x, y, vx, vy, r, dmg, kind, o) { shots.push(Object.assign({ x, y, vx, vy, r, dmg, kind, t: 0 }, o)); }
+function ps(x, y, vx, vy, r, dmg, kind, o) { shots.push(Object.assign({ x, y, vx, vy, r, dmg, kind, t: 0, src: G.srcCtx }, o)); }
 
 /* ---------- 적 ---------- */
 const ET = {
@@ -1596,7 +1597,7 @@ function advanceTalk() {
   const k = G.talk; if (!k || k.t < 0.3) return;
   k.i++; k.t = 0; if (k.i >= k.lines.length) { G.talk = null; banner('싸움 시작!', '', 1); }
 }
-function startStage(i, part = 0) {
+function startStage(i, part = 0) { G.dps = { all: {}, boss: {} };
   G.part = part; G.pick = i; G.pp = part; G.deaths = 0; G.dark = 0; G.duskMsg = 0; G.totems = []; G.hz = []; G.wind = 0; G.cur = 0; G.segDone = false; G.res = false; G.arc = null; G.arcDone = false; G.boon = newBoon();
   G.stage = i; G.rank = 1 + 0.05 * i + 0.28 * Math.min(G.loop, 4); if (i === 0 && part === 0 && !G.endless && G.diff === 0) { SAVE.tut.r11 = (SAVE.tut.r11 || 0) + 1; if (SAVE.tut.r11 === 1) G.rank *= 0.85; } /* 처음 1-1은 탄 속도 0.85배 */ G.boon.shield += eqStat(P.ch).shield; G.helped = false; G.bombUsed = false; if (!G.endless && lossN() >= 2) { G.boon.shield++; G.helped = true; G.boon.txt.push('탑의 기운 · 방패 1개'); setTimeout(() => tipFlash('탑의 기운 · 방패 1개를 받았습니다 (이 도움으로 깨면 별은 최대 둘)', 5), 3200); } if (G.mode === 'play' && P.hpm && (part > 0 || G.endless)) hpAll(BATTLE.segHeal); G.segDmg = 0; G.sealN = YK.sealPerSeg; G.yks = []; G.hard = !!G.roadNext; G.roadNext = false; G.lan2 = 0; G.pend = []; G.chain = 0; G.chainT = 0; G.chainMax = 0; G.grazeN = 0; G.segPts = 0; G.segBase = 0; G.hpx = 1 + 0.2 * oathLv('hp'); G.rank *= 1 + 0.15 * oathLv('bs'); G.oathRage = oathLv('rage'); if (G.hard) { G.hpx *= FUN.hardRoad.hp; G.rank *= FUN.hardRoad.spd; } G.coinx = 1; G.bombX = 0; G.si = 0; G.wait = 3; G.hitN = 0; G.mobN = 0; G.mobK = 0; G.rescued = false; G.lanDone = false; G.bossAt = 0; G.bossSec = 0; G.gate = null; G.nMini = part === 1 ? 3 : 0; G.nMid = part === 1 ? 1 : 0; G.n0 = G.nMini + G.nMid; G.bossCalled = false; G.st = 0; G.boss = null; G.clearT = 0;
   evRoll(i, part); G.gob = null; G.swarm = 0; G.rain = 0; G.guest = null; G.shadow = null;
@@ -1638,11 +1639,11 @@ function damage(e, d) {
   if (e.type === 'boss') chainHit(false);
   if (G.skK) d *= G.skK; // 스킬 강화 배율
   if (e.st && e.st.mark > 0) d *= BATTLE.markK; if (G.forgeOn) d *= BATTLE.forgeK; // 표식 +20%, 벼림 +40%
-  d *= reactCheck(e, d); // 속성 연계
+  const rxM = reactCheck(e, d); d *= rxM; // 속성 연계
   if (e.shield > 0) d *= BATTLE.shieldK; else if (e.shieldUp > 0) d *= BATTLE.shieldBreakK; // 대장 보호막
   if (G.hitEl) applyEl(e, G.hitEl); if (G.hitO && G.hitO.push && e.type !== 'boss' && e.type !== 'mid') e.x += 7;
   if (G.wkHit && e.type === 'boss' && e.weak && !e.weak.dead) { e.weak.hp -= d; e.weak.fl = 0.08; d *= FUN.weakToBoss; if (e.weak.hp <= 0) weakBreak(e); } // 약점: 대장에는 절반
-  e.hp -= d; e.flash = 0.07;
+  dpsRec(e, d, rxM); e.hp -= d; e.flash = 0.07;
   if (e.hp <= 0) { if (e.type === 'boss' && STAGES[G.stage].last && !e.fin && !G.endless) { e.fin = 1; e.hp = 1; e.inv = true; startArc('final'); return; } kill(e); } // 마지막 대장은 일격 구간을 거친다
 }
 function kill(e) {
@@ -1659,7 +1660,7 @@ function kill(e) {
   if (G.luckyOn && e.type !== 'lan') hpHeal(P.ch, 2, false);
   for (let i = 0; i < (T.coins || 0) * (G.coinx || 1) * (G.luckyOn ? 2 : 1); i++) items.push({ x: e.x + rnd(-16, 16), y: e.y + rnd(-16, 16), type: 'C', t: 0, gk: chainGold(), tier: chainMul() >= 3 ? 2 : chainMul() >= 2 ? 1 : 0 });
   if (e.type === 'boss') {
-    G.bossSec = G.st - (G.bossAt || G.st); devLog('boss', G.stage + 1, Math.round(G.bossSec), DN[G.diff], G.deaths || 0); sfx.big(); G.shake = 0.9; G.flash = 0.7; G.slowmo = FUN.slowmoBoss; G.bossFree = { img: STAGES[G.stage].bossImg, x: e.x, y: e.y, t: -0.6 }; G.bossBub = null; G.boss = null; G.clearT = 7; addGold(1000 * (rb('b_shadow') ? 2 : 1)); G.tally = { lives: Math.round(hpOf(P.ch).hp / hpOf(P.ch).max * 6000), bombs: P.bombs * 1000, gold: G.goldRun || 0 }; if (!G.endless) { if (!SAVE.beaten.includes(G.stage)) SAVE.beaten.push(G.stage); const fk = G.diff + '-' + G.stage; if (!SAVE.mfirst.includes(fk)) SAVE.mfirst.push(fk); checkRewards(); } oathRecord(); saveGame();
+    G.bossSec = G.st - (G.bossAt || G.st); if (DPSQ) setTimeout(dpsShow, 600); devLog('boss', G.stage + 1, Math.round(G.bossSec), DN[G.diff], G.deaths || 0); sfx.big(); G.shake = 0.9; G.flash = 0.7; G.slowmo = FUN.slowmoBoss; G.bossFree = { img: STAGES[G.stage].bossImg, x: e.x, y: e.y, t: -0.6 }; G.bossBub = null; G.boss = null; G.clearT = 7; addGold(1000 * (rb('b_shadow') ? 2 : 1)); G.tally = { lives: Math.round(hpOf(P.ch).hp / hpOf(P.ch).max * 6000), bombs: P.bombs * 1000, gold: G.goldRun || 0 }; if (!G.endless) { if (!SAVE.beaten.includes(G.stage)) SAVE.beaten.push(G.stage); const fk = G.diff + '-' + G.stage; if (!SAVE.mfirst.includes(fk)) SAVE.mfirst.push(fk); checkRewards(); } oathRecord(); saveGame();
     for (const b of bullets) items.push({ x: b.x, y: b.y, type: 'C', t: 0, auto: true });
     bullets = []; for (const o of enemies) if (o !== e && !o.dead) { o.dead = true; burst(o.x, o.y, 10, '#ffc46b'); }
     banner(STAGES[G.stage].name + ' 돌파!', '', 2); addScore(G.tally.lives + G.tally.bombs);
@@ -1696,11 +1697,11 @@ function kitCharge(ch, x, y) {
   else for (let i = -2; i <= 2; i++) ps(x, y, Math.cos(i * 0.16) * 760, Math.sin(i * 0.16) * 760, 9, 5.5, 21, { kc: ch, pierce: 1, cd: 99, hit: new Map(), thin: 1 });
 }
 const kitCo = t => false; // 기획 14-7: 동료 자동 고유 능력(탄 얼리기·번개·공격력·어둠 걷기·골드 등)은 협력 스킬로 옮김
-function fire() { const n0 = shots.length; fire0(); for (let i = n0; i < shots.length; i++) shots[i].basic = 1; if (G.awake > 0) awakeFire(); if (G.cloneOn) { const nw = shots.slice(n0); for (const oy of [-46, 46]) for (const s of nw) shots.push(Object.assign({}, s, { y: s.y + oy, x: s.x - 10, dmg: s.dmg * 0.6, hit: s.hit ? new Map() : s.hit })); } if (G.endless && G.R) rogueFire(n0); }
+function fire() { const n0 = shots.length, sv = G.srcCtx, pw = P.power; G.srcCtx = 'basic'; P.power = 1; try { fire0(); } finally { P.power = pw; } { const B = BAL16, dk = B.basicK * (1 + B.powDmg * (pw - 1)), rk = 1 + B.powR * (pw - 1); for (let i = n0; i < shots.length; i++) { const s = shots[i]; s.basic = 1; s.dmg *= dk; s.r *= rk; } } if (G.awake > 0) awakeFire(); if (G.cloneOn) { const nw = shots.slice(n0); for (const oy of [-46, 46]) for (const s of nw) shots.push(Object.assign({}, s, { y: s.y + oy, x: s.x - 10, dmg: s.dmg * 0.6, hit: s.hit ? new Map() : s.hit })); } if (G.endless && G.R) rogueFire(n0); G.srcCtx = sv; }
 function rogueFire(n0) { // 그믐의 탑 축복: 기본 공격
-  const nw = shots.slice(n0); if (!nw.length) return; const k = Math.pow(1.2, rb('b_sharp')), way = rb('b_way') + rb('u_wind');
+  const nw = shots.slice(n0); if (!nw.length) return; const way = rb('b_way') + rb('u_wind'), k = Math.pow(1.2, rb('b_sharp')) * Math.pow(1.2, way); // 기획 16: 갈래 대신 피해 +20%
   for (const s of nw) { s.dmg *= k; if (rb('b_pierce') && !s.pierce) s.pleft = 1; }
-  const c = nw[Math.floor(nw.length / 2)]; for (let j = 0; j < way; j++) { const a = Math.atan2(c.vy, c.vx) + (j % 2 ? -1 : 1) * (0.16 + 0.08 * (j >> 1)), sp = Math.hypot(c.vx, c.vy); shots.push(Object.assign({}, c, { vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, hit: c.hit ? new Map() : c.hit })); }
+  const c = nw[Math.floor(nw.length / 2)]; for (let j = 0; j < 0; j++) { const a = Math.atan2(c.vy, c.vx) + (j % 2 ? -1 : 1) * (0.16 + 0.08 * (j >> 1)), sp = Math.hypot(c.vx, c.vy); shots.push(Object.assign({}, c, { vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, hit: c.hit ? new Map() : c.hit })); }
   if (rb('b_fast')) P.fcd /= Math.pow(1.15, rb('b_fast'));
 }
 function fire0() {
@@ -1904,7 +1905,7 @@ function updatePlayer(dt) {
   while (P.fam.length < nf) P.fam.push({ x: P.x, y: P.y });
   P.fam.length = nf;
   P.fam.forEach((f, i) => { const ty = P.y + (nf === 1 ? -24 : i ? 24 : -24); f.x += (P.x - 18 - f.x) * Math.min(1, dt * 9); f.y += (ty - f.y) * Math.min(1, dt * 9); });
-  if ((keys.fire || touch.down || touch.auto) && !keys.charge && P.famcd <= 0 && nf) { P.famcd = 0.18; for (const f of P.fam) ps(f.x + 6, f.y, 520, 0, 2.5, 0.8, 3); }
+  if ((keys.fire || touch.down || touch.auto) && !keys.charge && P.famcd <= 0 && nf) { P.famcd = 0.18; for (const f of P.fam) ps(f.x + 6, f.y, 520, 0, 2.5 * BAL16.famR, 0.8 * BAL16.famK, 3, { basic: 1, src: 'basic' }); }
   // 기 모으기
   if (keys.charge) {
     const b = P.charge, CG = chgT(); P.charge = Math.min(CG + 0.6, P.charge + dt); if (rCombo() && P.charge >= CG) { if ((P.fullT = (P.fullT || 0) + dt) >= 1) { P.fullT = 0; releaseCharge(); P.charge = 0.001; } } else P.fullT = 0; if (b < CG && P.charge >= CG) { sfx.ready(); parts.push({ x: P.x, y: P.y, vx: 0, vy: 0, life: 0.3, max: 0.3, ring: 34, col: CH[P.ch].spark || CH[P.ch].robe, r: 0 }); G.shake = Math.max(G.shake, 0.05); } // 다 모이면 고리가 번쩍
@@ -1954,7 +1955,7 @@ function update(dt) {
     G.bombT -= dt; if (G.bombT <= 0 && rb('b_long')) G.bombX = 1.3;
     for (const b of bullets) if (Math.random() < 0.5) burst(b.x, b.y, 1, '#bfe8ff', 40);
     bullets = [];
-    { const bm = (1 + eqStat(P.ch).bomb / 100) * (rb('u_storm') ? 1.4 : 1); for (const e of enemies) if (e.x < W + 10) damage(e, 90 * dt * bm); } // 부적 한 장이 2.6초 동안 약 235의 피해
+    { const bm = (1 + eqStat(P.ch).bomb / 100) * (rb('u_storm') ? 1.4 : 1), sv = G.srcCtx; G.srcCtx = 'bomb'; for (const e of enemies) if (e.x < W + 10) damage(e, 90 * dt * bm); G.srcCtx = sv; } // 부적 한 장이 2.6초 동안 약 235의 피해
     G.shake = Math.max(G.shake, 0.12);
     if ((G.bfx -= dt) <= 0) { // 화면의 적마다 잇달아 터진다
       G.bfx = 0.1; const live = enemies.filter(e => e.x < W && !e.dead);
@@ -2520,8 +2521,10 @@ function draw() {
   if (G.shake > 0) ctx.translate(rnd(-1, 1) * G.shake * 8, rnd(-1, 1) * G.shake * 8);
   drawBG();
   for (const it of items) drawItem(it);
+  ctx.globalAlpha = BAL16.basicA; for (const s of shots) if (s.basic || s.faint) drawShot(s); ctx.globalAlpha = 1;
   evDrawBack(); drawSlash(); for (const e of enemies) drawEnemy(e); for (const e of enemies) if (e.shield > 0 || e.guard) drawShield(e); drawSkillFx(); drawYk(); if (G.boss) drawWeak(G.boss); evDrawFront(); drawComboFx();
-  for (const s of shots) { if (s.chg !== undefined && !s.thin) { const ox = s.x, oy = s.y, ga = ctx.globalAlpha; [0.15, 0.3, 0.5].forEach((a, i) => { const k = (3 - i) * 0.016; s.x = ox - s.vx * k; s.y = oy - s.vy * k; ctx.globalAlpha = ga * a; drawShot(s); }); s.x = ox; s.y = oy; ctx.globalAlpha = ga; } drawShot(s); } // 모으기 탄 꼬리
+  for (const s of shots) { if (s.basic || s.faint) continue; if (s.src === 'wp') wpShotRing(s); if (s.chg !== undefined && !s.thin) { const ox = s.x, oy = s.y, ga = ctx.globalAlpha; [0.15, 0.3, 0.5].forEach((a, i) => { const k = (3 - i) * 0.016; s.x = ox - s.vx * k; s.y = oy - s.vy * k; ctx.globalAlpha = ga * a; drawShot(s); }); s.x = ox; s.y = oy; ctx.globalAlpha = ga; } drawShot(s); } // 모으기 탄 꼬리
+  drawWpFx();
   if (G.mode === 'play' && P.deadT <= 0) {
     for (const f of P.fam) { glow('blue', f.x, f.y, 16, 0.6); if (!spr('wisp', f.x, f.y + Math.sin(G.time * 8) * 1.5, 15, { flip: 1 })) { ctx.fillStyle = '#bfeaff'; circ(f.x, f.y, 4.5); } }
     if (P.co >= 0) { // 동료와 교대 대기 표시
@@ -3033,7 +3036,7 @@ function drawHurt() { if (!(G.hurt > 0)) return; const a = Math.min(1, G.hurt * 
 const SKCD = [6, 5, 7, 6, 7, 6, 7, 6, 6, 6, 6, 7, 7], COCD = [12, 10, 14, 12, 14, 12, 13, 12, 11, 13, 14, 13, 14]; // 캐릭터 스킬·협력 스킬 쿨(초)
 Object.assign(BATTLE, { wpCd: 5, grazeCd: 0.2, lv4Cd: 0.85 });
 const cdK = ch => (1 - eqStat(ch).chg / 100) * rChg() * (lvOf(ch) >= 4 ? BATTLE.lv4Cd : 1) * (rCombo() ? 0.8 : 1) * Math.pow(0.8, rb('b_cd')); // 옷「스킬 쿨」, 탑 축복, Lv4
-function cdTick(dt) { const C = P.cd; if (!C) return; for (const k in C) if (C[k] > 0) C[k] = Math.max(0, C[k] - dt); }
+function cdTick(dt) { const C = P.cd; if (!C) return; for (const k in C) if (C[k] > 0) C[k] = Math.max(0, C[k] - dt); if (typeof wpReadyPing === 'function') wpReadyPing(); }
 const skReady = k => P.cd && !(P.cd[k] > 0) && G.mode === 'play' && P.deadT <= 0 && !G.arc && !G.cmb && !G.cut && !G.talk && !G.offer && !G.res;
 function skillUse() { if (!skReady('sk')) return; P.cd.sk = SKCD[P.ch] * cdK(P.ch) * (1 - eqStat(P.ch).skCd / 100); P.cdMax.sk = P.cd.sk; if (lvOf(P.ch) >= 10) { const n0 = shots.length; skMul(BATTLE.lv10Sk, () => charSkill(P.ch)); const nw = shots.slice(n0); for (const s of nw) shots.push(Object.assign({}, s, { y: s.y + 26, dmg: s.dmg * 0.8, hit: s.hit ? new Map() : s.hit })); if (nw.length) float('진화!', P.x, P.y - 56, '#ffd76a'); } else charSkill(P.ch); }
 function coSkillUse() { if (!uiOpen('coskill')) return; if (P.co < 0 || hpOf(P.co).hp <= 0 || !skReady('co')) return; P.cd.co = COCD[P.co] * cdK(P.co) * (1 - Math.max(eqStat(P.ch).coCd, eqStat(P.co).coCd) / 100); P.cdMax.co = P.cd.co; if (typeof coSkill === 'function') { const f0 = (G.fx2 || []).length, k = lvOf(P.co) >= 7 ? BATTLE.lv7Co : 1; skMul(k, () => coSkill(P.co)); if (k > 1) for (const f of (G.fx2 || []).slice(f0)) f.d *= k; } else { for (let i = 0; i < 9; i++) { const a = (i - 4) * 0.12; ps(P.cx + 14, P.cy, Math.cos(a) * 520, Math.sin(a) * 520, 6, 2.5, 4); } float('협력!', P.cx, P.cy - 30, '#9fd0ff'); } }
@@ -3065,7 +3068,7 @@ Object.assign(BATTLE, { skDmgK: 3, markK: 1.2, statusSec: 3, bindK: 0.15, iceK: 
 function applyEl(e, el) { if (!el || el === 'heavy' || e.dead) return; e.st = e.st || {}; e.st[el] = BATTLE.statusSec; if (el === 'fire') e.burn = Math.max(e.burn || 0, 3); }
 function hitEl(e, d, el, o) { if (!e || e.dead || e.inv) return; G.hitEl = el; G.hitO = o || null; damage(e, d); G.hitEl = null; G.hitO = null; }
 const inFront = (x0, x1, y, h) => enemies.filter(e => !e.dead && !e.inv && e.x > x0 && e.x < x1 && Math.abs(e.y - y) < h + e.r && e.x < W + 20);
-const fx2 = (o) => (G.fx2 = G.fx2 || []).push(Object.assign({ t: 0 }, o));
+const fx2 = (o) => (G.fx2 = G.fx2 || []).push(Object.assign({ t: 0, src: G.srcCtx }, o));
 function skSound(f) { tone(f, 0.18, 'triangle', 0.08, f * 0.6); noise(0.15, 0.08, { f: f * 3 }); }
 function charSkill(ch) { // 캐릭터 스킬 = 예전에 기를 모아 쏘던 모으기 공격(사용자 요청). 피해 1.5배 + 속성(연계용)
   const n0 = shots.length; releaseCharge(); const el = SKEL[ch] === 'heavy' ? null : SKEL[ch];
@@ -3105,7 +3108,7 @@ function entryStrike(ch) { const x = P.x, y = P.y; float(ENNAME[ch], x, y - 48, 
   else if (ch === 11) for (const t of enemies.filter(e => !e.dead && e.x < W).sort((a, b) => Math.hypot(a.x - x, a.y - y) - Math.hypot(b.x - x, b.y - y)).slice(0, 3)) { fx2({ k: 'line', x, y, tx: t.x, ty: t.y, d: 0.2, col: '#c9a8ff' }); hitEl(t, 15, 'bind'); }
   else if (ch === 12) { for (let i = 0; i < 10; i++) items.push({ x: x + rnd(40, 300), y: -10, type: 'C', t: 0, vy: rnd(100, 160) }); for (const e of enemies) if (!e.dead && Math.hypot(e.x - x, e.y - y) < 200) hitEl(e, 15, null, { heavy: 1 }); } }
 function skillFxUpd(dt) { // 이어지는 협력 스킬 효과
-  const L = G.fx2 || []; for (const f of L) { f.t += dt;
+  const L = G.fx2 || [], sv0 = G.srcCtx; for (const f of L) { f.t += dt; G.srcCtx = f.src;
     if (f.k === 'windwall') bullets = bullets.filter(b => !(b.x > P.x && b.x < P.x + 150 && Math.abs(b.y - P.y) < 90));
     else if (f.k === 'orbit') { for (let i = 0; i < 4; i++) { const a = f.t * 4 + i * TAU / 4, ox = P.x + Math.cos(a) * 54, oy = P.y + Math.sin(a) * 54; bullets = bullets.filter(b => Math.hypot(b.x - ox, b.y - oy) > 14); for (const e of enemies) if (!e.dead && Math.hypot(e.x - ox, e.y - oy) < 16 + e.r && (e.orbT || 0) < G.time) { e.orbT = G.time + 0.25; hitEl(e, 4, 'fire'); } } }
     else if (f.k === 'eat') { const n0 = bullets.length; bullets = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) > 120); if (bullets.length < n0) hpHeal(P.ch, (n0 - bullets.length) * 1, false); }
@@ -3179,7 +3182,7 @@ function drawReact() { const r = G.rxTxt; if (!r || r.t <= 0) return; const a = 
 /* 기획 14-5: 무기마다 무기 스킬(화력 %는 그대로) */
 const WPSK = { '': ['기본 일격', 5], w1: ['돌진 찌르기', 6], w2: ['방울 울림', 9], w3: ['비녀 던지기', 7], w4: ['벼락', 7], w5: ['칠성', 8], w6: ['그믐 가르기', 10], w7: ['창 던지기', 6], w8: ['불화살 비', 8], w9: ['서리 부채', 7], w10: ['해태 돌격', 10] };
 const wpKey = w => w && WPSK[w.id] ? w.id : '', wpName = w => WPSK[wpKey(w)][0], wpCdOf = w => WPSK[wpKey(w)][1];
-function weaponSkill(w) { const k = wpKey(w), x = P.x, y = P.y; float(wpName(w), x, y - 40, '#d8c4ff'); skSound(900);
+function weaponSkill(w) { const k = wpKey(w), x = P.x, y = P.y; skSound(900); // 이름은 기획 16의 큰 붓글씨로
   if (!k) return basicStrike();
   if (k === 'w1') { P.inv = Math.max(P.inv, 0.5); const x1 = Math.min(W - 40, x + 130); for (const e of inFront(x - 10, x1 + 30, y, 30)) hitEl(e, 14, null, { pen: 1 }); fx2({ k: 'hline', y, d: 0.2, col: '#ffffff' }); P.x = x1; burst(x1, y, 14, '#fff', 200); }
   else if (k === 'w2') { ring(x, y, 170, '#ffe9a0', 0.5); for (const e of enemies) if (!e.dead && e.type !== 'boss' && Math.hypot(e.x - x, e.y - y) < 170 + e.r) e.charm = Math.max(e.charm || 0, 1); for (const b of bullets) if (Math.hypot(b.x - x, b.y - y) < 170) { b.vx *= 0.4; b.vy *= 0.4; } tone(1760, 0.4, 'sine', 0.08); tone(2349, 0.5, 'sine', 0.06, 0, 0.08); }
@@ -3187,8 +3190,8 @@ function weaponSkill(w) { const k = wpKey(w), x = P.x, y = P.y; float(wpName(w),
   else if (k === 'w4') { for (const t of inFront(x, W + 10, y, 400).sort((a, b) => a.x - b.x).slice(0, 3)) { fx2({ k: 'bolt', tx: t.x, ty: t.y, d: 0.3 }); hitEl(t, 12, 'bolt'); } G.flash = Math.max(G.flash, 0.1); }
   else if (k === 'w5') for (let i = 0; i < 7; i++) { const a = (i - 3) * 0.2; ps(x + 14, y, Math.cos(a) * 480, Math.sin(a) * 480, 6, 4, 20, { seek: 2, kc: 12 }); }
   else if (k === 'w6') { fx2({ k: 'hline', y, d: 0.35, col: '#c9a8ff' }); for (const e of inFront(x - 20, W + 20, y, 50)) hitEl(e, 25, null, { pen: 1 }); bullets = bullets.filter(b => Math.abs(b.y - y) > 50 || b.x < x); G.shake = 0.4; }
-  else if (k === 'w7') for (let i = 0; i < 3; i++) G.pend.push({ t: G.st + i * 0.12, f: () => { ps(P.x + 16, P.y, 760, 0, 7, 10, 20, { pen: 1, kc: 8, heavy: 1 }); tone(520 + i * 80, 0.06, 'triangle', 0.06); } });
-  else if (k === 'w8') for (let i = 0; i < 12; i++) G.pend.push({ t: G.st + (i >> 1) * 0.08, f: () => { const tx = P.x + 70 + (i % 6) * 70 + rnd(-20, 20); ps(tx - 90, -10, 150, 560, 6, 6, 20, { el: 'fire', kc: 10 }); } });
+  else if (k === 'w7') for (let i = 0; i < 3; i++) G.pend.push({ t: G.st + i * 0.12, f: () => { ps(P.x + 16, P.y, 760, 0, 7, 10 * BAL16.wpK, 20, { pen: 1, kc: 8, heavy: 1, src: 'wp' }); tone(520 + i * 80, 0.06, 'triangle', 0.06); } });
+  else if (k === 'w8') for (let i = 0; i < 12; i++) G.pend.push({ t: G.st + (i >> 1) * 0.08, f: () => { const tx = P.x + 70 + (i % 6) * 70 + rnd(-20, 20); ps(tx - 90, -10, 150, 560, 6, 6 * BAL16.wpK, 20, { el: 'fire', kc: 10, src: 'wp' }); } });
   else if (k === 'w9') for (let i = 0; i < 5; i++) { const a = (i - 2) * 0.18; ps(x + 14, y, Math.cos(a) * 560, Math.sin(a) * 560, 8, 8, 20, { el: 'ice', pen: 1, kc: 7 }); }
   else if (k === 'w10') { P.inv = Math.max(P.inv, 0.8); fx2({ k: 'hline', y, d: 0.4, col: '#ff8a3a' }); for (const e of inFront(x - 10, W + 20, y, 44)) hitEl(e, 22, 'fire', { pen: 1 }); for (let i = 0; i < 18; i++) burst(x + i * (W - x) / 18, y + rnd(-14, 14), 3, '#ff9a4a', 160); bullets = bullets.filter(b => Math.abs(b.y - y) > 36 || b.x < x); P.x = Math.min(W * 0.62, x + 220); G.shake = 0.45; } }
 if (TEST_UNLOCK) for (const e of EQ) if (!SAVE.eq[e.id]) SAVE.eq[e.id] = 1; // 개발판: 모든 장비를 처음부터(기획 14 원칙)
@@ -3250,6 +3253,39 @@ function renderYk() { const sel = SAVE.yokaiSel = (SAVE.yokaiSel || []).filter(y
   $('ykGrid').innerHTML = YKEY().map(k => { const h = ykHas(k), o = ykSave()[k], i = sel.indexOf(k); return '<button type="button" data-y="' + k + '" class="' + (h ? '' : 'no') + (i >= 0 ? ' on' : '') + (o && o.gold ? ' gold' : '') + '"><img src="assets/' + k + '.webp" alt="" loading="lazy"><span>' + (h || ykSave()[k] ? ykName(k) : '???') + '</span><small>' + (o ? 'Lv ' + o.lv : h ? 'Lv 1' : '') + ' ' + (h ? EL[ykEl(k)].split(' ')[0] : '') + '</small>' + (i >= 0 ? '<i>' + (i + 1) + '</i>' : '') + '</button>'; }).join(''); }
 $('ykGrid').addEventListener('click', ev => { const b = ev.target.closest('[data-y]'); if (!b) return; const k = b.dataset.y; if (!ykHas(k)) return toast('아직 봉인하지 못한 요괴입니다'); const s = SAVE.yokaiSel = SAVE.yokaiSel || []; const i = s.indexOf(k); if (i >= 0) s.splice(i, 1); else { if (s.length >= 2) s.shift(); s.push(k); } saveGame(); renderYk(); renderD1(); });
 $('btnYkX').addEventListener('click', () => { $('ovYk').hidden = true; renderD1(); }); $('btnYk').addEventListener('click', openYk);
+/* ---------- 기획 16-1: 공격 비중 다시 잡기. 기본 공격 약하게·덜 가리게, 무기 스킬 3배·눈에 띄게, ?dps=1 공격별 피해 비중 ---------- */
+const BAL16 = { basicK: 0.5, powDmg: 0.15, powR: 0.12, famK: 0.5, famR: 0.5, basicA: 0.7, wpK: 3, wpStop: 0.05, wpShake: 0.25 };
+const DPSQ = TEST_UNLOCK && /[?&]dps=1/.test(location.search);
+const WPCOL = { '': '#ffffff', w1: '#e8f0ff', w2: '#ffe08a', w3: '#c8d0ec', w4: '#fff07a', w5: '#ffd76a', w6: '#c9a8ff', w7: '#9fe08a', w8: '#ff8a3a', w9: '#9fe0ff', w10: '#ff6a3a' };
+const wpCol = () => WPCOL[wpKey(eqOf(P.ch, 'w'))] || '#ffffff';
+function withSrc(tag, f) { const sv = G.srcCtx; G.srcCtx = tag; try { return f(); } finally { G.srcCtx = sv; } }
+function dpsRec(e, d, rxM) { if (!(d > 0) || !G.dps) return; const dd = Math.min(d, Math.max(0, e.hp)); if (!dd) return;
+  const src = (G.hitO && G.hitO.src) || G.srcCtx || 'other', base = rxM > 1 ? dd / rxM : dd, add = (o, k, v) => { o[k] = (o[k] || 0) + v; };
+  if (e.type === 'boss' && !G.dps.b0) G.dps.b0 = G.time; for (const o of e.type === 'boss' ? [G.dps.all, G.dps.boss] : [G.dps.all]) { add(o, src, base); if (rxM > 1) add(o, 'rx', dd - base); }
+  if (src === 'wp' && (e.wpT || 0) < G.time) { e.wpT = G.time + 0.12; G.hstop = Math.max(G.hstop || 0, BAL16.wpStop); G.shake = Math.max(G.shake, BAL16.wpShake); (G.wpNum = G.wpNum || []).push({ x: e.x + rnd(-10, 10), y: e.y - e.r * 0.6, n: Math.round(d), t: 0, col: wpCol() }); } }
+const DPSG = [['기본 공격(자동)', ['basic', 'cofire'], 35], ['캐릭터 스킬', ['sk'], 20], ['무기 스킬', ['wp'], 20], ['협력 스킬·등장 일격', ['co', 'entry'], 10], ['연계·부적·각성·요괴·기타', ['rx', 'bomb', 'awk', 'yk', 'combo', 'other'], 15]];
+const DPSN = { basic: '기본 공격', cofire: '동료 자동 사격', sk: '캐릭터 스킬', wp: '무기 스킬', co: '협력 스킬', entry: '등장 일격', rx: '연계 추가 피해', bomb: '부적', awk: '각성', yk: '요괴 소환', combo: '합체', other: '기타' };
+function dpsTable(o) { const tot = Object.values(o).reduce((a, b) => a + b, 0) || 1; return { tot: Math.round(tot), groups: DPSG.map(([n, ks, goal]) => ({ n, goal, pct: Math.round(ks.reduce((a, k) => a + (o[k] || 0), 0) / tot * 100) })), each: Object.entries(o).sort((a, b) => b[1] - a[1]).map(([k, v]) => ({ k: DPSN[k] || k, pct: Math.round(v / tot * 100), v: Math.round(v) })) }; }
+function dpsShow() { const T = dpsTable(G.dps.boss), A = dpsTable(G.dps.all); console.log('DPS', JSON.stringify({ boss: T, all: A }));
+  let el = $('dpsBox'); if (!el) { el = document.createElement('div'); el.id = 'dpsBox'; el.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:99;background:rgba(20,14,8,.94);color:#f4e3c0;border:2px solid #c9a050;border-radius:10px;padding:12px 16px;font:13px/1.5 sans-serif;max-height:90vh;overflow:auto'; el.onclick = () => el.remove(); document.body.appendChild(el); }
+  const row = g => '<tr><td>' + g.n + '</td><td style="text-align:right;color:' + (Math.abs(g.pct - g.goal) <= 7 ? '#9fe08a' : '#ff9a8a') + '">' + g.pct + '%</td><td style="text-align:right;opacity:.7">' + g.goal + '%</td></tr>';
+  el.innerHTML = '<b>대장전 공격별 피해 비중</b> (총 ' + T.tot + ', ' + (STAGES[G.stage] ? (G.stage + 1) + '층' : '') + ' · ' + Math.round(G.dps.b0 ? G.time - G.dps.b0 : 0) + '초)<table style="width:100%;margin:6px 0">' + '<tr style="opacity:.7"><td>공격</td><td style="text-align:right">지금</td><td style="text-align:right">목표</td></tr>' + T.groups.map(row).join('') + '</table>'
+    + '<small>' + T.each.map(x => x.k + ' ' + x.pct + '%').join(' · ') + '</small><br><b style="display:block;margin-top:8px">구간 전체</b><small>' + A.groups.map(g => g.n + ' ' + g.pct + '%').join(' · ') + '</small><br><small style="opacity:.6">눌러서 닫기</small>'; }
+function wpShotRing(s) { const c = wpCol(); ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.strokeStyle = c; ctx.lineWidth = 3; ctx.globalAlpha = 0.85; ctx.beginPath(); ctx.arc(s.x, s.y, Math.max(8, s.r * 1.4), 0, TAU); ctx.stroke(); glow('gold', s.x, s.y, Math.max(14, s.r * 2.4), 0.35); ctx.restore(); }
+function drawWpFx() { const f = G.wpFl; if (f) { f.t += 1 / 60; const k = f.t / 0.3; if (k >= 1) G.wpFl = null; else { const im = IMG['eq/' + f.id], sz = 70 + 60 * k, x = P.x + 58, y = P.y - 6; ctx.save(); ctx.globalAlpha = 1 - k * k; ctx.globalCompositeOperation = 'lighter'; glow('gold', x, y, sz * 0.8, 0.6); ctx.globalCompositeOperation = 'source-over'; if (ok(im)) ctx.drawImage(im, x - sz / 2, y - sz / 2, sz, sz); ctx.restore(); ctx.save(); ctx.globalAlpha = Math.min(1, 2 - 2 * k); ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(0,0,0,.7)'; ctx.font = 'bold 22px ' + (getComputedStyle(document.body).getPropertyValue('--brush') || 'serif'); ctx.textAlign = 'center'; ctx.strokeText(f.name, x, y - sz / 2 - 6); ctx.fillStyle = f.col; ctx.fillText(f.name, x, y - sz / 2 - 6); ctx.restore(); } }
+  const L = G.wpNum || []; for (const n of L) { n.t += 1 / 60; const a = 1 - n.t / 0.8; if (a <= 0) continue; ctx.save(); ctx.globalAlpha = a; ctx.font = 'bold ' + Math.round(20 + 8 * Math.max(0, 0.2 - n.t) * 5) + 'px sans-serif'; ctx.textAlign = 'center'; ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(0,0,0,.75)'; ctx.strokeText(n.n, n.x, n.y - n.t * 30); ctx.fillStyle = n.col; ctx.fillText(n.n, n.x, n.y - n.t * 30); ctx.restore(); }
+  G.wpNum = L.filter(n => n.t < 0.8); }
+{ const ws0 = weaponSkill; weaponSkill = function (w) { const n0 = shots.length; withSrc('wp', () => skMul(BAL16.wpK, () => ws0(w))); for (const s of shots.slice(n0)) { if (s.src === 'wp') continue; s.src = 'wp'; s.dmg *= BAL16.wpK; } const k = wpKey(w); if (k) needImg('eq/' + k); G.wpFl = { id: k || 'w1', t: 0, col: WPCOL[k] || '#fff', name: wpName(w) }; }; }
+{ const a = charSkill; charSkill = function (ch) { return withSrc('sk', () => a(ch)); }; }
+{ const a = coSkill; coSkill = function (c) { return withSrc('co', () => a(c)); }; }
+{ const a = entryStrike; entryStrike = function (ch) { return withSrc('entry', () => a(ch)); }; }
+{ const a = awakeJoint; awakeJoint = function () { return withSrc('awk', () => a()); }; }
+{ const a = awakeFire; awakeFire = function () { return withSrc('awk', () => a()); }; }
+{ const a = ykUpd; ykUpd = function (dt) { return withSrc('yk', () => a(dt)); }; }
+{ const a = skillFxUpd; skillFxUpd = function (dt) { return withSrc(G.srcCtx, () => a(dt)); }; }
+{ const a = updateBuddy; updateBuddy = function (dt) { const n0 = shots.length; withSrc('cofire', () => a(dt)); for (const s of shots.slice(n0)) if (s.src === 'cofire') s.faint = 1; }; }
+G.wpPrev = 0;
+function wpReadyPing() { const c = P.cd ? P.cd.wp || 0 : 0; if (G.wpPrev > 0 && c <= 0 && G.mode === 'play') { tone(2637, 0.06, 'triangle', 0.06); tone(3520, 0.18, 'sine', 0.05, 0, 0.04); const b = $('padWeapon'); b.classList.remove('ping'); void b.offsetWidth; b.classList.add('ping'); } G.wpPrev = c; }
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],
