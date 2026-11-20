@@ -91,6 +91,7 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .tb-sk{right:2cqw;bottom:3.4cqw;width:11.5cqw;height:11.5cqw;font-size:2.1cqw;background:radial-gradient(circle at 40% 35%,#3fae8a,#1f6e58);border-color:#a8f4d8}
 .tb.ping{animation:tbping .55s ease-out}@keyframes tbping{0%{box-shadow:0 0 0 0 rgba(255,240,180,.95);filter:brightness(1.8)}100%{box-shadow:0 0 0 2.4cqw rgba(255,240,180,0);filter:none}}
 .tb-wp{right:14.6cqw;bottom:1.6cqw;width:8.4cqw;height:8.4cqw;font-size:1.7cqw;background:radial-gradient(circle at 40% 35%,#7a5ab0,#3e2a6a);border-color:#d8c4ff}
+.devtools{margin-top:1.2cqw;padding:1cqw 1.4cqw;border:1px dashed #c9a050;border-radius:1cqw;background:rgba(0,0,0,.35);font-size:1.4cqw;text-align:left;max-width:60cqw}.devtools b{color:#ffd76a}.devtools label{display:inline-block;margin:.3cqw 1.2cqw .3cqw 0;white-space:nowrap}.devtools select,.devtools button{font-size:1.3cqw;margin-right:.6cqw}
 .res.rest .res-medals,.res.rest .res-fun{display:none}.res.rest h2{font-size:1.1em}
 .tb-co.coready{filter:brightness(1.3)}.tb-co.coready::before{content:'';position:absolute;inset:-.7cqw;border-radius:50%;border:.45cqw dashed #ffe9a0;animation:cospin 2.2s linear infinite;pointer-events:none}@keyframes cospin{to{transform:rotate(360deg)}}
 .tb-co{right:15cqw;bottom:13.2cqw;width:8.4cqw;height:8.4cqw;font-size:1.7cqw;background:#2a4a6a center/cover;border-color:#9fd0ff}.tb-co>span{background:rgba(10,20,40,.45);border-radius:1cqw;padding:.2cqw .4cqw}
@@ -708,6 +709,7 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
         <button type="button" id="btnHelp">도움말</button>
         <button type="button" id="btnQuit">처음 화면으로</button>
       </div>
+      <div class="devtools" id="devTools" hidden></div>
     </div>
     <div class="overlay shop helpv" id="ovHelp" hidden>
       <div class="shop-head"><b>도움말</b><div class="help-head-btns"><button type="button" id="btnStoryAgain">이야기 다시 보기</button><button type="button" id="btnTutReset">안내 다시 보기</button><button type="button" id="btnShortCombo">합체 연출: 길게</button><button type="button" id="btnHelpX">닫기</button></div></div>
@@ -1665,7 +1667,7 @@ function kill(e) {
   if (G.luckyOn && e.type !== 'lan') hpHeal(P.ch, 2, false);
   for (let i = 0; i < (T.coins || 0) * (G.coinx || 1) * (G.luckyOn ? 2 : 1); i++) items.push({ x: e.x + rnd(-16, 16), y: e.y + rnd(-16, 16), type: 'C', t: 0, gk: chainGold(), tier: chainMul() >= 3 ? 2 : chainMul() >= 2 ? 1 : 0 });
   if (e.type === 'boss') {
-    G.bossSec = G.st - (G.bossAt || G.st); if (DPSQ) setTimeout(dpsShow, 600); devLog('boss', G.stage + 1, Math.round(G.bossSec), DN[G.diff], G.deaths || 0); sfx.big(); G.shake = 0.9; G.flash = 0.7; G.slowmo = FUN.slowmoBoss; G.bossFree = { img: STAGES[G.stage].bossImg, x: e.x, y: e.y, t: -0.6 }; G.bossBub = null; G.boss = null; G.clearT = 7; addGold(1000 * (rb('b_shadow') ? 2 : 1)); G.tally = { lives: Math.round(hpOf(P.ch).hp / hpOf(P.ch).max * 6000), bombs: P.bombs * 1000, gold: G.goldRun || 0 }; if (!G.endless) { if (!SAVE.beaten.includes(G.stage)) SAVE.beaten.push(G.stage); const fk = G.diff + '-' + G.stage; if (!SAVE.mfirst.includes(fk)) SAVE.mfirst.push(fk); checkRewards(); } oathRecord(); saveGame();
+    G.bossSec = G.st - (G.bossAt || G.st); if (DPSQ || DEV.dps) setTimeout(dpsShow, 600); devLog('boss', G.stage + 1, Math.round(G.bossSec), DN[G.diff], G.deaths || 0); sfx.big(); G.shake = 0.9; G.flash = 0.7; G.slowmo = FUN.slowmoBoss; G.bossFree = { img: STAGES[G.stage].bossImg, x: e.x, y: e.y, t: -0.6 }; G.bossBub = null; G.boss = null; G.clearT = 7; addGold(1000 * (rb('b_shadow') ? 2 : 1)); G.tally = { lives: Math.round(hpOf(P.ch).hp / hpOf(P.ch).max * 6000), bombs: P.bombs * 1000, gold: G.goldRun || 0 }; if (!G.endless) { if (!SAVE.beaten.includes(G.stage)) SAVE.beaten.push(G.stage); const fk = G.diff + '-' + G.stage; if (!SAVE.mfirst.includes(fk)) SAVE.mfirst.push(fk); checkRewards(); } oathRecord(); saveGame();
     for (const b of bullets) items.push({ x: b.x, y: b.y, type: 'C', t: 0, auto: true });
     bullets = []; for (const o of enemies) if (o !== e && !o.dead) { o.dead = true; burst(o.x, o.y, 10, '#ffc46b'); }
     banner(STAGES[G.stage].name + ' 돌파!', '', 2); addScore(G.tally.lives + G.tally.bombs);
@@ -3226,11 +3228,11 @@ function ykEl(k) { const n = ykName(k); // 이름으로 속성 하나
 const ykSave = () => (SAVE.yokai = SAVE.yokai || {});
 const ykHas = k => TEST_UNLOCK || !!ykSave()[k];
 const ykLv = k => (ykSave()[k] && ykSave()[k].lv) || 1;
-function ykSealable(e) { return (e.type === 'mini' || e.type === 'mid') && e.def && !e.def.mirror && !e.dead && e.hp > 0 && e.hp < e.mhp * YK.sealHp; }
+function ykSealable(e) { return (e.type === 'mini' || e.type === 'mid') && e.def && !e.def.mirror && !e.dead && e.hp > 0 && (e.hp < e.mhp * YK.sealHp || DEV.seal); }
 function ykSealTick(dt) { for (const e of enemies) { if (ykSealable(e) && !e.sealDone) { e.sealDone = true; e.sealT = YK.sealWin; } if (e.sealT > 0) e.sealT -= dt; } }
 const ykTarget = () => enemies.filter(e => e.sealT > 0 && !e.dead).sort((a, b) => b.sealT - a.sealT)[0];
-function ykSealUse() { if (G.mode !== 'play' || !uiOpen('seal')) return; const e = ykTarget(); if (!e) return toast('봉인할 요괴가 없습니다 · 문지기·수문장 체력이 20% 아래일 때'); if (!(G.sealN > 0)) return toast('봉인 부적이 없습니다');
-  G.sealN--; const k = e.def.img, first = !ykSave()[k], rate = (e.type === 'mid' ? YK.rateMid : YK.rateMini) + (first ? YK.rateNew : 0); fx2({ k: 'sealfly', x: P.x, y: P.y, tx: e.x, ty: e.y, d: 0.35 }); tone(660, 0.2, 'triangle', 0.08, 300);
+function ykSealUse() { if (G.mode !== 'play' || !uiOpen('seal')) return; const e = ykTarget(); if (!e) return toast('봉인할 요괴가 없습니다 · 문지기·수문장 체력이 20% 아래일 때'); if (!(G.sealN > 0) && !DEV.seal) return toast('봉인 부적이 없습니다'); if (DEV.seal) G.sealN = Math.max(G.sealN || 0, 1);
+  G.sealN--; const k = e.def.img, first = !ykSave()[k], rate = DEV.seal ? 1 : (e.type === 'mid' ? YK.rateMid : YK.rateMini) + (first ? YK.rateNew : 0); fx2({ k: 'sealfly', x: P.x, y: P.y, tx: e.x, ty: e.y, d: 0.35 }); tone(660, 0.2, 'triangle', 0.08, 300);
   G.pend.push({ t: G.st + 0.32, f: () => { if (e.dead && !e.sealing) return; if (Math.random() < rate) { e.sealing = true; const S = ykSave(), o = S[k] || { lv: 0 }; o.lv = Math.min(YK.maxLv, o.lv + 1); if (e.golden) o.gold = 1; S[k] = o; saveGame();
       fx2({ k: 'sealin', x: e.x, y: e.y, d: 0.6 }); banner(first ? '봉인 성공! 새 요괴 부적' : '봉인 성공! Lv ' + o.lv, ykName(k) + (e.golden ? ' (금빛)' : '') + ' · ' + EL[ykEl(k)], 1.8); sfx.life(); kill(e); ykPrize(); }
     else { float('부적이 타 버렸다…', e.x, e.y - 40, '#ff9a8a'); burst(e.x, e.y - 20, 12, '#ff8a3a', 120); noise(0.3, 0.12, { f: 600 }); } } }); }
@@ -3346,6 +3348,21 @@ function drawAwkCut() { const q = G.awkCut; if (!q) return; const t = q.t, D = A
       ctx.textAlign = 'center'; ctx.font = '30px ' + FONT; ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(0,0,0,.8)'; ctx.strokeText('달빛 각성', W / 2, H - 46); ctx.fillStyle = '#ffe9a0'; ctx.fillText('달빛 각성', W / 2, H - 46);
       ctx.font = '15px ' + FONT; ctx.fillStyle = '#f4f0e6'; ctx.fillText(CH[ch].name + ' 「' + (AWK.line[ch] || '달이여, 힘을!') + '」', W / 2, H - 18); } }
   ctx.restore(); }
+/* ---------- 기획 17-6: 검토판 개발 도구(일시정지 화면, 출시판에는 없음) ---------- */
+const DEV = (() => { let o = {}; if (TEST_UNLOCK) try { o = JSON.parse(localStorage.getItem('geumeum-dev') || '{}') || {}; } catch (_) {} return o; })();
+const DEVN = [['awk', '각성 무한'], ['cd0', '쿨타임 0'], ['inv', '무적'], ['bomb', '부적 무한'], ['seal', '봉인 100%(체력 조건 없음)'], ['dps', '대장 처치 때 공격별 피해 표']];
+function devSave() { try { localStorage.setItem('geumeum-dev', JSON.stringify(DEV)); } catch (_) {} }
+function devTick() { if (!TEST_UNLOCK || G.mode !== 'play') return; if (DEV.awk && !(G.awake > 0)) P.moonG = FUN2.awakeNeed; if (DEV.cd0 && P.cd) for (const k in P.cd) P.cd[k] = 0; if (DEV.bomb) P.bombs = Math.max(P.bombs, 5); }
+{ const a = cdTick; cdTick = function (dt) { a(dt); devTick(); }; }
+{ const a = playerHit; playerHit = function (d) { if (TEST_UNLOCK && DEV.inv) { if (P.inv <= 0) { P.inv = 0.3; float('무적', P.x, P.y - 30, '#9fd0ff'); } return; } return a(d); }; }
+function devGo(i, part, boss) { $('ovPause').hidden = true; G.paused = false; $('btnPause').textContent = '⏸'; const ch = P.ch; G.co = P.co; G.pick = i; G.pp = part; newGame(ch);
+  if (boss) setTimeout(() => { G.talk = null; G.arc = null; G.arcDone = true; G.wait = 1e9; enemies = []; bullets = []; G.bossCalled = true; spawnBoss(); }, 400); }
+function renderDev() { const el = $('devTools'); if (!TEST_UNLOCK) { el.hidden = true; return; } el.hidden = false;
+  const fl = STAGES.map((s, i) => s.ready ? '<option value="' + i + '"' + (i === G.stage ? ' selected' : '') + '>' + (i + 1) + '층</option>' : '').join('');
+  el.innerHTML = '<b>개발 도구</b> (검토판만)<br>' + DEVN.map(([k, n]) => '<label><input type="checkbox" data-dev="' + k + '"' + (DEV[k] ? ' checked' : '') + '> ' + n + '</label>').join('') + '<br>바로 가기 <select id="devFl">' + fl + '</select><select id="devPt"><option value="0">1구간</option><option value="1">2구간</option><option value="2">3구간</option><option value="b">대장전</option></select><button type="button" id="devGoBtn">출발</button>';
+  el.querySelectorAll('[data-dev]').forEach(c => c.onchange = () => { DEV[c.dataset.dev] = c.checked; devSave(); });
+  $('devGoBtn').onclick = () => { const v = $('devPt').value; devGo(+$('devFl').value, v === 'b' ? 2 : +v, v === 'b'); }; }
+{ const a = togglePause; togglePause = function () { a(); if (G.paused) renderDev(); }; }
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],
