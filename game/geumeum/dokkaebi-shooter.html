@@ -2572,13 +2572,13 @@ function draw() {
   ctx.globalAlpha = 1;
   if (G.arc && G.mode === 'play') drawArc();
   ctx.restore();
-  drawCut(); drawCombo2(); if (!G.cmb && !(G.cut && G.cut.t >= 0.25)) { drawAwake(); drawTalk2(); drawKeyHints(); drawReact(); } skillUi(1 / 60);
+  drawCut(); drawCombo2(); drawAwkCut(); if (!G.cmb && !(G.cut && G.cut.t >= 0.25) && !G.awkCut) { drawAwake(); drawTalk2(); drawKeyHints(); drawReact(); } skillUi(1 / 60);
   if (G.mode === 'play' && G.st < 3.6 && !G.boss && !G.cut) drawTower();
   if (G.talk) drawTalk();
   if (G.tally && G.clearT > 0 && G.clearT < 5.2) drawTally();
   drawHurt();
   if (G.flash > 0) { ctx.fillStyle = 'rgba(255,255,255,' + Math.min(0.7, G.flash * 1.6) + ')'; ctx.fillRect(0, 0, W, H); }
-  if (!(G.cut && G.cut.t >= 0.25) && !G.cmb && !G.bossIntro) drawHUD();
+  if (!(G.cut && G.cut.t >= 0.25) && !G.cmb && !G.bossIntro && !G.awkCut) drawHUD();
   if (G.banner && G.mode !== 'title' && !G.cut && !G.talk && !G.arc && !G.cmb && !G.bossIntro) {
     const b = G.banner, a = Math.min(1, b.t * 3, (b.max - b.t) * 5); ctx.globalAlpha = Math.max(0, a);
     text(b.text, W / 2, H / 2 - 20, 34, '#ece3cf', 'center'); if (b.sub) text(b.sub, W / 2, H / 2 + 6, 15, '#e8b84a', 'center');
@@ -2943,7 +2943,7 @@ function combo2Scene(m, C, k) { const T = m.t, id = m.id; ctx.globalCompositeOpe
 /* 달빛 각성(기획 13의 2): 잡을수록 초승달이 차고, 가득 차면 화면을 두 번 톡톡(키보드 Q) → 8초 동안 직접 휩쓰는 시간 */
 function awakeGain(e) { if (G.awake > 0 || G.endless && !G.R || G.arc) return; const k = FUN2.awakeGain; const add = e.type === 'mini' ? k.mini : e.type === 'mid' ? k.mid : e.type === 'boss' ? k.boss : k.mob; const was = P.moonG || 0; P.moonG = Math.min(FUN2.awakeNeed, was + add * (1 + eqStat(P.ch).awk / 100));
   if (was < FUN2.awakeNeed && P.moonG >= FUN2.awakeNeed) { tone(988, 0.15, 'sine', 0.08); tone(1319, 0.3, 'sine', 0.08, 0, 0.12); if (!SAVE.tut.awake) { SAVE.tut.awake = 1; saveGame(); tipFlash('보름달이 찼습니다 · 화면을 두 번 톡톡 누르면 달빛 각성!', 5); } } }
-const awakeReady = () => G.mode === 'play' && (P.moonG || 0) >= FUN2.awakeNeed && !(G.awake > 0) && !G.cmb && !G.cut && !G.arc && !G.talk && P.deadT <= 0;
+const awakeReady = () => G.mode === 'play' && (P.moonG || 0) >= FUN2.awakeNeed && !(G.awake > 0) && !G.awkCut && !G.cmb && !G.cut && !G.arc && !G.talk && P.deadT <= 0;
 function awakeStart() { if (!awakeReady()) return; P.moonG = 0; G.awake = FUN2.awakeSec + eqStat(P.ch).awkSec; G.awakeChg = 0.5; P.inv = Math.max(P.inv, FUN2.awakeSec + 0.4); bullets = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) > 120);
   G.flash = 0.5; G.shake = 0.5; ring(P.x, P.y, 140, '#fff3b0', 0.5); burst(P.x, P.y, 50, '#ffe9a0', 300); banner('달빛 각성!', CH[P.ch].name + ' · ' + FUN2.awakeSec + '초', 1.4);
   tone(523, 0.2, 'sine', 0.1); tone(784, 0.25, 'sine', 0.1, 0, 0.1); tone(1047, 0.5, 'sine', 0.1, 0, 0.2); noise(0.8, 0.12, { f: 600, f2: 4000, q: 1 }); if (typeof coSay === 'function') coSay('awake'); }
@@ -3042,7 +3042,7 @@ const SKCD = [6, 5, 7, 6, 7, 6, 7, 6, 6, 6, 6, 7, 7], COCD = [12, 10, 14, 12, 14
 Object.assign(BATTLE, { wpCd: 5, grazeCd: 0.2, lv4Cd: 0.85 });
 const cdK = ch => (1 - eqStat(ch).chg / 100) * rChg() * (lvOf(ch) >= 4 ? BATTLE.lv4Cd : 1) * (rCombo() ? 0.8 : 1) * Math.pow(0.8, rb('b_cd')); // 옷「스킬 쿨」, 탑 축복, Lv4
 function cdTick(dt) { const C = P.cd; if (!C) return; for (const k in C) if (C[k] > 0) C[k] = Math.max(0, C[k] - dt); if (typeof wpReadyPing === 'function') wpReadyPing(); }
-const skReady = k => P.cd && !(P.cd[k] > 0) && G.mode === 'play' && P.deadT <= 0 && !G.arc && !G.cmb && !G.cut && !G.talk && !G.offer && !G.res;
+const skReady = k => P.cd && !(P.cd[k] > 0) && G.mode === 'play' && P.deadT <= 0 && !G.awkCut && !G.arc && !G.cmb && !G.cut && !G.talk && !G.offer && !G.res;
 function skillUse() { if (!skReady('sk')) return; P.cd.sk = SKCD[P.ch] * cdK(P.ch) * (1 - eqStat(P.ch).skCd / 100); P.cdMax.sk = P.cd.sk; if (lvOf(P.ch) >= 10) { const n0 = shots.length; skMul(BATTLE.lv10Sk, () => charSkill(P.ch)); const nw = shots.slice(n0); for (const s of nw) shots.push(Object.assign({}, s, { y: s.y + 26, dmg: s.dmg * 0.8, hit: s.hit ? new Map() : s.hit })); if (nw.length) float('진화!', P.x, P.y - 56, '#ffd76a'); } else charSkill(P.ch); }
 function coSkillUse() { if (!uiOpen('coskill')) return; if (P.co < 0 || hpOf(P.co).hp <= 0 || !skReady('co')) return; P.cd.co = COCD[P.co] * cdK(P.co) * (1 - Math.max(eqStat(P.ch).coCd, eqStat(P.co).coCd) / 100); P.cdMax.co = P.cd.co; if (typeof coSkill === 'function') { const f0 = (G.fx2 || []).length, k = lvOf(P.co) >= 7 ? BATTLE.lv7Co : 1; skMul(k, () => coSkill(P.co)); if (k > 1) for (const f of (G.fx2 || []).slice(f0)) f.d *= k; } else { for (let i = 0; i < 9; i++) { const a = (i - 4) * 0.12; ps(P.cx + 14, P.cy, Math.cos(a) * 520, Math.sin(a) * 520, 6, 2.5, 4); } float('협력!', P.cx, P.cy - 30, '#9fd0ff'); } }
 function weaponUse() { if (!uiOpen('wpskill') || !skReady('wp')) return; const w = eqOf(P.ch, 'w'); P.cd.wp = (typeof wpCdOf === 'function' ? wpCdOf(w) : BATTLE.wpCd) * cdK(P.ch); P.cdMax.wp = P.cd.wp; if (typeof weaponSkill === 'function') weaponSkill(w); else basicStrike(); }
@@ -3328,6 +3328,24 @@ function drawElite() { for (const e of enemies) { if (!e.elite || e.dead || e.x 
   if (rest) { $('resName').textContent = segName() + ' 돌파 · 숨 고르기'; $('resText').innerHTML = '다음 구간 시작 때 체력 +' + Math.round(BALANCE2.segHeal * 100) + '% · 이번 층 골드 <b class="gold">+' + G.floor.gold.toLocaleString() + '</b>'; $('btnNext').textContent = '이어서 ' + (G.stage + 1) + '-' + (p + 2); $('btnHome').textContent = '그만하기(여기서 이어 하기)'; }
   else { $('btnHome').textContent = '돌아가기'; if (p === 2 && !G.endless && G.floor.st.length === 3) { const sum = G.floor.st.reduce((x, y) => x + (y || 0), 0); $('resName').textContent = (G.stage + 1) + '층 돌파' + (G.diff ? ' ' + DN[G.diff] : ''); $('resText').innerHTML = '이번 층 별 <b>' + sum + ' / 9</b> · 이번 층 골드 <b class="gold">+' + G.floor.gold.toLocaleString() + '</b> · 가진 골드 <b class="gold">' + SAVE.gold.toLocaleString() + '</b>'; } } }; }
 $('btnRestYk').addEventListener('click', () => openYk());
+/* ---------- 기획 16-4: 각성 연출 — 멈춤 → 각성 일러스트 전신 → 얼굴·무기 쪽으로 천천히 확대 → 대사 띠 → 각성 8초 ---------- */
+const AWK = { dur: 2.0, dark: 0.2, inT: 0.25, zoom: 2.0, zoomCh: { 1: 2.4 }, img: { 0: 'aw0', 1: 'aw1', 2: 'aw2' },
+  focus: { 0: [0.62, 0.18], 1: [0.76, 0.24], 2: [0.62, 0.13] }, // 확대 중심(그림 비율): 얼굴과 무기·손의 빛 사이. 15세 기준 — 몸 쪽으로는 확대하지 않음
+  line: ['바람아, 달빛을 실어 와라!', '이 화살은 달을 꿰뚫는다!', '은하수야, 나를 감싸 줘!', '탈 속 도깨비불이 춤춘다!', '쇠도 먹고 달도 먹는다!', '아홉 꼬리에 달빛이 깃든다!', '장승의 이름으로 막아 서라!', '눈보라야, 모두 얼어붙어라!', '천 년 묵은 비늘이 깨어난다!', '용궁의 물결이여, 일어나라!', '쇠망치에 달을 벼린다!', '어둠이 나의 그림자다!', '뚝딱! 달빛이 쏟아진다!'] };
+for (const k of Object.values(AWK.img)) needImg(k);
+{ const a = awakeStart; awakeStart = function () { if (!awakeReady()) return; a(); if (G.awake > 0) { const ch = P.ch; G.flash = 0; G.awkCut = { t: 0, ch }; needImg(AWK.img[ch] || look(ch).cut); SAVE.awkSeen = SAVE.awkSeen || {}; if (!SAVE.awkSeen[ch]) { SAVE.awkSeen[ch] = 1; saveGame(); } } }; }
+function drawAwkCut() { const q = G.awkCut; if (!q) return; const t = q.t, D = AWK.dur, ch = q.ch, key = AWK.img[ch], im = IMG[key || look(ch).cut], wide = !!key;
+  ctx.save(); ctx.fillStyle = 'rgba(4,6,16,' + Math.min(0.92, t / AWK.dark * 0.92) + ')'; ctx.fillRect(0, 0, W, H);
+  if (t > AWK.dark * 0.5 && ok(im)) { const fa = Math.min(1, (t - AWK.dark * 0.5) / AWK.inT) * Math.min(1, (D - t) / 0.2), u = Math.max(0, Math.min(1, (t - AWK.dark - AWK.inT) / (D - AWK.dark - AWK.inT - 0.2))), e = u * u * (3 - 2 * u);
+    const [fx, fy] = wide ? AWK.focus[ch] || [0.5, 0.25] : [0.5, 0.22], base = Math.max(W / im.width, H / im.height), s = base * (1 + ((wide && AWK.zoomCh[ch]) || AWK.zoom) * e - e);
+    let cx = W / 2 + (0.5 - fx) * im.width * base * 0 , dx = W / 2 - (fx * im.width * s) * e - (im.width * s / 2) * (1 - e), dy = H / 2 - (fy * im.height * s) * e - (im.height * s / 2) * (1 - e) + (wide ? 0 : 0);
+    dx = Math.min(0, Math.max(W - im.width * s, dx)); dy = Math.min(0, Math.max(H - im.height * s, dy)); // 그림 밖이 보이지 않게
+    ctx.globalAlpha = fa; ctx.drawImage(im, dx, dy, im.width * s, im.height * s);
+    ctx.globalCompositeOperation = 'lighter'; for (let i = 0; i < 26; i++) { const px = (i * 97 + t * 60 * (1 + i % 3)) % W, py = H - ((i * 53 + t * 140 * (1 + i % 4)) % H); ctx.globalAlpha = fa * (0.3 + 0.5 * ((i * 7) % 5) / 5); glow('gold', px, py, 6 + (i % 4) * 3, 0.8); } ctx.globalCompositeOperation = 'source-over';
+    const ba = Math.min(1, (t - 0.5) / 0.2) * Math.min(1, (D - t) / 0.2); if (ba > 0) { ctx.globalAlpha = ba; const g = ctx.createLinearGradient(0, H - 92, 0, H); g.addColorStop(0, 'rgba(6,8,20,0)'); g.addColorStop(0.35, 'rgba(6,8,20,.82)'); g.addColorStop(1, 'rgba(6,8,20,.92)'); ctx.fillStyle = g; ctx.fillRect(0, H - 92, W, 92);
+      ctx.textAlign = 'center'; ctx.font = '30px ' + FONT; ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(0,0,0,.8)'; ctx.strokeText('달빛 각성', W / 2, H - 46); ctx.fillStyle = '#ffe9a0'; ctx.fillText('달빛 각성', W / 2, H - 46);
+      ctx.font = '15px ' + FONT; ctx.fillStyle = '#f4f0e6'; ctx.fillText(CH[ch].name + ' 「' + (AWK.line[ch] || '달이여, 힘을!') + '」', W / 2, H - 18); } }
+  ctx.restore(); }
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],
@@ -3981,7 +3999,7 @@ let boosted = false; // 기획 7 4-B: 컷인 동안만 캔버스를 기기 해�
 function resize(b = boosted) { const r = cv.getBoundingClientRect(); const coarse = window.matchMedia && matchMedia('(pointer:coarse)').matches; const s = Math.min(b ? 4 : coarse ? 2.5 : 3, Math.max(1, r.width * (window.devicePixelRatio || 1) / W)); cv.width = Math.round(W * s); cv.height = Math.round(H * s); SC = cv.width / W; }
 function frame(t) {
   const dt = Math.min(1 / 30, (t - last) / 1000 || 0); last = t;
-  if (!G.paused) { let ts = 1; if (G.bossIntro) { G.bossIntro.t += dt; ts = FUN2.bossIntroTs; if (G.bossIntro.t > FUN2.bossIntro) G.bossIntro = null; } if (G.cmb) ts = combo2Upd(dt); else if (G.cut) { const c = G.cut; c.t += dt; const E = cutEnd(); if (c.t >= 0.25 && !c.vs) { c.vs = 1; const v = VID[look(P.ch).cutv]; if (v) { try { if (v.currentTime > 0.05) v.currentTime = 0; const pr = v.play(); if (pr && pr.catch) pr.catch(() => {}); } catch (_) {} } } if (c.t < E) ts = 0.04; if (c.t >= E && !c.fl) { c.fl = 1; G.flash = 0.55; } if (c.t > E + 0.15) { const v = VID[look(P.ch).cutv]; if (v) { try { v.pause(); v.currentTime = 0; } catch (_) {} } G.cut = null; } } if (G.hstop > 0) { G.hstop -= dt; ts = Math.min(ts, 0.05); } if (G.slowmo > 0) { G.slowmo -= dt; ts = Math.min(ts, FUN.slowmoK); } update(dt * ts); }
+  if (!G.paused) { let ts = 1; if (G.bossIntro) { G.bossIntro.t += dt; ts = FUN2.bossIntroTs; if (G.bossIntro.t > FUN2.bossIntro) G.bossIntro = null; } if (G.cmb) ts = combo2Upd(dt); else if (G.cut) { const c = G.cut; c.t += dt; const E = cutEnd(); if (c.t >= 0.25 && !c.vs) { c.vs = 1; const v = VID[look(P.ch).cutv]; if (v) { try { if (v.currentTime > 0.05) v.currentTime = 0; const pr = v.play(); if (pr && pr.catch) pr.catch(() => {}); } catch (_) {} } } if (c.t < E) ts = 0.04; if (c.t >= E && !c.fl) { c.fl = 1; G.flash = 0.55; } if (c.t > E + 0.15) { const v = VID[look(P.ch).cutv]; if (v) { try { v.pause(); v.currentTime = 0; } catch (_) {} } G.cut = null; } } if (G.awkCut) { const q = G.awkCut; q.t += dt; if (q.t < AWK.dur) ts = 0; else { G.awkCut = null; G.flash = Math.max(G.flash, 0.3); } } if (G.hstop > 0) { G.hstop -= dt; ts = Math.min(ts, 0.05); } if (G.slowmo > 0) { G.slowmo -= dt; ts = Math.min(ts, FUN.slowmoK); } update(dt * ts); }
   { const want = !!G.cut || !!G.cmb; if (want !== boosted) { boosted = want; resize(); } for (const k in VID) VID[k].classList.toggle('on', !!(G.cut && G.cut.vOn === k)); }
   draw();
   requestAnimationFrame(frame);
