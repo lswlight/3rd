@@ -1065,6 +1065,8 @@ const ET = {
   carp: { hp: 4, r: 12, score: 180, up(e, dt) { // 잉어 요괴: 크게 출렁이며 날다가 방울을 뱉는다
     e.x -= 115 * dt; e.y = e.y0 + Math.sin(e.t * 2.2 + e.ph) * 56;
     if (!e.f && e.x < W * 0.8) { e.f = 1; aim(e, 105); } } },
+  zig: { hp: 3, r: 11, score: 260, init(e) { e.img = 'mw_dasher'; }, up(e, dt) { e.x -= 170 * dt; const near = shots.find(s => Math.abs(s.x - e.x) < 70 && Math.abs(s.y - e.y) < 26 && s.x < e.x); e.y += (near ? (Math.sign(e.y - near.y) || 1) * 260 : Math.sin(e.t * 6 + e.ph) * 120) * dt; e.y = Math.max(20, Math.min(GY - 20, e.y)); if (!e.f && e.x < W * 0.75) { e.f = 1; aim(e, 120); } } }, // 빠른 잔챙이: 지그재그, 탄을 피함
+  healer: { hp: 12, r: 14, score: 600, init(e) { e.img = 'mw_lantern'; e.hcd = 1.5; }, up(e, dt) { e.x -= (e.x > W * 0.72 ? 70 : 12) * dt; e.y = e.y0 + Math.sin(e.t * 1.3) * 30; if ((e.hcd -= dt) <= 0) { e.hcd = BATTLE.healGap; let n = 0; for (const t of enemies) if (t !== e && !t.dead && t.type !== 'boss' && Math.hypot(t.x - e.x, t.y - e.y) < BATTLE.healR) { t.hp = Math.min(t.mhp, t.hp + t.mhp * BATTLE.healK); n++; } ring(e.x, e.y, BATTLE.healR, '#7dffa0', 0.4); if (n) float('+회복', e.x, e.y - 24, '#7dffa0'); } } }, // 치유 요괴: 주변 적 회복
   gob: { hp: 30, r: 22, score: 3000, up(e, dt) { e.x -= (e.t < 1 ? 40 : 95) * dt; e.y = GY * 0.4 + Math.sin(e.t * 3.1) * GY * 0.3; if (e.x < 60) e.x = 60; } }, // 돌발: 보물 도깨비(도망만 친다)
   lan: { hp: 5, r: 20, score: 0, up(e, dt) { e.x -= 52 * dt; e.y = e.y0 + Math.sin(e.t * 1.7) * 26; } }, // 구출 메달: 갇힌 마을 사람이 든 초롱(쏘지 않는다)
   wisp: { hp: 2, r: 10, score: 100, up(e, dt) {
@@ -1124,7 +1126,7 @@ const ET = {
       if (!e.p2 && (G.oathRage || e.hp < e.mhp * (S.pats3 ? 0.66 : G.stage >= 5 ? 0.6 : 0.5))) { // 맹세 「대장의 분노」: 처음부터 2단계 // 6층부터는 2단계를 더 오래 본다 // 2단계: 모습과 탄막이 바뀐다
         e.p2 = true; e.pi = 0; e.pc = -1.8; e.cd = 0.3; bullets = []; G.flash = 0.5; G.shake = 0.7; sfx.big();
         for (let i = 0; i < 5; i++) fireball(e.x + rnd(-50, 50), e.y + rnd(-50, 50), rnd(30, 50), i * 0.1);
-        banner(S.phase || '본색을 드러냈다!', S.phaseSub || '', 1.8); bossSay(0); G.flash = Math.max(G.flash, 0.35);
+        banner(S.phase || '본색을 드러냈다!', S.phaseSub || '', 1.8); bossSay(0); G.pend.push({ t: G.st + 1.8, f: () => { if (!e.dead) shieldOn(e); } }); G.flash = Math.max(G.flash, 0.35);
       }
       if (G.diff >= 2 && !S.pats3 && !G.endless && e.p2 && !e.p3n && e.hp < e.mhp * 0.33) { // 악몽: 모든 대장이 3단계, 앞 층 대장의 기술을 빌려 쓴다
         const pv = STAGES[(G.stage + STAGES.length - 1) % STAGES.length]; e.p3n = true; e.pi = 0; e.pc = -1.5; e.cd = 0.3; bullets = []; G.flash = 0.5; G.shake = 0.7; sfx.big(); e.nmP = [pv.sig, ...(S.pats2 || S.pats)];
@@ -1549,6 +1551,7 @@ function runStep() { // 무대 대본을 한 칸씩 진행: 글자=잔챙이 무
     const mini = c === '1', list = (mini ? S.minis : S.mids) || (mini ? STAGES[0].minis : STAGES[0].mids), n = mini ? G.nMini++ : G.nMid++, d = list[n % list.length];
     banner(mini ? '문지기' : '수문장', d.name, 1.7); if (!mini) sfx.warn();
     G.gate = spawn(mini ? 'mini' : 'mid', W + 70, GY / 2, { def: d, n, img: d.img, drop: mini ? ['P', 'H', 'B', 'P', 'H'][n % 5] : 'P' });
+    if (mini && G.stage >= 1 && n % BATTLE.guardEvery === 1) G.gate.guard = true; // 방패 든 문지기(앞에서 쏜 기본 공격을 막음)
     if (mini && G.endless && G.R && G.R.var && G.R.var[0] === 'gate') { const d2 = list[(n + 1) % list.length]; spawn('mini', W + 120, GY * 0.3, { def: d2, n, img: d2.img }); G.gate.y = G.gate.y0 = GY * 0.7; } // 성난 문지기
     return;
   }
@@ -1556,7 +1559,7 @@ function runStep() { // 무대 대본을 한 칸씩 진행: 글자=잔챙이 무
     one(type, y, d = 0, o) { G.pend.push({ t: G.st + d, f: () => spawn(type, W + 30, y, o) }); },
     row(type, n, yf, gap) { for (let j = 0; j < n; j++) q.one(type, yf(j), j * gap); },
   };
-  G.wait = WV[c](q);
+  G.wait = WV[c](q); if (/[a-z]/i.test(c) && !'wunpFt'.includes(c)) foeMix(); // 2층부터 기술을 쓰게 만드는 적
 }
 function nextStage() {
   if (G.part < 2) { startStage(G.stage, G.part + 1); return; }
@@ -1616,6 +1619,7 @@ function damage(e, d) {
   if (e.type === 'boss') chainHit(false);
   if (e.st && e.st.mark > 0) d *= BATTLE.markK; if (G.forgeOn) d *= BATTLE.forgeK; // 표식 +20%, 벼림 +40%
   d *= reactCheck(e, d); // 속성 연계
+  if (e.shield > 0) d *= BATTLE.shieldK; else if (e.shieldUp > 0) d *= BATTLE.shieldBreakK; // 대장 보호막
   if (G.hitEl) applyEl(e, G.hitEl); if (G.hitO && G.hitO.push && e.type !== 'boss' && e.type !== 'mid') e.x += 7;
   if (G.wkHit && e.type === 'boss' && e.weak && !e.weak.dead) { e.weak.hp -= d; e.weak.fl = 0.08; d *= FUN.weakToBoss; if (e.weak.hp <= 0) weakBreak(e); } // 약점: 대장에는 절반
   e.hp -= d; e.flash = 0.07;
@@ -1672,7 +1676,7 @@ function kitCharge(ch, x, y) {
   else for (let i = -2; i <= 2; i++) ps(x, y, Math.cos(i * 0.16) * 760, Math.sin(i * 0.16) * 760, 9, 5.5, 21, { kc: ch, pierce: 1, cd: 99, hit: new Map(), thin: 1 });
 }
 const kitCo = t => P.co >= 6 && CH[P.co].kit.co === t;
-function fire() { const n0 = shots.length; fire0(); if (G.awake > 0) awakeFire(); if (G.cloneOn) { const nw = shots.slice(n0); for (const oy of [-46, 46]) for (const s of nw) shots.push(Object.assign({}, s, { y: s.y + oy, x: s.x - 10, dmg: s.dmg * 0.6, hit: s.hit ? new Map() : s.hit })); } if (G.endless && G.R) rogueFire(n0); }
+function fire() { const n0 = shots.length; fire0(); for (let i = n0; i < shots.length; i++) shots[i].basic = 1; if (G.awake > 0) awakeFire(); if (G.cloneOn) { const nw = shots.slice(n0); for (const oy of [-46, 46]) for (const s of nw) shots.push(Object.assign({}, s, { y: s.y + oy, x: s.x - 10, dmg: s.dmg * 0.6, hit: s.hit ? new Map() : s.hit })); } if (G.endless && G.R) rogueFire(n0); }
 function rogueFire(n0) { // 그믐의 탑 축복: 기본 공격
   const nw = shots.slice(n0); if (!nw.length) return; const k = Math.pow(1.2, rb('b_sharp')), way = rb('b_way') + rb('u_wind');
   for (const s of nw) { s.dmg *= k; if (rb('b_pierce') && !s.pierce) s.pleft = 1; }
@@ -1946,6 +1950,7 @@ function update(dt) {
     if (e.frozen > 0) { e.frozen -= dt; edt = 0; } else if (e.st) { if (e.st.bind > 0) edt *= e.type === 'boss' ? 0.6 : BATTLE.bindK; else if (e.st.ice > 0) edt *= e.type === 'boss' ? 0.8 : BATTLE.iceK; } // 묶임·얼림
     G.shooter = e.type === 'boss' || e.type === 'mid' || e.type === 'mini' ? e.type : 'mob';
     if (e.charm > 0 && e.type !== 'boss') { e.charm -= dt; e.x -= 20 * dt; } else ET[e.type].up(e, (e.weakBroken ? edt * FUN.weakSlow : edt) * (e.rage ? FUN2.rageSpd : 1)); // 홀림: 잠깐 공격을 멈춘다
+    if (e.type === 'boss') shieldUpd(e, dt);
     if (e.type === 'mini' || e.type === 'mid' || e.type === 'boss') { const hb = SPH[e.type] * (e.type === 'boss' ? SZ.b : SZ.e) * 0.42; e.y = Math.max(hb, Math.min(GY - hb * 0.7, e.y)); } // 커진 적이 위아래로 잘리지 않게
     if (e.x < -60 || e.y < -80 || e.y > H + 80) e.gone = true;
     if (!e.dead && !e.inv && P.deadT <= 0 && e.type !== 'lan' && e.type !== 'gob' && (ehb(e) ? hitE(e, P.x, P.y, 6, 0.75) : Math.hypot(e.x - P.x, e.y - P.y) < e.r * 0.7 + 3)) playerHit(BATTLE.dmg.body);
@@ -1961,6 +1966,7 @@ function update(dt) {
     for (const e of enemies) {
       G.wkHit = false; G.hitEl = s.el || null; G.hitO = s; if (e.dead || e.inv || e.x > W + 20) continue;
       G.wkHit = weakAt(e, s); if (!G.wkHit && !hitE(e, s.x, s.y, s.r)) continue;
+      if (e.guard && s.basic && !s.pierce && !s.boom && s.vx > 0) { s.dead = true; burst(s.x, s.y, 4, '#e8b84a', 90); if ((e.clink || 0) < G.time) { e.clink = G.time + 0.15; tone(1800, 0.03, 'square', 0.03); } break; } // 방패에 막힘
       if (s.pierce) { const last = s.hit.get(e); if (last === undefined || G.time - last > s.cd) { s.hit.set(e, G.time); const h0 = e.hp; damage(e, s.dmg); if (s.chg !== undefined) chargeHit(s, e, h0 - e.hp); else burst(s.x, e.y, 2, '#fff', 60); } }
       else if (s.boom) { const h0 = e.hp; explode(s.x, s.y, s.boom, s.dmg); if (s.chg !== undefined) chargeHit(s, e, h0 - e.hp); s.dead = true; break; }
       else { if (s.lastP === e) continue; damage(e, s.dmg); hitFx(s); if (s.pleft > 0) { s.pleft--; s.lastP = e; continue; } s.dead = true; break; }
@@ -2106,6 +2112,7 @@ function drawLan(e) { // 청사초롱 속 마을 사람 (그림 대신 캔버스
 }
 function drawEnemy(e) {
   if (e.type === 'lan') return drawLan(e);
+  if (e.type === 'healer') { ctx.globalCompositeOperation = 'lighter'; glow('green', e.x, e.y, 34, 0.7); ctx.globalCompositeOperation = 'source-over'; spr('mw_lantern', e.x, e.y, 44, { flip: 1 }); text('+', e.x, e.y - 22, 14, '#7dffa0', 'center'); return; }
   if (e.type === 'gob') { ctx.globalCompositeOperation = 'lighter'; glow('gold', e.x, e.y, 40, 0.7); ctx.globalCompositeOperation = 'source-over'; spr('mini9b', e.x, e.y, 64, { flip: 1 }); if (e.flash > 0) spr('mini9b', e.x, e.y, 64, { flip: 1, add: 1, alpha: 0.5 }); ctx.fillStyle = '#c9a06a'; ell(e.x + 18, e.y + 14, 12, 10); return; }
   if (e.type === 'illu') { ctx.globalAlpha = 0.55 * Math.min(1, e.t * 3, (9 - e.t) * 2); glow('purple', e.x, e.y, 70, 0.5); spr(e.img, e.x, e.y, SPH.illu); ctx.globalAlpha = 1; if (e.flash > 0) spr(e.img, e.x, e.y, SPH.illu, { add: 1, alpha: 0.6 }); return; }
   const mir = e.def && e.def.mirror;
@@ -2490,7 +2497,7 @@ function draw() {
   if (G.shake > 0) ctx.translate(rnd(-1, 1) * G.shake * 8, rnd(-1, 1) * G.shake * 8);
   drawBG();
   for (const it of items) drawItem(it);
-  evDrawBack(); drawSlash(); for (const e of enemies) drawEnemy(e); drawSkillFx(); if (G.boss) drawWeak(G.boss); evDrawFront(); drawComboFx();
+  evDrawBack(); drawSlash(); for (const e of enemies) drawEnemy(e); for (const e of enemies) if (e.shield > 0 || e.guard) drawShield(e); drawSkillFx(); if (G.boss) drawWeak(G.boss); evDrawFront(); drawComboFx();
   for (const s of shots) { if (s.chg !== undefined && !s.thin) { const ox = s.x, oy = s.y, ga = ctx.globalAlpha; [0.15, 0.3, 0.5].forEach((a, i) => { const k = (3 - i) * 0.016; s.x = ox - s.vx * k; s.y = oy - s.vy * k; ctx.globalAlpha = ga * a; drawShot(s); }); s.x = ox; s.y = oy; ctx.globalAlpha = ga; } drawShot(s); } // 모으기 탄 꼬리
   if (G.mode === 'play' && P.deadT <= 0) {
     for (const f of P.fam) { glow('blue', f.x, f.y, 16, 0.6); if (!spr('wisp', f.x, f.y + Math.sin(G.time * 8) * 1.5, 15, { flip: 1 })) { ctx.fillStyle = '#bfeaff'; circ(f.x, f.y, 4.5); } }
@@ -3141,6 +3148,17 @@ function weaponSkill(w) { const k = wpKey(w), x = P.x, y = P.y; float(wpName(w),
   else if (k === 'w5') for (let i = 0; i < 7; i++) { const a = (i - 3) * 0.2; ps(x + 14, y, Math.cos(a) * 480, Math.sin(a) * 480, 6, 4, 20, { seek: 2, kc: 12 }); }
   else if (k === 'w6') { fx2({ k: 'hline', y, d: 0.35, col: '#c9a8ff' }); for (const e of inFront(x - 20, W + 20, y, 50)) hitEl(e, 25, null, { pen: 1 }); bullets = bullets.filter(b => Math.abs(b.y - y) > 50 || b.x < x); G.shake = 0.4; } }
 if (TEST_UNLOCK) for (const e of EQ) if (!SAVE.eq[e.id]) SAVE.eq[e.id] = 1; // 개발판: 모든 장비를 처음부터(기획 14 원칙)
+/* 기획 14-6: 스킬을 쓰게 만드는 적. 2층부터 잔챙이 무리에 섞임 + 대장 보호막(연계로만 깨짐, 12초 지나면 저절로) */
+Object.assign(BATTLE, { mixSwarm: 0.16, mixZig: 0.14, mixHealer: 0.08, swarmN: 14, healGap: 2.2, healR: 120, healK: 0.2, guardEvery: 3, shieldK: 0.1, shieldAuto: 12, shieldBreakSec: 3, shieldBreakK: 1.5 });
+function foeMix() { if (G.stage < 1 || G.part === 2) return; const r = Math.random(), B = BATTLE; // 잔챙이 무리마다 한 번 굴림
+  if (r < B.mixSwarm) { banner('요괴 떼!', '범위 스킬로 쓸어버려라', 1.2); for (let i = 0; i < B.swarmN; i++) G.pend.push({ t: G.st + 0.6 + i * 0.07, f: () => { const e = spawn('wisp', W + 20 + (i % 3) * 18, 40 + (i * 37) % (GY - 80)); e.hp = e.mhp = 1.5; } }); }
+  else if (r < B.mixSwarm + B.mixZig) for (let i = 0; i < 3; i++) G.pend.push({ t: G.st + 0.8 + i * 0.5, f: () => spawn('zig', W + 20, rnd(60, GY - 60)) });
+  else if (r < B.mixSwarm + B.mixZig + B.mixHealer) G.pend.push({ t: G.st + 1, f: () => { spawn('healer', W + 20, rnd(80, GY - 80)); float('치유 요괴 — 먼저 잡아라', W - 140, 50, '#7dffa0'); } }); }
+function shieldOn(e) { e.shield = 1; e.shieldT = BATTLE.shieldAuto; banner('보호막!', '연계로만 깨진다 · 속성을 이어 맞혀라', 2); sfx.warn(); if (!SAVE.tut.shield) { SAVE.tut.shield = 1; saveGame(); setTimeout(() => tipFlash('대장 보호막은 연계로 깹니다. 예: 젖게 한 뒤 번개, 얼린 뒤 강한 타격', 6), 2200); } }
+function shieldBreak(e) { if (!(e.shield > 0)) return; e.shield = 0; e.shieldUp = BATTLE.shieldBreakSec; G.flash = 0.35; G.shake = 0.6; sfx.big(); ring(e.x, e.y, 160, '#9fd8ff', 0.5); for (let i = 0; i < 24; i++) burst(e.x + rnd(-60, 60), e.y + rnd(-60, 60), 2, '#bfe8ff', 220); banner('보호막 격파!', '3초 동안 피해 1.5배', 1.6); }
+function shieldUpd(e, dt) { if (e.shield > 0 && (e.shieldT -= dt) <= 0) shieldBreak(e); if (e.shieldUp > 0) e.shieldUp -= dt; }
+function drawShield(e) { if (e.shield > 0) { const pu = 0.5 + 0.2 * Math.sin(G.time * 5); ctx.strokeStyle = 'rgba(160,220,255,' + pu + ')'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(e.x, e.y, 90, 110, 0, 0, TAU); ctx.stroke(); ctx.fillStyle = 'rgba(160,220,255,.08)'; ctx.fill(); text('보호막 ' + Math.ceil(e.shieldT), e.x, e.y + 126, 10, '#bfe8ff', 'center'); }
+  if (e.guard && !e.dead) { ctx.fillStyle = '#6a4424'; ctx.strokeStyle = '#e8b84a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(e.x - e.r - 10, e.y, 9, 28, 0, 0, TAU); ctx.fill(); ctx.stroke(); } }
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],
@@ -3798,7 +3816,7 @@ function start() {
   if (window.ResizeObserver) new ResizeObserver(() => resize()).observe(cv); else addEventListener('resize', () => resize());
   requestAnimationFrame(frame);
 }
-window.__game = { showD, hideD, openMem, mem, openArcade, get shots() { return shots; }, releaseCharge: () => releaseCharge(), openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, hpOf, REACTS, hitEl, damage: (e, d) => damage(e, d), applyEl, charSkill, coSkill, entryStrike, get fx2() { return G.fx2; }, skillUse, weaponUse, coSkillUse, get cd() { return P.cd; }, BATTLE, awakeStart, coSay, evStart, get items() { return items; }, openRoad, get cmb() { return G.cmb; }, weakPos, COMBOS, comboOK, FUN, spawnLan, openOath, oathScore, openTop, rogueNext, rogueOffer, rogueTake, RSAVE, BOONS, get R() { return G.R; }, openDex, DEX, dexSeen, segMedals, medalCount, showResult, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
+window.__game = { showD, hideD, openMem, mem, openArcade, get shots() { return shots; }, releaseCharge: () => releaseCharge(), openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, hpOf, REACTS, shieldOn, spawn: (t, x, y) => spawn(t, x, y), hitEl, damage: (e, d) => damage(e, d), applyEl, charSkill, coSkill, entryStrike, get fx2() { return G.fx2; }, skillUse, weaponUse, coSkillUse, get cd() { return P.cd; }, BATTLE, awakeStart, coSay, evStart, get items() { return items; }, openRoad, get cmb() { return G.cmb; }, weakPos, COMBOS, comboOK, FUN, spawnLan, openOath, oathScore, openTop, rogueNext, rogueOffer, rogueTake, RSAVE, BOONS, get R() { return G.R; }, openDex, DEX, dexSeen, segMedals, medalCount, showResult, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
 if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start); else start();
 })();
 </script>
