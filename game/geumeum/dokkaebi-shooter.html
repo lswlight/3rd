@@ -102,6 +102,19 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .tb-seal{right:25cqw;bottom:22cqw;width:5.6cqw;height:5.6cqw;font-size:2cqw;background:#f3e9d2;color:#b8322a;border-color:#b8322a;font-family:var(--display)}.tb-seal.ready{width:8cqw;height:8cqw;font-size:3cqw;box-shadow:0 0 2.4cqw rgba(255,90,70,.9);animation:cbpulse .5s ease-in-out infinite alternate}
 .tb-yk{right:25.4cqw;bottom:12.4cqw;width:7cqw;height:7cqw;font-size:1.3cqw;background:#1a2a44 center/cover;border-color:#9fd8ff}.tb-yk2{bottom:3cqw}
 .tb:active,.tb.on{background:rgba(255,255,255,.5)}
+/* 기획 17-2: 오른쪽 아래 3×2 격자(아랫줄 협력·무기·스킬, 윗줄 교대·부적·각성), 반투명, 크기·투명도·왼손 */
+.touch{--bs:6.1cqw;--bg:.8cqw;--bm:1.3cqw;--bo:.78}
+.touch .tb-sk,.touch .tb-wp,.touch .tb-co,.touch .tb-bomb,.touch .tb-swap,.touch .tb-aw{width:var(--bs);height:var(--bs);font-size:calc(var(--bs)*.22);opacity:var(--bo);right:var(--x);bottom:var(--y);left:auto}
+.touch .tb-sk{--x:var(--bm);--y:var(--bm)}.touch .tb-wp{--x:calc(var(--bm) + var(--bs) + var(--bg));--y:var(--bm)}.touch .tb-co{--x:calc(var(--bm) + 2*(var(--bs) + var(--bg)));--y:var(--bm)}
+.touch .tb-aw{--x:var(--bm);--y:calc(var(--bm) + var(--bs) + var(--bg))}.touch .tb-bomb{--x:calc(var(--bm) + var(--bs) + var(--bg));--y:calc(var(--bm) + var(--bs) + var(--bg))}.touch .tb-swap{--x:calc(var(--bm) + 2*(var(--bs) + var(--bg)));--y:calc(var(--bm) + var(--bs) + var(--bg))}
+.touch .tb-sk small,.touch .tb-wp small,.touch .tb-co small,.touch .tb-bomb small,.touch .tb-swap small{display:none}
+.touch .tb.ready,.touch .tb.coready,.touch .tb:active,.touch .tb.ping{opacity:1}
+.touch .tb-seal{right:calc(var(--bm) + var(--bs)*.5 + var(--bg)*.5);bottom:calc(var(--bm) + 2*(var(--bs) + var(--bg)) + .6cqw);left:auto}
+.touch .tb-yk{width:calc(var(--bs)*.85);height:calc(var(--bs)*.85);right:calc(var(--bm) + 3*(var(--bs) + var(--bg)) + .4cqw);bottom:calc(var(--bm) + var(--bs) + var(--bg));left:auto}.touch .tb-yk2{bottom:var(--bm)}
+.touch.lefty .tb-sk,.touch.lefty .tb-wp,.touch.lefty .tb-co,.touch.lefty .tb-bomb,.touch.lefty .tb-swap,.touch.lefty .tb-aw{left:var(--x);right:auto}
+.touch.lefty .tb-seal{left:calc(var(--bm) + var(--bs)*.5 + var(--bg)*.5);right:auto}.touch.lefty .tb-yk{left:calc(var(--bm) + 3*(var(--bs) + var(--bg)) + .4cqw);right:auto}
+.touch .tb-seal:not(.ready){display:none}.touch .tb-yk small{top:auto;bottom:100%;margin:0 0 .1cqw}
+.btnset{margin-top:1cqw;font-size:1.4cqw}.btnset button{font-size:1.3cqw;margin:0 .3cqw}.btnset button.on{background:#e8b84a;color:#3a2008}.btnset input{vertical-align:middle}
 @media (pointer:coarse){.stage.playing .touch{display:block}}
 .rotate-hint{display:none;margin:0;font-size:13px;color:var(--gold)}
 @media (pointer:coarse) and (orientation:portrait){.rotate-hint{display:block}}
@@ -709,6 +722,7 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
         <button type="button" id="btnHelp">도움말</button>
         <button type="button" id="btnQuit">처음 화면으로</button>
       </div>
+      <div class="btnset" id="btnSet"></div>
       <div class="devtools" id="devTools" hidden></div>
     </div>
     <div class="overlay shop helpv" id="ovHelp" hidden>
@@ -3363,6 +3377,13 @@ function renderDev() { const el = $('devTools'); if (!TEST_UNLOCK) { el.hidden =
   el.querySelectorAll('[data-dev]').forEach(c => c.onchange = () => { DEV[c.dataset.dev] = c.checked; devSave(); });
   $('devGoBtn').onclick = () => { const v = $('devPt').value; devGo(+$('devFl').value, v === 'b' ? 2 : +v, v === 'b'); }; }
 { const a = togglePause; togglePause = function () { a(); if (G.paused) renderDev(); }; }
+/* ---------- 기획 17-2: 버튼 설정(크기·투명도·왼손) — 일시정지 화면 ---------- */
+const BTNSZ = { s: 5.2, m: 6.1, l: 7.2 };
+function btnApply() { const b = SAVE.btn = Object.assign({ sz: 'm', op: 0.78, left: false }, SAVE.btn || {}), t = document.querySelector('.touch'); if (!t) return; t.style.setProperty('--bs', BTNSZ[b.sz] + 'cqw'); t.style.setProperty('--bo', b.op); t.classList.toggle('lefty', !!b.left); }
+function renderBtnSet() { const b = SAVE.btn, el = $('btnSet'); el.innerHTML = '버튼 크기 ' + [['s', '작게'], ['m', '보통'], ['l', '크게']].map(([k, n]) => '<button type="button" data-bsz="' + k + '"' + (b.sz === k ? ' class="on"' : '') + '>' + n + '</button>').join('') + ' · 투명도 <input type="range" id="bOp" min="35" max="100" value="' + Math.round(b.op * 100) + '"> · <label><input type="checkbox" id="bLeft"' + (b.left ? ' checked' : '') + '> 왼손 배치</label>';
+  el.querySelectorAll('[data-bsz]').forEach(x => x.onclick = () => { b.sz = x.dataset.bsz; saveGame(); btnApply(); renderBtnSet(); }); $('bOp').oninput = e => { b.op = e.target.value / 100; btnApply(); }; $('bOp').onchange = () => saveGame(); $('bLeft').onchange = e => { b.left = e.target.checked; saveGame(); btnApply(); }; }
+btnApply();
+{ const a = togglePause; togglePause = function () { a(); if (G.paused) renderBtnSet(); }; }
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],
