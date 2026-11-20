@@ -525,6 +525,7 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
 .dex-grid button small{font-family:var(--body);font-size:max(11px,1.1cqw);color:#7a6040}
 .dex-info{width:30cqw;flex:none;display:flex;flex-direction:column;gap:.5cqw;background:#f9f0da;border:.2cqw solid #c9a86a;border-radius:1cqw;padding:1cqw 1.4cqw;overflow-y:auto;text-align:left}
 .dex-info img{width:100%;height:13cqw;object-fit:contain;filter:drop-shadow(0 .4cqw .6cqw rgba(0,0,0,.35))}.dex-info.no img{filter:brightness(0) opacity(.35)}
+.dex-grid button.rx{min-height:max(64px,7cqw);justify-content:center}.dex-grid button .rxi{font-size:max(18px,2.2cqw);font-family:var(--body)}
 .dex-grid button.cb .pair{display:flex;height:max(52px,6cqw)}.dex-grid button.cb .pair img{height:100%;width:50%}.dex-info .pair.big{display:flex;height:13cqw}.dex-info .pair.big img{height:100%;width:50%}.dex-info .pair img.sh,.dex-grid button.cb.no .pair img:last-child{filter:brightness(0) opacity(.35)}
 .dex-info h3{margin:0;font-family:var(--display);font-weight:400;font-size:max(18px,2.2cqw);color:#7a1f17}.dex-info .fl{font-size:max(13px,1.3cqw);color:#7a6040}
 .dex-info p{margin:0;font-size:max(14px,1.4cqw);line-height:1.45;color:#3a2412}.dex-info p.lk{color:#a8946c}
@@ -1614,6 +1615,7 @@ function damage(e, d) {
   d *= G.boon.atk;
   if (e.type === 'boss') chainHit(false);
   if (e.st && e.st.mark > 0) d *= BATTLE.markK; if (G.forgeOn) d *= BATTLE.forgeK; // 표식 +20%, 벼림 +40%
+  d *= reactCheck(e, d); // 속성 연계
   if (G.hitEl) applyEl(e, G.hitEl); if (G.hitO && G.hitO.push && e.type !== 'boss' && e.type !== 'mid') e.x += 7;
   if (G.wkHit && e.type === 'boss' && e.weak && !e.weak.dead) { e.weak.hp -= d; e.weak.fl = 0.08; d *= FUN.weakToBoss; if (e.weak.hp <= 0) weakBreak(e); } // 약점: 대장에는 절반
   e.hp -= d; e.flash = 0.07;
@@ -1907,7 +1909,7 @@ function update(dt) {
   if (G.offer || G.res) return;
   if (G.talk) { G.talk.t += dt; if (G.talk.t > 3.4) advanceTalk(); return; }
   // 무대 진행
-  G.st += dt; tutTick(dt); comboUpd(dt); awakeUpd(dt); evUpd(dt); talkUpd(dt); if (G.hurt > 0) G.hurt -= dt; cdTick(dt); if (G.slash) G.slash.t -= dt; skillFxUpd(dt); if (G.chainT > 0 && (G.chainT -= dt) <= 0) G.chain = 0; if (G.gzT > 0) G.gzT -= dt;
+  G.st += dt; tutTick(dt); comboUpd(dt); awakeUpd(dt); evUpd(dt); talkUpd(dt); if (G.hurt > 0) G.hurt -= dt; cdTick(dt); if (G.slash) G.slash.t -= dt; skillFxUpd(dt); if (G.rxTxt) G.rxTxt.t -= dt; if (G.chainT > 0 && (G.chainT -= dt) <= 0) G.chain = 0; if (G.gzT > 0) G.gzT -= dt;
   for (let i = G.pend.length - 1; i >= 0; i--) if (G.pend[i].t <= G.st) G.pend.splice(i, 1)[0].f();
   if (G.gate) { if (G.gate.dead || G.gate.gone) { G.gate = null; G.wait = 2.2; } }
   else if ((G.wait -= dt) <= 0) runStep();
@@ -1941,7 +1943,7 @@ function update(dt) {
     e.t += dt; e.flash -= dt;
     if (e.burn > 0) { e.burn -= dt; if ((e.bt = (e.bt || 0) - dt) <= 0) { e.bt = 0.3; damage(e, 0.7); burst(e.x + rnd(-10, 10), e.y + rnd(-14, 6), 3, '#7fc8ff', 50); } } // 푸른 불
     let edt = dt; if (e.slowT > 0) { e.slowT -= dt; edt *= 0.5; } // 얼어 느려짐
-    if (e.st) { if (e.st.bind > 0) edt *= e.type === 'boss' ? 0.6 : BATTLE.bindK; else if (e.st.ice > 0) edt *= e.type === 'boss' ? 0.8 : BATTLE.iceK; } // 묶임·얼림
+    if (e.frozen > 0) { e.frozen -= dt; edt = 0; } else if (e.st) { if (e.st.bind > 0) edt *= e.type === 'boss' ? 0.6 : BATTLE.bindK; else if (e.st.ice > 0) edt *= e.type === 'boss' ? 0.8 : BATTLE.iceK; } // 묶임·얼림
     G.shooter = e.type === 'boss' || e.type === 'mid' || e.type === 'mini' ? e.type : 'mob';
     if (e.charm > 0 && e.type !== 'boss') { e.charm -= dt; e.x -= 20 * dt; } else ET[e.type].up(e, (e.weakBroken ? edt * FUN.weakSlow : edt) * (e.rage ? FUN2.rageSpd : 1)); // 홀림: 잠깐 공격을 멈춘다
     if (e.type === 'mini' || e.type === 'mid' || e.type === 'boss') { const hb = SPH[e.type] * (e.type === 'boss' ? SZ.b : SZ.e) * 0.42; e.y = Math.max(hb, Math.min(GY - hb * 0.7, e.y)); } // 커진 적이 위아래로 잘리지 않게
@@ -2532,7 +2534,7 @@ function draw() {
   ctx.globalAlpha = 1;
   if (G.arc && G.mode === 'play') drawArc();
   ctx.restore();
-  drawCut(); drawCombo2(); if (!G.cmb && !(G.cut && G.cut.t >= 0.25)) { drawAwake(); drawTalk2(); drawKeyHints(); } skillUi(1 / 60);
+  drawCut(); drawCombo2(); if (!G.cmb && !(G.cut && G.cut.t >= 0.25)) { drawAwake(); drawTalk2(); drawKeyHints(); drawReact(); } skillUi(1 / 60);
   if (G.mode === 'play' && G.st < 3.6 && !G.boss && !G.cut) drawTower();
   if (G.talk) drawTalk();
   if (G.tally && G.clearT > 0 && G.clearT < 5.2) drawTally();
@@ -3002,7 +3004,7 @@ const CONAME = ['바람막이', '표식 사격', '선녀의 샘', '불 춤', '�
 const ENNAME = ['부채 일섬', '화살비 낙하', '물기둥 솟기', '탈 던지기', '쇠공 굴리기', '홀림', '쌍 몽둥이', '얼음 파편', '몸통 박치기', '월도 베기', '망치 내려찍기', '그림자 습격', '금 나와라 뚝딱'];
 const SKEL = ['wind', 'mark', 'wet', 'fire', 'bind', 'fire', 'bind', 'ice', 'bolt', 'wet', 'mark', 'bind', 'heavy'], COEL = ['wind', 'mark', 'wet', 'fire', '', '', '', 'ice', 'bolt', 'wet', '', '', ''], ENEL = ['wind', 'mark', 'wet', 'fire', 'heavy', '', 'heavy', 'ice', 'bolt', 'wet', 'heavy', 'bind', 'heavy'];
 Object.assign(BATTLE, { markK: 1.2, statusSec: 3, bindK: 0.15, iceK: 0.5, forgeK: 1.4 });
-function applyEl(e, el) { if (!el || e.dead) return; e.st = e.st || {}; e.st[el] = BATTLE.statusSec; if (el === 'fire') e.burn = Math.max(e.burn || 0, 3); if (typeof elReact === 'function') elReact(e, el); }
+function applyEl(e, el) { if (!el || el === 'heavy' || e.dead) return; e.st = e.st || {}; e.st[el] = BATTLE.statusSec; if (el === 'fire') e.burn = Math.max(e.burn || 0, 3); }
 function hitEl(e, d, el, o) { if (!e || e.dead || e.inv) return; G.hitEl = el; G.hitO = o || null; damage(e, d); G.hitEl = null; G.hitO = null; }
 const inFront = (x0, x1, y, h) => enemies.filter(e => !e.dead && !e.inv && e.x > x0 && e.x < x1 && Math.abs(e.y - y) < h + e.r && e.x < W + 20);
 const fx2 = (o) => (G.fx2 = G.fx2 || []).push(Object.assign({ t: 0 }, o));
@@ -3065,6 +3067,7 @@ function skillFxUpd(dt) { // 이어지는 협력 스킬 효과
     else if (f.k === 'guardp') { for (const oy of [-50, 50]) bullets = bullets.filter(b => Math.hypot(b.x - f.x, b.y - (f.y + oy)) > 26); }
     else if (f.k === 'icezone') { for (const b of bullets) if (Math.hypot(b.x - f.x, b.y - f.y) < 120) { b.vx *= 0.96; b.vy *= 0.96; } if ((f.tk = (f.tk || 0) - dt) <= 0) { f.tk = 0.5; for (const e of enemies) if (!e.dead && Math.hypot(e.x - f.x, e.y - f.y) < 120 + e.r) { applyEl(e, 'ice'); e.slowT = Math.max(e.slowT || 0, 0.6); } } }
     else if (f.k === 'pillar') bullets = bullets.filter(b => Math.abs(b.x - f.x) > 18);
+    else if (f.k === 'steam') bullets = bullets.filter(b => Math.hypot(b.x - f.x, b.y - f.y) > 90);
   }
   G.fx2 = L.filter(f => f.t < f.d);
   G.forgeOn = L.some(f => f.k === 'forge'); G.cloneOn = L.some(f => f.k === 'clone'); G.luckyOn = L.some(f => f.k === 'lucky');
@@ -3081,6 +3084,7 @@ function drawSkillFx() { for (const f of G.fx2 || []) { const a = Math.max(0, 1 
   else if (f.k === 'pillar') { ctx.globalAlpha = Math.min(1, a * 3); ctx.fillStyle = '#6a4424'; ctx.fillRect(f.x - 14, 0, 28, GY); ctx.fillStyle = '#3a2412'; ctx.fillRect(f.x - 18, GY - 30, 36, 30); ctx.fillStyle = '#f3e9d2'; ctx.fillRect(f.x - 6, 40, 12, 40); ctx.globalAlpha = 1; }
   else if (f.k === 'club') { ctx.globalAlpha = a; ctx.fillStyle = '#e8b84a'; ctx.save(); ctx.translate(f.x, f.y - 30 + f.t * 120); ctx.rotate(0.6); ctx.fillRect(-22, -60, 44, 90); ctx.restore(); ctx.globalAlpha = 1; }
   else if (f.k === 'windwall') { ctx.strokeStyle = 'rgba(190,255,240,' + (0.3 + 0.3 * Math.sin(G.time * 20)) + ')'; ctx.lineWidth = 3; for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.arc(P.x + 60 + i * 22, P.y, 80, -0.9, 0.9); ctx.stroke(); } }
+  else if (f.k === 'steam') { ctx.fillStyle = 'rgba(235,240,245,' + 0.35 * a + ')'; ctx.beginPath(); ctx.arc(f.x, f.y, 90, 0, TAU); ctx.fill(); }
   else if (f.k === 'mist') { ctx.fillStyle = 'rgba(180,220,255,' + 0.25 * a + ')'; ctx.beginPath(); ctx.ellipse(f.x, f.y, 200, 110, 0, 0, TAU); ctx.fill(); }
   else if (f.k === 'orbit') { for (let i = 0; i < 4; i++) { const an = f.t * 4 + i * TAU / 4; ctx.globalCompositeOperation = 'lighter'; glow('orange', P.x + Math.cos(an) * 54, P.y + Math.sin(an) * 54, 16, 0.9); ctx.globalCompositeOperation = 'source-over'; } }
   else if (f.k === 'eat') { ctx.strokeStyle = 'rgba(200,200,210,.5)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(P.x, P.y, 120 - (G.time * 80 % 40), 0, TAU); ctx.stroke(); }
@@ -3094,7 +3098,36 @@ function drawSkillFx() { for (const f of G.fx2 || []) { const a = Math.max(0, 1 
   else if (f.k === 'lucky') { ctx.globalCompositeOperation = 'lighter'; glow('gold', P.x, P.y - 30, 14, 0.6); ctx.globalCompositeOperation = 'source-over'; } }
   for (const e of enemies) if (e.st && !e.dead && e.x < W + 10) { let i = 0; for (const k in e.st) { const c = { ice: '#bfe6ff', wet: '#5fb8f0', fire: '#ff8a3a', bolt: '#fff08a', wind: '#bffff0', bind: '#c0c0d0', mark: '#ffd76a' }[k]; if (!c) continue; ctx.fillStyle = c; circ(e.x - 8 + i * 7, e.y - e.r - 10, 3); i++; }
     if (e.st.mark) { ctx.strokeStyle = 'rgba(255,215,106,.8)'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(e.x, e.y, e.r + 6, 0, TAU); ctx.stroke(); } if (e.st.ice) { ctx.fillStyle = 'rgba(190,230,255,.3)'; circ(e.x, e.y, e.r + 4); } }
+  for (const e of enemies) if (e.frozen > 0 && !e.dead) { ctx.fillStyle = 'rgba(170,220,255,.55)'; ctx.beginPath(); ctx.ellipse(e.x, e.y, e.r * 1.5 + 8, e.r * 1.7 + 8, 0, 0, TAU); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke(); }
 }
+/* 기획 14-4: 속성 연계 7종. 적에게 속성이 붙은 뒤 3초 안에 다른 기술을 맞히면 「연계!」 */
+const REACTS = [ // [id, 이름, 먼저, 다음 설명, 효과 설명]
+  ['shatter', '산산조각', '❄ 얼림', '강한 타격(⛓·금 방망이·내려찍기·망치)', '피해 2배 + 얼음 파편이 주변 적에 튐'],
+  ['shock', '감전 연쇄', '💧 젖음', '⚡ 번개', '번개가 주변 젖은 적에게 줄줄이 옮겨 감'],
+  ['firestorm', '화염 회오리', '🔥 불', '🌀 바람', '불 회오리가 넓게 퍼짐'],
+  ['freeze', '꽁꽁', '💧 젖음', '❄ 얼림', '3초 동안 완전히 얼어 못 움직임(대장 1초)'],
+  ['pierce', '꿰뚫기', '⛓ 묶임', '관통 스킬(회오리·창·세 발…)', '피해 2.5배'],
+  ['markboom', '표식 폭발', '✦ 표식', '따라가는 공격(칼비·여우구슬)', '표식이 터지며 범위 피해'],
+  ['steam', '수증기', '🔥 불', '💧 젖음', '안개가 퍼져 그 안의 적 탄이 사라짐'],
+];
+Object.assign(BATTLE, { rxMoon: 15, rxAllMoon: 30, rxGap: 0.4 });
+function subDmg(t, d) { const a = G.hitEl, b = G.hitO, c = G.wkHit; G.hitEl = null; G.hitO = null; G.wkHit = false; damage(t, d); G.hitEl = a; G.hitO = b; G.wkHit = c; } // 연계의 곁가지 피해(원래 타격 정보는 지킴)
+function reactCheck(e, d) { // damage() 안에서: 이번 타격의 속성(G.hitEl)·성질(G.hitO)과 적에 붙은 속성(e.st)을 비교. 돌려주는 값 = 피해 배수
+  const st = e.st; if (!st || !Object.keys(st).length || (e.rxT || 0) > G.time) return 1; const el = G.hitEl, o = G.hitO || {}, heavy = o.heavy || el === 'bind' || el === 'heavy', pen = o.pen, seek = o.seek;
+  let id = null; if (st.ice && heavy) id = 'shatter'; else if (st.wet && el === 'bolt') id = 'shock'; else if (st.fire && el === 'wind') id = 'firestorm'; else if (st.wet && el === 'ice') id = 'freeze'; else if (st.bind && pen) id = 'pierce'; else if (st.mark && seek) id = 'markboom'; else if (st.fire && el === 'wet') id = 'steam';
+  if (!id) return 1; e.rxT = G.time + BATTLE.rxGap; const R = REACTS.find(r => r[0] === id); let k = 1;
+  if (id === 'shatter') { k = 2; delete st.ice; for (const t of enemies) if (t !== e && !t.dead && Math.hypot(t.x - e.x, t.y - e.y) < 90) { subDmg(t, 8); burst(t.x, t.y, 6, '#e8f6ff', 140); } burst(e.x, e.y, 30, '#e8f6ff', 260); }
+  else if (id === 'shock') { delete st.wet; let from = e; const done = new Set([e]); for (let i = 0; i < 6; i++) { const n = enemies.find(t => !done.has(t) && !t.dead && t.st && t.st.wet && Math.hypot(t.x - from.x, t.y - from.y) < 200) || enemies.find(t => !done.has(t) && !t.dead && Math.hypot(t.x - from.x, t.y - from.y) < 120); if (!n) break; done.add(n); fx2({ k: 'line', x: from.x, y: from.y, tx: n.x, ty: n.y, d: 0.3, col: '#fff08a' }); subDmg(n, 10); if (n.st) delete n.st.wet; from = n; } }
+  else if (id === 'firestorm') { delete st.fire; ring(e.x, e.y, 120, '#ff8a3a', 0.5); for (const t of enemies) if (!t.dead && Math.hypot(t.x - e.x, t.y - e.y) < 130 + t.r) { t.burn = Math.max(t.burn || 0, 4); if (t !== e) subDmg(t, 12); } for (let i = 0; i < 6; i++) fireball(e.x + rnd(-60, 60), e.y + rnd(-60, 60), rnd(20, 40), i * 0.05); }
+  else if (id === 'freeze') { delete st.wet; e.frozen = e.type === 'boss' ? 1 : 3; }
+  else if (id === 'pierce') { k = 2.5; delete st.bind; }
+  else if (id === 'markboom') { delete st.mark; explode(e.x, e.y, 80, 0); for (const t of enemies) if (!t.dead && Math.hypot(t.x - e.x, t.y - e.y) < 85 + t.r) { subDmg(t, 15); } }
+  else if (id === 'steam') { delete st.fire; fx2({ k: 'steam', x: e.x, y: e.y, d: 3 }); }
+  G.rxTxt = { s: '연계! ' + R[1], t: 1.2 }; G.hstop = Math.max(G.hstop || 0, 0.05); P.moonG = Math.min(FUN2.awakeNeed, (P.moonG || 0) + BATTLE.rxMoon); tone(1200, 0.08, 'square', 0.07); tone(1600, 0.12, 'square', 0.06, 0, 0.06);
+  if (typeof shieldBreak === 'function' && e.shield > 0) shieldBreak(e);
+  SAVE.reacts = SAVE.reacts || {}; if (!SAVE.reacts[id]) { SAVE.reacts[id] = 1; G.rxTxt.s += ' · 처음 발견!'; if (REACTS.every(r => SAVE.reacts[r[0]])) addMoon(BATTLE.rxAllMoon, '연계 7개 모두 발견'); saveGame(); }
+  return k; }
+function drawReact() { const r = G.rxTxt; if (!r || r.t <= 0) return; const a = Math.min(1, r.t * 3), sc = 1 + Math.max(0, r.t - 1) * 2; ctx.save(); ctx.globalAlpha = a; ctx.translate(W / 2, H * 0.32); ctx.scale(sc, sc); text(r.s, 0, 0, 24, '#ffd76a', 'center'); ctx.restore(); }
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],
@@ -3317,7 +3350,11 @@ function openDex() { if (!uiOpen('dex')) return toast('1-1을 깨면 책방이 �
 function renderDex() {
   const nx = DEX_PRIZE.find(x => x[0] > (SAVE.dexPaid || 0));
   $('dexSum').textContent = '등록 ' + dexSeen() + ' / ' + dexAll() + (nx ? ' · ' + nx[0] + '종에 달조각 ' + nx[1] : ' · 모두 받음');
-  $('dexTabs').innerHTML = DEX_KIND.map(([k, nm]) => '<button type="button" data-k="' + k + '" aria-selected="' + (k === dexTab) + '">' + nm + ' ' + DEX[k].filter(d => dexN(d[0])).length + '/' + DEX[k].length + '</button>').join('') + '<button type="button" data-k="combo" aria-selected="' + (dexTab === 'combo') + '">합체 기술 ' + COMBOS.filter(c => (SAVE.combos || {})[c[0]]).length + '/' + COMBOS.length + '</button>';
+  $('dexTabs').innerHTML = DEX_KIND.map(([k, nm]) => '<button type="button" data-k="' + k + '" aria-selected="' + (k === dexTab) + '">' + nm + ' ' + DEX[k].filter(d => dexN(d[0])).length + '/' + DEX[k].length + '</button>').join('') + '<button type="button" data-k="combo" aria-selected="' + (dexTab === 'combo') + '">합체 기술 ' + COMBOS.filter(c => (SAVE.combos || {})[c[0]]).length + '/' + COMBOS.length + '</button><button type="button" data-k="react" aria-selected="' + (dexTab === 'react') + '">연계 ' + REACTS.filter(r => (SAVE.reacts || {})[r[0]]).length + '/' + REACTS.length + '</button>';
+  if (dexTab === 'react') { const got = SAVE.reacts || {}; if (!REACTS.some(r => r[0] === dexSel)) dexSel = REACTS[0][0];
+    $('dexGrid').innerHTML = REACTS.map(r => '<button type="button" data-d="' + r[0] + '" class="rx' + (got[r[0]] ? '' : ' no') + (r[0] === dexSel ? ' on' : '') + '"><b class="rxi">' + r[2].split(' ')[0] + '→</b><span>' + (got[r[0]] ? r[1] : '???') + '</span></button>').join('');
+    const r = REACTS.find(x => x[0] === dexSel), g = got[r[0]], el = $('dexInfo'); el.className = 'dex-info';
+    el.innerHTML = '<h3>' + (g ? r[1] : '???') + '</h3><span class="fl">먼저 ' + r[2] + ' → 3초 안에 ' + (g ? r[3] : '???') + '</span><p>' + (g ? r[4] : '어떤 기술을 이어 맞혀야 할까요? 속성이 붙은 적에게 다른 속성 기술을 맞혀 보세요') + '</p><p class="lk">7개 모두 찾으면 달조각 ' + BATTLE.rxAllMoon + ' · 대장 보호막은 연계로만 깨집니다</p>'; return; }
   if (dexTab === 'combo') { const got = SAVE.combos || {}; if (!COMBOS.some(c => c[0] === dexSel)) dexSel = COMBOS[0][0];
     $('dexGrid').innerHTML = COMBOS.map(c => '<button type="button" data-d="' + c[0] + '" class="cb' + (got[c[0]] ? '' : ' no') + (c[0] === dexSel ? ' on' : '') + '"><span class="pair"><img src="assets/' + look(c[1][0]).img + '.webp" alt=""><img src="assets/' + look(c[1][1]).img + '.webp" alt=""></span><span>' + (got[c[0]] ? c[2] : '???') + '</span></button>').join('');
     const c = COMBOS.find(x => x[0] === dexSel), g = got[c[0]], el = $('dexInfo'); el.className = 'dex-info';
@@ -3748,7 +3785,7 @@ function start() {
   if (window.ResizeObserver) new ResizeObserver(() => resize()).observe(cv); else addEventListener('resize', () => resize());
   requestAnimationFrame(frame);
 }
-window.__game = { showD, hideD, openMem, mem, openArcade, get shots() { return shots; }, releaseCharge: () => releaseCharge(), openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, hpOf, charSkill, coSkill, entryStrike, get fx2() { return G.fx2; }, skillUse, weaponUse, coSkillUse, get cd() { return P.cd; }, BATTLE, awakeStart, coSay, evStart, get items() { return items; }, openRoad, get cmb() { return G.cmb; }, weakPos, COMBOS, comboOK, FUN, spawnLan, openOath, oathScore, openTop, rogueNext, rogueOffer, rogueTake, RSAVE, BOONS, get R() { return G.R; }, openDex, DEX, dexSeen, segMedals, medalCount, showResult, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
+window.__game = { showD, hideD, openMem, mem, openArcade, get shots() { return shots; }, releaseCharge: () => releaseCharge(), openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, hpOf, REACTS, hitEl, damage: (e, d) => damage(e, d), applyEl, charSkill, coSkill, entryStrike, get fx2() { return G.fx2; }, skillUse, weaponUse, coSkillUse, get cd() { return P.cd; }, BATTLE, awakeStart, coSay, evStart, get items() { return items; }, openRoad, get cmb() { return G.cmb; }, weakPos, COMBOS, comboOK, FUN, spawnLan, openOath, oathScore, openTop, rogueNext, rogueOffer, rogueTake, RSAVE, BOONS, get R() { return G.R; }, openDex, DEX, dexSeen, segMedals, medalCount, showResult, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
 if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start); else start();
 })();
 </script>
