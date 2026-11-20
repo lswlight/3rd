@@ -115,6 +115,7 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .touch.lefty .tb-seal{left:calc(var(--bm) + var(--bs)*.5 + var(--bg)*.5);right:auto}.touch.lefty .tb-yk{left:calc(var(--bm) + 3*(var(--bs) + var(--bg)) + .4cqw);right:auto}
 .touch .tb-seal:not(.ready){display:none}.touch .tb-yk small{top:auto;bottom:100%;margin:0 0 .1cqw}
 .tb-yks{width:calc(var(--bs)*1.05);height:calc(var(--bs)*1.05);right:calc(var(--bm) + var(--bs)*1.6 + var(--bg)*1.5);bottom:calc(var(--bm) + 2*(var(--bs) + var(--bg)) + .6cqw);font-size:calc(var(--bs)*.18);background:radial-gradient(circle at 40% 35%,#ff8a5a,#8a1a10);border-color:#ffd76a;box-shadow:0 0 2cqw rgba(255,120,60,.8);animation:cbpulse .6s ease-in-out infinite alternate}.touch.lefty .tb-yks{left:calc(var(--bm) + var(--bs)*1.6 + var(--bg)*1.5);right:auto}
+.cotag{position:absolute;right:-.3cqw;top:-.3cqw;z-index:4;width:calc(var(--bs)*.36);height:calc(var(--bs)*.36);border-radius:50%;background:#f3e9d2;color:#7a1a10;font-size:calc(var(--bs)*.2);display:flex;align-items:center;justify-content:center;border:1px solid #7a1a10;pointer-events:none}.tb-co.tele{animation:cbpulse .25s ease-in-out infinite alternate;box-shadow:0 0 2.6cqw rgba(160,220,255,.95);opacity:1}
 .btnset{margin-top:1cqw;font-size:1.4cqw}.btnset button{font-size:1.3cqw;margin:0 .3cqw}.btnset button.on{background:#e8b84a;color:#3a2008}.btnset input{vertical-align:middle}
 @media (pointer:coarse){.stage.playing .touch{display:block}}
 .rotate-hint{display:none;margin:0;font-size:13px;color:var(--gold)}
@@ -707,7 +708,7 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
     <div class="touch">
       <button type="button" class="tb tb-sk" id="padSkill" aria-label="캐릭터 스킬"><span>캐릭터<br>스킬</span><i class="cd"></i><em></em><small id="skLbl"></small></button>
       <button type="button" class="tb tb-wp" id="padWeapon" aria-label="무기 스킬"><span>무기<br>스킬</span><i class="cd"></i><em></em><small id="wpLbl"></small></button>
-      <button type="button" class="tb tb-co" id="padCo" aria-label="협력 스킬"><span>협력<br>스킬</span><i class="cd"></i><em></em><small id="coLbl"></small></button>
+      <button type="button" class="tb tb-co" id="padCo" aria-label="협력 스킬"><span>협력<br>스킬</span><b class="cotag" id="coTag"></b><i class="cd"></i><em></em><small id="coLbl"></small></button>
       <button type="button" class="tb tb-bomb" id="padBomb" aria-label="부적 폭탄"><span id="bombTxt">부적</span><small>길게=합체</small></button>
       <button type="button" class="tb tb-swap" id="padSwap" aria-label="동료와 교대"><span>교대</span><i class="cd"></i><small>등장 일격</small></button>
       <button type="button" class="tb tb-aw" id="padAwake" aria-label="달빛 각성"><span>각성</span></button>
@@ -1620,7 +1621,7 @@ function advanceTalk() {
   const k = G.talk; if (!k || k.t < 0.3) return;
   k.i++; k.t = 0; if (k.i >= k.lines.length) { G.talk = null; banner('싸움 시작!', '', 1); }
 }
-function startStage(i, part = 0) { G.dps = { all: {}, boss: {} }; G.eliteLeft = G.endless ? 0 : BALANCE2.elite[0] + Math.floor(Math.random() * (BALANCE2.elite[1] - BALANCE2.elite[0] + 1)); G.bAcc = 0; if (part === 0) G.floor = { st: [], gold: 0 };
+function startStage(i, part = 0) { G.dps = { all: {}, boss: {} }; G.eliteLeft = G.endless ? 0 : BALANCE2.elite[0] + Math.floor(Math.random() * (BALANCE2.elite[1] - BALANCE2.elite[0] + 1)); G.bAcc = 0; G.ride = G.coZone = G.coGuard = G.coAim = null; if (part === 0) { G.floor = { st: [], gold: 0 }; P.coG = 0; }
   G.part = part; G.pick = i; G.pp = part; G.deaths = 0; G.dark = 0; G.duskMsg = 0; G.totems = []; G.hz = []; G.wind = 0; G.cur = 0; G.segDone = false; G.res = false; G.arc = null; G.arcDone = false; G.boon = newBoon();
   G.stage = i; G.rank = 1 + 0.05 * i + 0.28 * Math.min(G.loop, 4); if (i === 0 && part === 0 && !G.endless && G.diff === 0) { SAVE.tut.r11 = (SAVE.tut.r11 || 0) + 1; if (SAVE.tut.r11 === 1) G.rank *= 0.85; } /* 처음 1-1은 탄 속도 0.85배 */ G.boon.shield += eqStat(P.ch).shield; G.helped = false; G.bombUsed = false; if (!G.endless && lossN() >= 2) { G.boon.shield++; G.helped = true; G.boon.txt.push('탑의 기운 · 방패 1개'); setTimeout(() => tipFlash('탑의 기운 · 방패 1개를 받았습니다 (이 도움으로 깨면 별은 최대 둘)', 5), 3200); } if (G.mode === 'play' && P.hpm && (part > 0 || G.endless)) hpAll(BATTLE.segHeal); G.segDmg = 0; G.sealN = YK.sealPerSeg; G.yks = part === 0 || G.endless ? [] : (G.yks || []).filter(y => y.guard); if (part === 0) G.ykSk = null; G.hard = !!G.roadNext; G.roadNext = false; G.lan2 = 0; G.pend = []; G.chain = 0; G.chainT = 0; G.chainMax = 0; G.grazeN = 0; G.segPts = 0; G.segBase = 0; G.hpx = 1 + 0.2 * oathLv('hp'); G.rank *= 1 + 0.15 * oathLv('bs'); G.oathRage = oathLv('rage'); if (G.hard) { G.hpx *= FUN.hardRoad.hp; G.rank *= FUN.hardRoad.spd; } G.coinx = 1; G.bombX = 0; G.si = 0; G.wait = 3; G.hitN = 0; G.mobN = 0; G.mobK = 0; G.rescued = false; G.lanDone = false; G.bossAt = 0; G.bossSec = 0; G.gate = null; G.nMini = part === 1 ? 3 : 0; G.nMid = part === 1 ? 1 : 0; G.n0 = G.nMini + G.nMid; G.bossCalled = false; G.st = 0; G.boss = null; G.clearT = 0;
   evRoll(i, part); G.gob = null; G.swarm = 0; G.rain = 0; G.guest = null; G.shadow = null;
@@ -1916,7 +1917,7 @@ function updatePlayer(dt) {
   }
   let dx = keys.right - keys.left, dy = keys.down - keys.up;
   if (dx && dy) { dx *= 0.7071; dy *= 0.7071; }
-  const sp = CH[P.ch].speed * (1 + eqStat(P.ch).spd / 100) * (keys.charge ? 0.7 : 1); // 기를 모으는 동안은 70% 빠르기 P.x += dx * sp * dt; P.y += dy * sp * dt;
+  const sp = CH[P.ch].speed * (1 + eqStat(P.ch).spd / 100) * (keys.charge ? 0.7 : 1) * (G.ride ? BAL17.rideSpd : 1); // 기를 모으는 동안은 70% 빠르기 P.x += dx * sp * dt; P.y += dy * sp * dt;
   if (G.wind > 0) { P.x -= (G.wind > 100 ? 30 : 52) * dt; if (Math.random() < 0.6) parts.push({ x: W + 4, y: rnd(10, GY), vx: -rnd(320, 460), vy: rnd(-10, 10), life: 1.6, max: 1.6, col: 'rgba(230,240,255,.7)', r: 1.4 }); } // 맞바람
   if (G.cur > 0) P.y += G.curV * Math.min(1, G.cur) * dt; // 해류
   P.x = Math.max(32, Math.min(W - 24, P.x)); P.y = Math.max(26, Math.min(GY - 20, P.y));
@@ -1998,7 +1999,7 @@ function update(dt) {
     if (e.type === 'boss') shieldUpd(e, dt);
     if (e.type === 'mini' || e.type === 'mid' || e.type === 'boss') { const hb = SPH[e.type] * (e.type === 'boss' ? SZ.b : SZ.e) * 0.42; e.y = Math.max(hb, Math.min(GY - hb * 0.7, e.y)); } // 커진 적이 위아래로 잘리지 않게
     if (e.x < -60 || e.y < -80 || e.y > H + 80) e.gone = true;
-    if (!e.dead && !e.inv && P.deadT <= 0 && e.type !== 'lan' && e.type !== 'gob' && (ehb(e) ? hitE(e, P.x, P.y, 6, 0.75) : Math.hypot(e.x - P.x, e.y - P.y) < e.r * 0.7 + 3)) playerHit(BATTLE.dmg.body);
+    if (!e.dead && !e.inv && P.deadT <= 0 && e.type !== 'lan' && e.type !== 'gob' && !G.ride && (ehb(e) ? hitE(e, P.x, P.y, 6, 0.75) : Math.hypot(e.x - P.x, e.y - P.y) < e.r * 0.7 + 3)) playerHit(BATTLE.dmg.body);
   }
   // 내 탄
   for (const s of shots) {
@@ -3282,7 +3283,7 @@ const DPSQ = TEST_UNLOCK && /[?&]dps=1/.test(location.search);
 const WPCOL = { '': '#ffffff', w1: '#e8f0ff', w2: '#ffe08a', w3: '#c8d0ec', w4: '#fff07a', w5: '#ffd76a', w6: '#c9a8ff', w7: '#9fe08a', w8: '#ff8a3a', w9: '#9fe0ff', w10: '#ff6a3a' };
 const wpCol = () => WPCOL[wpKey(eqOf(P.ch, 'w'))] || '#ffffff';
 function withSrc(tag, f) { const sv = G.srcCtx; G.srcCtx = tag; try { return f(); } finally { G.srcCtx = sv; } }
-function dpsRec(e, d, rxM) { if (!(d > 0) || !G.dps) return; const dd = Math.min(d, Math.max(0, e.hp)); if (!dd) return;
+function dpsRec(e, d, rxM) { if (!(d > 0) || !G.dps) return; if (((G.hitO && G.hitO.src) || G.srcCtx) === 'cofire' && P.co >= 0) P.coG = Math.min(100, (P.coG || 0) + BAL17.gHit); const dd = Math.min(d, Math.max(0, e.hp)); if (!dd) return;
   const src = (G.hitO && G.hitO.src) || G.srcCtx || 'other', base = rxM > 1 ? dd / rxM : dd, add = (o, k, v) => { o[k] = (o[k] || 0) + v; };
   if (e.type === 'boss' && !G.dps.b0) G.dps.b0 = G.time; for (const o of e.type === 'boss' ? [G.dps.all, G.dps.boss] : [G.dps.all]) { add(o, src, base); if (rxM > 1) add(o, 'rx', dd - base); }
   if (src === 'wp' && (e.wpT || 0) < G.time) { e.wpT = G.time + 0.12; G.hstop = Math.max(G.hstop || 0, BAL16.wpStop); G.shake = Math.max(G.shake, BAL16.wpShake); (G.wpNum = G.wpNum || []).push({ x: e.x + rnd(-10, 10), y: e.y - e.r * 0.6, n: Math.round(d), t: 0, col: wpCol() }); }
@@ -3313,10 +3314,10 @@ function drawCoCut() { const q = G.coCut; if (!q) return; q.t += 1 / 60; const D
   ctx.save(); ctx.globalAlpha = k; const g = ctx.createLinearGradient(x0, 0, x0 + 360, 0); g.addColorStop(0, 'rgba(10,12,24,.9)'); g.addColorStop(0.75, 'rgba(10,12,24,.75)'); g.addColorStop(1, 'rgba(10,12,24,0)'); ctx.fillStyle = g; ctx.fillRect(x0, y, 360, 52);
   ctx.fillStyle = col; ctx.fillRect(x0, y, 360 * k, 2.5); ctx.fillRect(x0, y + 50, 300 * k, 2.5);
   if (ok(im)) { ctx.save(); ctx.beginPath(); ctx.rect(x0 + 6, y - 22, 96, 74); ctx.clip(); const s = 120 / im.width; ctx.drawImage(im, x0 + 54 - im.width * s / 2, y - 20, im.width * s, im.height * s); ctx.restore(); }
-  ctx.font = 'bold 19px ' + FONT; ctx.textAlign = 'left'; ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(0,0,0,.8)'; const s1 = CONAME[q.c] + '!'; ctx.strokeText(s1, x0 + 110, y + 32); ctx.fillStyle = col; ctx.fillText(s1, x0 + 110, y + 32);
-  ctx.font = '11px ' + FONT; ctx.fillStyle = '#f4e3c0'; ctx.fillText('협력 · ' + CH[q.c].name, x0 + 112, y + 14); ctx.restore(); }
+  ctx.font = 'bold 19px ' + FONT; ctx.textAlign = 'left'; ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(0,0,0,.8)'; const s1 = coTy(q.c)[1] + '!'; ctx.strokeText(s1, x0 + 110, y + 32); ctx.fillStyle = col; ctx.fillText(s1, x0 + 110, y + 32);
+  ctx.font = '11px ' + FONT; ctx.fillStyle = '#f4e3c0'; ctx.fillText('협력 · ' + CH[q.c].name + ' · ' + COTN[coTy(q.c)[0]] + '형', x0 + 112, y + 14); ctx.restore(); }
 { const a = drawTalk2; drawTalk2 = function () { a(); if (G.mode === 'play') drawCoCut(); }; }
-{ const a = skillUi; skillUi = function (dt) { a(dt); const C = P.cd || {}, rd = P.co >= 0 && uiOpen('coskill') && !(C.co > 0) && hpOf(P.co).hp > 0 && G.mode === 'play'; $('padCo').classList.toggle('coready', rd); if (rd && !G.coRd) { G.coRd = 1; if (G.coSayAt === undefined || G.time - G.coSayAt > 3) { G.coSayAt = G.time; G.coBub = { text: '지금이야!', t: 1.4 }; } tone(1568, 0.08, 'sine', 0.05); } else if (!rd) G.coRd = 0; }; }
+{ const a = skillUi; skillUi = function (dt) { a(dt); const C = P.cd || {}, rd = P.co >= 0 && uiOpen('coskill') && (P.coG || 0) >= 100 && hpOf(P.co).hp > 0 && G.mode === 'play'; $('padCo').classList.toggle('coready', rd); if (rd && !G.coRd) { G.coRd = 1; if (G.coSayAt === undefined || G.time - G.coSayAt > 3) { G.coSayAt = G.time; G.coBub = { text: '지금이야!', t: 1.4 }; } tone(1568, 0.08, 'sine', 0.05); } else if (!rd) G.coRd = 0; }; }
 { const a = entryStrike; entryStrike = function (ch) { return withSrc('entry', () => a(ch)); }; }
 { const a = awakeJoint; awakeJoint = function () { return withSrc('awk', () => a()); }; }
 { const a = awakeFire; awakeFire = function () { return withSrc('awk', () => a()); }; }
@@ -3409,6 +3410,40 @@ function drawSeal2() { const L = G.sealFx || []; for (const s of L) { s.t += 1 /
 { const a = drawWpFx; drawWpFx = function () { a(); drawSeal2(); }; }
 { const a = drawHpHud; drawHpHud = function () { a(); if (G.mode !== 'play' || !uiOpen('seal')) return; const n = G.sealN || 0, x0 = 212, y0 = 8; for (let i = 0; i < Math.min(n, 6); i++) { ctx.fillStyle = '#f3e9d2'; ctx.fillRect(x0 + i * 9, y0, 7, 12); ctx.fillStyle = '#b8322a'; ctx.fillRect(x0 + i * 9 + 1.5, y0 + 2, 4, 8); } if (n > 6 || !n) text(n ? '×' + n : '봉인 0', x0 + Math.min(n, 6) * 9 + 2, y0 + 10, 9, '#f3e9d2'); } }
 { const a = skillUi; skillUi = function (dt) { a(dt); const b = $('padYS'); b.classList.toggle('off', !(G.ykSk && G.mode === 'play')); if (G.ykSk) $('ysTxt').innerHTML = G.ykSk.name.replace(' ', '<br>'); }; }
+/* ---------- 기획 17-4: 협력 세 방식(지휘형·탑승형·수호형) + 협력 게이지 ---------- */
+const BAL17 = { gHit: 4, gSec: 1.6, cmdR: 80, cmdDur: 1.6, cmdTick: 0.2, cmdDmg: 6, rideSec: 5, rideSpd: 1.45, rideRam: 45, rideGap: 0.3, rideShot: 2.5, guardSec: 2, guardR: 74, counter0: 18, counterB: 2, counterMax: 50, perfect: 0.3, perfectK: 2, stun: 1 };
+// 동료 13명의 방식: cmd 지휘(끌어서 위치) · ride 탑승(5초) · guard 수호(막고 반격). [방식, 기술 이름, 속성, 색]
+const COTYPE = { 0: ['cmd', '회오리 낙하', 'wind', '#9fffe0'], 1: ['cmd', '화살비', 'mark', '#ffe08a'], 5: ['cmd', '여우불 폭발', 'fire', '#ffb060'], 7: ['cmd', '얼음 지대', 'ice', '#bfe6ff'], 10: ['cmd', '칼비', 'bind', '#e0e0f0'], 12: ['cmd', '금 방망이', 'heavy', '#ffd76a'],
+  2: ['ride', '은하수 수레', 'wet', '#9fd0ff'], 3: ['ride', '도깨비불 수레', 'fire', '#ff8a5a'], 8: ['ride', '용 타기', 'bolt', '#fff08a'], 9: ['ride', '현무 거북', 'wet', '#7fd6e6'],
+  4: ['guard', '쇠 몸 막기', 'heavy', '#c0c8d0'], 6: ['guard', '장승 방패', 'bind', '#9fe08a'], 11: ['guard', '어둠 삼키기', 'mark', '#c9a8ff'] };
+const COTAG = { cmd: '指', ride: '乘', guard: '守' }, COTN = { cmd: '지휘', ride: '탑승', guard: '수호' };
+const coTy = c => COTYPE[c] || ['cmd', CONAME[c] || '협력', 'wind', '#9fd0ff'];
+const coK = () => lvOf(P.co) >= 7 ? BATTLE.lv7Co : 1;
+function toLog(ev) { const r = cv.getBoundingClientRect(); return { x: Math.max(10, Math.min(W - 10, (ev.clientX - r.left) / r.width * W)), y: Math.max(10, Math.min(GY - 10, (ev.clientY - r.top) / r.height * H)) }; }
+function coAutoTarget() { if (G.boss && !G.boss.dead) return { x: G.boss.x, y: G.boss.y }; let best = null, bn = 0; for (const e of enemies) { if (e.dead || e.x > W) continue; const n = enemies.filter(o => !o.dead && Math.hypot(o.x - e.x, o.y - e.y) < BAL17.cmdR).length; if (n > bn) { bn = n; best = e; } } return best ? { x: best.x, y: best.y } : { x: Math.min(W - 80, P.x + 220), y: P.y }; }
+function coBegin(c) { P.coG = 0; G.coCut = { c, t: 0 }; needImg(look(c).img); tone(1175, 0.1, 'triangle', 0.06); if (typeof coSay === 'function') coSay('combo'); if (!TEST_UNLOCK && !SAVE.tut.coSk2) { SAVE.tut.coSk2 = 1; saveGame(); tipFlash('협력 · ' + CH[c].name + '(' + COTN[coTy(c)[0]] + '형): ' + ({ cmd: '버튼을 누른 채 끌어서 위치를 정하고 떼세요', ride: '5초 동안 올라타 적을 들이받습니다', guard: '대장 공격 예고 때 누르면 막고 반격 · 예고 끝에 맞추면 완벽 반격' })[coTy(c)[0]], 5); } }
+function coCmd(c, pt) { const [, name, el, col] = coTy(c); coBegin(c); P.cx = pt.x - 30; P.cy = pt.y - 40; burst(pt.x, pt.y, 18, col, 220); G.coZone = { x: pt.x, y: pt.y, t: 0, nt: 0, c, el, col, name, k: coK() }; float(name + '!', pt.x, pt.y - BAL17.cmdR - 10, col); }
+function coRide(c) { const [, name, el, col] = coTy(c); coBegin(c); G.ride = { c, t: BAL17.rideSec * coK(), gap: 0, el, col, name }; P.inv = Math.max(P.inv, 0.6); ring(P.x, P.y, 70, col, 0.4); banner(name + '!', '5초 동안 들이받아라', 1); }
+function coGuard(c) { const [, name, el, col] = coTy(c); coBegin(c); const T = G.tele, perfect = !!(T && T.dur - T.t <= BAL17.perfect); G.coGuard = { c, t: BAL17.guardSec, n: 0, col, el, name, perfect }; if (perfect) { G.hstop = Math.max(G.hstop || 0, 0.12); banner('완벽 반격!', name, 1); tone(1568, 0.15, 'square', 0.08); } else float(name + '!', P.x + 40, P.y - 40, col); }
+coSkillUse = function () { if (!uiOpen('coskill') || P.co < 0 || hpOf(P.co).hp <= 0 || !skReady('co') || G.coZone || G.ride || G.coGuard) return; if ((P.coG || 0) < 100) { float('협력 게이지 ' + Math.floor(P.coG || 0) + '%', P.cx, P.cy - 30, '#9fd0ff'); return; }
+  const c = P.co, ty = coTy(c)[0]; if (ty === 'cmd') { if (G.coPtr != null) { G.coAim = { id: G.coPtr, ...(G.coPtrPos || coAutoTarget()) }; return; } coCmd(c, coAutoTarget()); } else if (ty === 'ride') coRide(c); else coGuard(c); };
+$('padCo').addEventListener('pointerdown', e => { G.coPtr = e.pointerId; G.coPtrPos = null; setTimeout(() => { G.coPtr = null; }, 0); }, { capture: true });
+window.addEventListener('pointermove', e => { if (G.coAim && e.pointerId === G.coAim.id) { const p = toLog(e); G.coAim.x = p.x; G.coAim.y = p.y; G.coAim.moved = 1; } });
+for (const evn of ['pointerup', 'pointercancel']) window.addEventListener(evn, e => { const a = G.coAim; if (!a || e.pointerId !== a.id) return; G.coAim = null; if (evn === 'pointercancel' || G.mode !== 'play') return; coCmd(P.co, a.moved ? { x: a.x, y: a.y } : coAutoTarget()); });
+function co17Upd(dt) { if (G.mode !== 'play') return; if (P.co >= 0 && !G.coZone && !G.ride && !G.coGuard) P.coG = Math.min(100, (P.coG || 0) + BAL17.gSec * dt); if (TEST_UNLOCK && DEV.cd0) P.coG = 100;
+  const z = G.coZone; if (z) { z.t += dt; if ((z.nt -= dt) <= 0) { z.nt = BAL17.cmdTick; withSrc('co', () => { for (const e of enemies) if (!e.dead && !e.inv && Math.hypot(e.x - z.x, e.y - z.y) < BAL17.cmdR + e.r * 0.5) hitEl(e, BAL17.cmdDmg * z.k, z.el === 'heavy' ? null : z.el, z.el === 'heavy' ? { heavy: 1 } : null); }); if (z.el === 'ice') for (const b of bullets) if (Math.hypot(b.x - z.x, b.y - z.y) < BAL17.cmdR) { b.vx *= 0.6; b.vy *= 0.6; } } if (z.t >= BAL17.cmdDur) G.coZone = null; }
+  const r = G.ride; if (r) { r.t -= dt; P.cx = P.x - 4; P.cy = P.y + 22; withSrc('co', () => { for (const e of enemies) if (!e.dead && !e.inv && Math.hypot(e.x - P.x, e.y - P.y) < e.r * 0.8 + 30) { hitEl(e, BAL17.rideRam * dt * coK(), r.el, { push: 1 }); if (Math.random() < 0.3) burst(e.x, e.y, 2, r.col, 120); } if ((r.gap -= dt) <= 0) { r.gap = BAL17.rideGap; for (const vy of [-60, 60]) ps(P.x + 20, P.y + 10, 520, vy, 6, BAL17.rideShot * coK(), 4, { el: r.el, src: 'co' }); } }); if (Math.random() < 0.6) parts.push({ x: P.x - 20, y: P.y + 24, vx: -120, vy: rnd(-20, 20), life: 0.3, max: 0.3, col: r.col, r: 3 }); if (r.t <= 0) { G.ride = null; burst(P.x, P.y + 20, 16, r.col, 160); } }
+  const g = G.coGuard; if (g) { g.t -= dt; P.cx = P.x + 46; P.cy = P.y; const n0 = bullets.length; bullets = bullets.filter(b => !(b.x > P.x && Math.hypot(b.x - P.cx, b.y - P.cy) < BAL17.guardR)); g.n += n0 - bullets.length; if (g.t <= 0) { G.coGuard = null; const tg = G.boss && !G.boss.dead ? G.boss : coAutoTarget() && enemies.filter(e => !e.dead && e.x < W).sort((a, b) => b.hp - a.hp)[0]; const dmg = Math.min(BAL17.counterMax, BAL17.counter0 + BAL17.counterB * g.n) * (g.perfect ? BAL17.perfectK : 1) * coK();
+      if (tg) { fx2({ k: 'line', x: P.cx, y: P.cy, tx: tg.x, ty: tg.y, d: 0.35, col: g.col }); withSrc('co', () => hitEl(tg, dmg, g.el === 'heavy' ? null : g.el, { heavy: 1 })); if (g.perfect) tg.frozen = Math.max(tg.frozen || 0, BAL17.stun); burst(tg.x, tg.y, 20, g.col, 220); float((g.perfect ? '완벽 반격 ' : '반격 ') + Math.round(dmg), tg.x, tg.y - 50, g.col); } G.shake = 0.35; } } }
+{ const a = updateBuddy; updateBuddy = function (dt) { a(dt); co17Upd(dt); }; }
+function drawCo17() { const a = G.coAim; if (a) { ctx.save(); ctx.strokeStyle = coTy(P.co)[3]; ctx.lineWidth = 2.5; ctx.setLineDash([6, 5]); ctx.lineDashOffset = -G.time * 30; ctx.beginPath(); ctx.arc(a.x, a.y, BAL17.cmdR, 0, TAU); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 0.15; ctx.fillStyle = coTy(P.co)[3]; ctx.fill(); ctx.restore(); }
+  const z = G.coZone; if (z) { const u = z.t / BAL17.cmdDur, al = Math.min(1, (1 - u) * 3); ctx.save(); ctx.globalAlpha = 0.25 * al; ctx.fillStyle = z.col; ctx.beginPath(); ctx.arc(z.x, z.y, BAL17.cmdR, 0, TAU); ctx.fill(); ctx.globalAlpha = al; ctx.strokeStyle = z.col; ctx.lineWidth = 3; ctx.stroke(); ctx.globalCompositeOperation = 'lighter'; ctx.lineWidth = 2;
+    for (let i = 0; i < 10; i++) { const px = z.x + Math.sin(i * 7.3 + z.t * 3) * BAL17.cmdR * 0.85, py = z.y - BAL17.cmdR + ((z.t * 420 + i * 37) % (BAL17.cmdR * 2)); ctx.beginPath(); ctx.moveTo(px - 6, py - 22); ctx.lineTo(px, py); ctx.stroke(); } ctx.restore(); }
+  const g = G.coGuard; if (g) { ctx.save(); ctx.strokeStyle = g.col; ctx.lineWidth = g.perfect ? 6 : 4; ctx.globalAlpha = 0.85; ctx.beginPath(); ctx.arc(P.cx - 20, P.cy, BAL17.guardR, -1.1, 1.1); ctx.stroke(); ctx.globalAlpha = 0.15; ctx.fillStyle = g.col; ctx.fill(); ctx.restore(); text('막는 중 ' + g.n, P.cx, P.cy - BAL17.guardR + 4, 10, g.col, 'center'); }
+  if (G.ride) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; glow('gold', P.x, P.y + 14, 46, 0.35); ctx.restore(); text(G.ride.name + ' ' + Math.ceil(G.ride.t), P.x, P.y - 52, 10, G.ride.col, 'center'); } }
+{ const a = drawWpFx; drawWpFx = function () { drawCo17(); a(); }; }
+{ const a = skillUi; skillUi = function (dt) { a(dt); const b = $('padCo'); if (P.co < 0) return; const ty = coTy(P.co)[0], gv = Math.min(100, P.coG || 0); b.style.setProperty('--cd', ((100 - gv) / 100).toFixed(3)); b.classList.toggle('cool', gv < 100); b.querySelector('em').textContent = gv < 100 ? Math.floor(gv) + '%' : ''; $('coTag').textContent = COTAG[ty]; $('coLbl').textContent = coTy(P.co)[1];
+  b.classList.toggle('tele', ty === 'guard' && gv >= 100 && !!G.tele); }; }
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],
