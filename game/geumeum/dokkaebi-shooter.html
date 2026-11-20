@@ -459,6 +459,8 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
 #ovD .d1-segs{margin:0}#ovD .d1-sub{font-size:max(13px,1.4cqw)}
 #ovD .d-floors{top:4.6cqw;bottom:10.4cqw}#ovD .d-floors li,#ovD .d-floors button{line-height:1}#ovD .d-floors button{padding:.15cqw .4cqw}#ovD .d1-medal{margin:0}#ovD .d-co{margin-top:0;padding:.35cqw 1.2cqw}#ovD .d-co img{width:3.8cqw;height:3.8cqw}
 #ovD .d1-scroll .d-go{position:static;flex:none;width:100%;height:max(46px,7.4cqw);margin-top:auto;padding-top:.8cqw;font-size:max(20px,2.8cqw)}
+/* 합체 필살기: 부적 버튼 금테 */
+.tb-bomb.combo{box-shadow:0 0 0 .35cqw #ffd76a,0 0 2cqw rgba(255,215,106,.9);animation:cbpulse .8s ease-in-out infinite alternate}@keyframes cbpulse{from{filter:brightness(1)}to{filter:brightness(1.35)}}
 /* 그믐의 맹세(기획 8의 3) */
 .d1-row{display:flex;align-items:center;gap:1cqw;flex-wrap:wrap}#ovD .oath-chip{background:#3a2412;color:#ffe9a0;border-color:#3a2412}#ovD .oath-chip.on{background:#7a3fa0;border-color:#7a3fa0;color:#fff}
 #ovOath{background:rgba(5,6,14,.55);isolation:isolate;padding:5.6cqw 13cqw 4.2cqw;color:#3a2412;z-index:7;gap:.7cqw}
@@ -499,7 +501,7 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
 .books b{flex:1;border-radius:.2cqw .2cqw 0 0;background:#b8322a;height:80%}.books b:nth-child(2){background:#2a5aa8;height:95%}.books b:nth-child(3){background:#e8b84a;height:70%}.books b:nth-child(4){background:#2f6e4a;height:88%}.books b:nth-child(5){background:#7a3fa0;height:76%}
 #ovDex{background:rgba(5,6,14,.55);isolation:isolate;padding:6.2cqw 11cqw 4.6cqw;color:#3a2412;z-index:7}
 #ovDex::before{content:'';position:absolute;inset:4.4cqw 8.6cqw 3cqw;background:linear-gradient(180deg,#f7ecd2,#ecdcb6);border-radius:.3cqw;z-index:-1;box-shadow:0 1cqw 3cqw rgba(0,0,0,.55),-1.2cqw 0 0 -.1cqw #6a4020,1.2cqw 0 0 -.1cqw #6a4020}
-#ovDex .shop-head>b{color:#7a1f17;flex:none;font-size:max(18px,2.4cqw)}#ovDex .shop-head>span{flex:1;color:#7a6040;font-size:max(13px,1.35cqw)}
+#ovDex .shop-head{flex-wrap:wrap;row-gap:.5cqw}#ovDex .shop-head>b{color:#7a1f17;flex:none;font-size:max(18px,2.4cqw)}#ovDex .shop-head>span{flex:1;color:#7a6040;font-size:max(13px,1.35cqw);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#ovDex #dexTabs{order:3;width:100%;display:flex;gap:.6cqw;flex-wrap:wrap}#ovDex #dexTabs button{white-space:nowrap}
 #ovDex .shop-tabs button{background:#efe0bd;color:#5a4030;border-color:#c9a86a;border-radius:2cqw}#ovDex .shop-tabs button[aria-selected="true"]{background:#7a1f17;color:#fff3d0;border-color:#7a1f17}#ovDex #btnDexX{background:#3a2412;color:#fff3d0;border-color:#3a2412}
 .dex-body{display:flex;gap:1.4cqw;width:100%;flex:1;min-height:0}
 .dex-grid{flex:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(max(78px,8.4cqw),1fr));gap:.7cqw;overflow-y:auto;align-content:start;padding:.2cqw .4cqw .6cqw .2cqw}
@@ -509,6 +511,7 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
 .dex-grid button small{font-family:var(--body);font-size:max(11px,1.1cqw);color:#7a6040}
 .dex-info{width:30cqw;flex:none;display:flex;flex-direction:column;gap:.5cqw;background:#f9f0da;border:.2cqw solid #c9a86a;border-radius:1cqw;padding:1cqw 1.4cqw;overflow-y:auto;text-align:left}
 .dex-info img{width:100%;height:13cqw;object-fit:contain;filter:drop-shadow(0 .4cqw .6cqw rgba(0,0,0,.35))}.dex-info.no img{filter:brightness(0) opacity(.35)}
+.dex-grid button.cb .pair{display:flex;height:max(52px,6cqw)}.dex-grid button.cb .pair img{height:100%;width:50%}.dex-info .pair.big{display:flex;height:13cqw}.dex-info .pair.big img{height:100%;width:50%}.dex-info .pair img.sh,.dex-grid button.cb.no .pair img:last-child{filter:brightness(0) opacity(.35)}
 .dex-info h3{margin:0;font-family:var(--display);font-weight:400;font-size:max(18px,2.2cqw);color:#7a1f17}.dex-info .fl{font-size:max(13px,1.3cqw);color:#7a6040}
 .dex-info p{margin:0;font-size:max(14px,1.4cqw);line-height:1.45;color:#3a2412}.dex-info p.lk{color:#a8946c}
 #ovMis li{background:#f9f0da;border-color:#c9a86a;color:#3a2412}#ovMis li.done{border-color:#b8322a;color:#7a1f17}#ovMis p{color:#7a6040}
@@ -1003,7 +1006,7 @@ const P = { ch: 0, x: 70, y: H / 2, power: 1, lives: 2, bombs: 2, inv: 0, charge
 let enemies = [], bullets = [], shots = [], items = [], parts = [];
 const keys = { left: 0, right: 0, up: 0, down: 0, fire: 0, charge: 0 };
 const touch = { id: null, x: 0, y: 0, down: false };
-let bombReq = false, swapReq = false;
+let bombReq = false, swapReq = false, comboReq = false, padHold = null;
 const SWAPCD = 6; // 교대 대기 시간(초)
 
 const LOGS = []; // 측정 기록(기획 2·5): 대장전 시간, 구간별 죽은 횟수·번 골드. 개발판에서는 콘솔에도 남긴다
@@ -1563,7 +1566,7 @@ function newGame(ch, tower) {
   P.power = Math.min(4, 1 + pp + (lv >= 10 ? 1 : 0)); if (lv >= 4) P.bombs++; if (lv >= 7) P.lives++; P.bombs += es.bombs; P.lives += es.lives;
   G.mainCh = ch; if (oathLv('nob')) P.bombs = 0; if (oathLv('solo')) P.co = -1;
   $('padSwap').classList.toggle('ui-off', P.co < 0); if (tower) { G.R.co = P.co; rogueStart(); }
-  if (SAVE.trial >= 0 && !SAVE.owned.includes(SAVE.trial) && (P.ch === SAVE.trial || P.co === SAVE.trial)) setTimeout(() => tipFlash('체험 중 · 이 판이 끝나면 다시 골드로 데려올 수 있습니다', 5), 600); $('ovTitle').hidden = true; $('ovD').hidden = true; $('ovOver').hidden = true; $('btnPause').textContent = '⏸'; stageEl.classList.add('playing'); prepVid(P.ch); if (P.co >= 0) prepVid(P.co);
+  if (SAVE.trial >= 0 && !SAVE.owned.includes(SAVE.trial) && (P.ch === SAVE.trial || P.co === SAVE.trial)) setTimeout(() => tipFlash('체험 중 · 이 판이 끝나면 다시 골드로 데려올 수 있습니다', 5), 600); $('ovTitle').hidden = true; $('ovD').hidden = true; $('ovOver').hidden = true; $('btnPause').textContent = '⏸'; stageEl.classList.add('playing'); prepVid(P.ch); if (P.co >= 0) prepVid(P.co); comboPrep(); G.freezeB = 0; G.absorb = 0; G.wall = 0; G.comboShown = null;
 }
 
 /* ---------- 효과 ---------- */
@@ -1850,7 +1853,8 @@ function updatePlayer(dt) {
   else if (P.charge > 0) { if (P.charge >= chgT()) { releaseCharge(); P.fcd = Math.max(P.fcd, 0.15); } P.charge = 0; } // 쏜 뒤 0.15초는 기본 공격을 쉬어 모으기 탄이 묻히지 않게
   // 폭탄
   if (G.arc || rb('b_bare')) bombReq = false;
-  if (bombReq && P.bombs > 0 && G.bombT <= 0) { tipDone('bomb'); G.bombUsed = true; P.bombs--; mis('bomb'); G.bombT = BD; G.bfx = 0; P.inv = Math.max(P.inv, BD + 1.2); G.flash = 0; G.cut = { t: 0 }; G.bombHit = false; sfx.bomb();
+  if (comboReq && comboOK()) { P.bombs -= FUN.comboCost - 1; bombReq = true; G.comboGo = comboOf(); } comboReq = false; // 합체: 부적 2개(아래에서 1개 더 씀)
+  if (bombReq && P.bombs > 0 && G.bombT <= 0) { tipDone('bomb'); G.bombUsed = true; P.bombs--; mis('bomb'); G.bombT = BD; G.bfx = 0; P.inv = Math.max(P.inv, BD + 1.2); G.flash = 0; G.cut = { t: 0 }; G.bombHit = false; sfx.bomb(); if (G.comboGo) { G.cut = { t: 0, vs: 1, combo: G.comboGo[0] }; comboStart(G.comboGo); G.comboGo = null; }
     if (rb('b_return') && !G.R.rbUsed) { G.R.rbUsed = 1; G.pend.push({ t: G.st + 10, f: () => { P.bombs++; float('부적이 돌아왔다', P.x, P.y - 30, '#ffe9a0'); sfx.item(); } }); }
     if (rb('u_galaxy') && !G.R.gal) { G.R.gal = 1; P.lives++; float('목숨 +1', P.x, P.y - 44, '#bfe8ff'); } }
   bombReq = false;
@@ -1870,7 +1874,7 @@ function update(dt) {
   if (G.offer || G.res) return;
   if (G.talk) { G.talk.t += dt; if (G.talk.t > 3.4) advanceTalk(); return; }
   // 무대 진행
-  G.st += dt; tutTick(dt); if (G.chainT > 0 && (G.chainT -= dt) <= 0) G.chain = 0; if (G.gzT > 0) G.gzT -= dt;
+  G.st += dt; tutTick(dt); comboUpd(dt); if (G.chainT > 0 && (G.chainT -= dt) <= 0) G.chain = 0; if (G.gzT > 0) G.gzT -= dt;
   for (let i = G.pend.length - 1; i >= 0; i--) if (G.pend[i].t <= G.st) G.pend.splice(i, 1)[0].f();
   if (G.gate) { if (G.gate.dead || G.gate.gone) { G.gate = null; G.wait = 2.2; } }
   else if ((G.wait -= dt) <= 0) runStep();
@@ -1928,7 +1932,7 @@ function update(dt) {
   G.wkHit = false;
   // 적 탄
   for (const b of bullets) {
-    const bs = G.slow > 0 ? 0.4 : 1; if (b.up) { b.up(b, dt * bs); if (b.dead) continue; } b.x += b.vx * dt * bs; b.y += b.vy * dt * bs; if (G.cur > 0) b.y += G.curV * 0.8 * Math.min(1, G.cur) * dt;
+    const bs = G.freezeB > 0 ? 0 : G.slow > 0 ? 0.4 : 1; if (b.up) { b.up(b, dt * bs); if (b.dead) continue; } b.x += b.vx * dt * bs; b.y += b.vy * dt * bs; if (G.cur > 0) b.y += G.curV * 0.8 * Math.min(1, G.cur) * dt;
     if (b.x < -12 || b.x > W + 14 || b.y < -12 || b.y > H + 12) b.dead = true;
     else if (P.deadT <= 0) { if (meIn(b)) { b.dead = true; playerHit(); } else if (!b.gz && meIn(b, HIT.graze)) { b.gz = 1; P.graze = 0.25; grazeGain(b); if (rb('b_graze') && P.charge > 0) P.charge += FUN.grazeChg; } /* 축복 「아슬아슬」이면 기가 두 배 */ } // 스치면 흰 점이 잠깐 커진다
   }
@@ -2350,9 +2354,9 @@ function prepVid(ch) { // 필요한 캐릭터의 컷인 영상만 불러와 미�
   v.load(); VID[c.cutv] = v;
   try { const pr = v.play(); if (pr && pr.then) pr.then(() => { if (!(G.cut && G.cut.vs)) { v.pause(); v.currentTime = 0; } }).catch(() => {}); } catch (_) {}
 }
-const cutEnd = () => { const v = VID[look(P.ch).cutv]; return v && v.readyState >= 2 ? 1.8 : CUT_END; }; // 영상 컷인은 조금 더 길게
+const cutEnd = () => { if (G.cut && G.cut.combo) return CUT_END + 0.3; const v = VID[look(P.ch).cutv]; return v && v.readyState >= 2 ? 1.8 : CUT_END; }; // 영상 컷인은 조금 더 길게
 function drawCut() { // 필살기: 기를 모은 뒤 캐릭터가 화면 가득 등장한다
-  const c = G.cut; if (!c || G.mode !== 'play') return;
+  const c = G.cut; if (!c || G.mode !== 'play') return; if (c.combo) return drawComboCut(c);
   const t = c.t, C = CH[P.ch], LK = look(P.ch);
   if (t < 0.25) { // 1) 캐릭터 자리에서 빛이 모였다가 터진다
     const q = t / 0.25; ctx.save(); ctx.globalCompositeOperation = 'lighter';
@@ -2427,6 +2431,7 @@ function drawHUD() {
   { const k = (P.shard || 0) / FUN.shardNeed, cx = 88 + Math.max(P.bombs, 1) * 12 + 6, cy = H - 13; ctx.strokeStyle = 'rgba(255,255,255,.2)'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(cx, cy, 5, 0, TAU); ctx.stroke(); if (k > 0) { ctx.strokeStyle = '#ffe9a0'; ctx.beginPath(); ctx.arc(cx, cy, 5, -Math.PI / 2, -Math.PI / 2 + TAU * k); ctx.stroke(); } } // 부적 조각
   if ((G.chain || 0) >= 2 && !G.arc && !G.talk) { const c = G.chain, m = chainMul(), sz = Math.min(26, 14 + c * 0.12), col = m >= 3 ? '#ff6a5a' : m >= 1.5 ? '#ffd76a' : '#ffffff', a = Math.min(1, (G.chainT || 0) / 0.5 + 0.35);
     ctx.globalAlpha = a; text('連 ' + c, W / 2, 72, sz, col, 'center'); if (m > 1) text('×' + m, W / 2, 72 + sz * 0.8, 11, col, 'center'); ctx.globalAlpha = 1; } // 연속 처치
+  { const ok = comboOK(); if (ok !== G.comboShown) { G.comboShown = ok; $('padBomb').classList.toggle('combo', ok); } if (ok) text('합체 준비 · 부적 길게 (V)', 88, H - 26, 9, '#ffe9a0'); }
   text('힘', 164, H - 8, 12, '#e8b84a');
   for (let i = 0; i < 4; i++) { ctx.fillStyle = i < P.power ? '#e2503d' : 'rgba(255,255,255,.18)'; ctx.fillRect(180 + i * 12, H - 18, 9, 9); }
   // 층 진행 표시: 문지기 5 · 수문장 2 · 대장
@@ -2447,7 +2452,7 @@ function draw() {
   if (G.shake > 0) ctx.translate(rnd(-1, 1) * G.shake * 8, rnd(-1, 1) * G.shake * 8);
   drawBG();
   for (const it of items) drawItem(it);
-  for (const e of enemies) drawEnemy(e); if (G.boss) drawWeak(G.boss);
+  for (const e of enemies) drawEnemy(e); if (G.boss) drawWeak(G.boss); drawComboFx();
   for (const s of shots) { if (s.chg !== undefined && !s.thin) { const ox = s.x, oy = s.y, ga = ctx.globalAlpha; [0.15, 0.3, 0.5].forEach((a, i) => { const k = (3 - i) * 0.016; s.x = ox - s.vx * k; s.y = oy - s.vy * k; ctx.globalAlpha = ga * a; drawShot(s); }); s.x = ox; s.y = oy; ctx.globalAlpha = ga; } drawShot(s); } // 모으기 탄 꼬리
   if (G.mode === 'play' && P.deadT <= 0) {
     for (const f of P.fam) { glow('blue', f.x, f.y, 16, 0.6); if (!spr('wisp', f.x, f.y + Math.sin(G.time * 8) * 1.5, 15, { flip: 1 })) { ctx.fillStyle = '#bfeaff'; circ(f.x, f.y, 4.5); } }
@@ -2524,7 +2529,7 @@ addEventListener('keydown', e => {
   if (e.repeat) return;
   if (k === 'fire') G.tap = true;
   if (G.talk && (k === 'fire' || e.code === 'Enter')) { advanceTalk(); return; }
-  if (e.code === 'KeyC' || e.code === 'KeyL') bombReq = true;
+  if (e.code === 'KeyC' || e.code === 'KeyL') bombReq = true; if (e.code === 'KeyV' || e.code === 'Semicolon') comboReq = true;
   if (e.code === 'KeyV' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') swapReq = true;
   if (e.code === 'KeyP' || e.code === 'Escape') togglePause();
   if (!$('ovEnd').hidden) { if (e.code === 'Enter' || e.code === 'Space' || e.code === 'KeyZ') nextEnding(); return; }
@@ -2554,7 +2559,8 @@ const pc = $('padCharge');
 pc.addEventListener('pointerdown', e => { keys.charge = 1; touch.auto = true; pc.classList.add('on'); e.preventDefault(); });
 for (const ev of ['pointerup', 'pointercancel', 'pointerleave']) pc.addEventListener(ev, () => { keys.charge = 0; pc.classList.remove('on'); });
 pc.addEventListener('contextmenu', e => e.preventDefault());
-$('padBomb').addEventListener('pointerdown', e => { bombReq = true; e.preventDefault(); });
+$('padBomb').addEventListener('pointerdown', e => { e.preventDefault(); if (comboOK()) { clearTimeout(padHold); padHold = setTimeout(() => { padHold = null; comboReq = true; }, FUN.comboHold * 1000); } else bombReq = true; }); // 합체가 되면 길게 눌러 합체, 짧게 누르면 평소 필살기
+for (const ev of ['pointerup', 'pointercancel', 'pointerleave']) $('padBomb').addEventListener(ev, () => { if (padHold) { clearTimeout(padHold); padHold = null; bombReq = true; } });
 $('padSwap').addEventListener('pointerdown', e => { swapReq = true; touch.auto = true; e.preventDefault(); });
 const INFO = [
   { role: '부채 도사', st: [60, 60, 100], desc: '부채 바람이 넓게 퍼져 잔챙이를 쓸어 냅니다. 모으기는 적을 뚫는 회오리바람, 필살기는 월광풍.' },
@@ -2667,6 +2673,7 @@ const FUN = {
   goldChainCap: 1.5, // 골드는 점수 배수의 절반만, 최대 ×1.5 (경제 균형)
   grade: [['S', 1.6], ['A', 1.2], ['B', 0.8]], gradeSMoon: 5, // 점수 등급: 이 구간 기본 처치 점수 합 대비 배율(임시, 측정으로 맞춤). S 처음이면 달조각 5
   hstopMini: 0.03, hstopMid: 0.07, slowmoBoss: 0.6, slowmoK: 0.3, coinStepSec: 0.5, // 손맛 덤: 문지기·수문장 처치 멈춤(초), 대장 마지막 일격 느린 화면(초·속도), 엽전 연속 줍기 간격
+  comboHold: 0.45, comboCost: 2, comboAllMoon: 30, comboFreeze: 4, comboArrows: 40, comboAbsorb: 3, comboWall: 6, // 합체 필살기: 길게 누르기(초), 부적 수, 모두 찾으면 달조각
   weakHpK: 0.18, weakR: 13, weakToBoss: 0.5, weakBreakK: 0.08, weakSlow: 0.82, weakPts: 5000, weakCoins: 12, // 대장 약점: 체력(대장 체력 비), 판정 반지름, 약점 피해 중 대장에 들어가는 몫, 부수면 대장 체력 추가 감소, 패턴 속도
  hardRoad: { hp: 1.3, spd: 1.15, gold: 2, score: 1.5 },
 };
@@ -2694,6 +2701,49 @@ function drawWeak(e) { if (e.type !== 'boss' || !e.weak || e.weak.dead || e.inv)
   ctx.globalCompositeOperation = 'lighter'; glow('gold', p.x, p.y, 26 * pu, 0.75); ctx.globalCompositeOperation = 'source-over';
   ctx.fillStyle = e.weak.fl > 0 ? '#ffffff' : '#fff3b0'; circ(p.x, p.y, 5 * pu); ctx.strokeStyle = 'rgba(255,233,160,.35)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(p.x, p.y, p.r + 3, 0, TAU); ctx.stroke();
   ctx.strokeStyle = '#ff6a5a'; ctx.beginPath(); ctx.arc(p.x, p.y, p.r + 3, -Math.PI / 2, -Math.PI / 2 + TAU * k); ctx.stroke(); if (e.weak.fl > 0) e.weak.fl -= 1 / 60; }
+/* 동료 합체 필살기(기획 12의 3): 조종 캐릭터와 동료가 짝이 맞고 부적이 2개 이상이면, 부적 버튼을 길게 눌러 합동 기술 */
+const COMBOS = [ // [id, 두 사람, 이름, 효과 설명]
+  ['snow', [0, 7], '눈보라 부채', '화면 탄을 4초 동안 얼리고, 큰 회오리 셋이 화면을 가로지름'],
+  ['fox', [1, 5], '여우불 화살비', '쫓아가는 화살 40발, 맞은 적은 여우불로 계속 탐'],
+  ['river', [2, 8], '은하수 승천', '물기둥 다섯 줄이 솟아 지나간 자리 탄을 지우고 큰 피해'],
+  ['feast', [3, 12], '도깨비 잔치', '화면의 모든 탄을 엽전으로 바꾸고 금 방망이가 내려침'],
+  ['forge', [4, 10], '쇠 먹는 대장간', '3초 동안 다가오는 탄을 빨아들인 뒤, 그 수만큼 칼을 되쏨'],
+  ['guard', [6, 9], '수호진', '6초 동안 앞에 물결 방벽(탄 막음) + 장승 기둥 셋이 내려침'],
+];
+const comboOf = () => P.co < 0 ? null : COMBOS.find(c => c[1].includes(P.ch) && c[1].includes(P.co)) || null;
+const comboOK = () => G.mode === 'play' && !G.arc && !rb('b_bare') && G.bombT <= 0 && P.bombs >= FUN.comboCost && !!comboOf();
+function needImg(n) { if (n && !IMG[n]) { const im = new Image(); im.src = 'assets/' + n + '.webp'; IMG[n] = im; } }
+function comboPrep() { const c = comboOf(); if (c) for (const k of c[1]) needImg(look(k).cut); }
+function comboStart(c) { const [id, , name] = c; SAVE.combos = SAVE.combos || {};
+  if (!SAVE.combos[id]) { SAVE.combos[id] = 1; G.pend.push({ t: G.st + 0.05, f: () => banner('합체 기술 발견!', name, 2.2) }); if (COMBOS.every(x => SAVE.combos[x[0]])) addMoon(FUN.comboAllMoon, '합체 기술 모두 발견'); saveGame(); }
+  const at = (d, f) => G.pend.push({ t: G.st + d, f });
+  if (id === 'snow') at(0.1, () => { G.freezeB = FUN.comboFreeze; for (const y of [GY * 0.25, GY * 0.5, GY * 0.75]) ps(P.x + 20, y, 240, 0, 42, 4, 10, { pierce: 1, cd: 0.15, hit: new Map(), chg: 0 }); });
+  else if (id === 'fox') { for (let i = 0; i < FUN.comboArrows; i++) at(0.1 + i * 0.035, () => { const t = nearest(P.x, P.y), a = t ? Math.atan2(t.y - P.y, t.x - P.x) + rnd(-0.25, 0.25) : rnd(-0.5, 0.5); ps(P.x + 14, P.y, Math.cos(a) * 720, Math.sin(a) * 720, 4, 2.2, 1, { foxfire: 1 }); }); at(0.2, () => { for (const e of enemies) if (e.x < W) e.burn = 4; }); }
+  else if (id === 'river') { for (let i = 0; i < 5; i++) at(0.1 + i * 0.16, () => { const cx = W * (0.3 + i * 0.15); bullets = bullets.filter(b => Math.abs(b.x - cx) > 30); for (const e of enemies) if (Math.abs(e.x - cx) < 40 + e.r) damage(e, 22); for (let y = 10; y < GY; y += 26) burst(cx + rnd(-8, 8), y, 3, y % 52 ? '#bfe8ff' : '#ffffff', 160); ring(cx, GY - 20, 60, '#9fd8ff', 0.4); G.shake = Math.max(G.shake, 0.3); }); }
+  else if (id === 'feast') at(0.1, () => { for (const b of bullets) items.push({ x: b.x, y: b.y, type: 'C', t: 0, auto: true, gk: chainGold() }); bullets = []; for (const e of enemies) if (e.x < W + 10) { damage(e, 40); fireball(e.x, e.y, 40); } confetti(); G.shake = 0.8; G.flash = 0.4; });
+  else if (id === 'forge') { at(0.1, () => { G.absorb = FUN.comboAbsorb; G.absorbN = 0; }); at(0.1 + FUN.comboAbsorb, () => { const n = Math.min(60, 8 + (G.absorbN || 0)); for (let i = 0; i < n; i++) { const t = enemies.filter(e => !e.dead && e.x < W)[i % Math.max(1, enemies.length)], a = t ? Math.atan2(t.y - P.y, t.x - P.x) + rnd(-0.12, 0.12) : rnd(-0.6, 0.6); ps(P.x + 14, P.y, Math.cos(a) * 640, Math.sin(a) * 640, 5, 3, 4); } float('칼 ' + n + '자루!', P.x, P.y - 34, '#ffb060'); G.absorb = 0; }); }
+  else if (id === 'guard') { at(0.1, () => { G.wall = FUN.comboWall; }); for (let i = 0; i < 3; i++) at(0.4 + i * 0.35, () => { const t = G.boss || nearest(P.x, P.y) || { x: W * 0.75, y: GY / 2 }; explode(t.x + rnd(-30, 30), t.y + rnd(-20, 20), 70, 30); burst(t.x, 0, 20, '#7be08a', 260); }); }
+}
+function comboUpd(dt) { // 합체 기술의 이어지는 효과
+  if (G.freezeB > 0) G.freezeB -= dt;
+  if (G.absorb > 0) { G.absorb -= dt; const n0 = bullets.length; bullets = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) > 170); G.absorbN = (G.absorbN || 0) + n0 - bullets.length; }
+  if (G.wall > 0) { G.wall -= dt; bullets = bullets.filter(b => !(b.x > P.x + 26 && b.x < P.x + 62 && Math.abs(b.y - P.y) < 80)); }
+}
+function drawComboFx() { if (G.mode !== 'play') return;
+  if (G.absorb > 0) { ctx.strokeStyle = 'rgba(255,170,90,' + (0.4 + 0.3 * Math.sin(G.time * 20)) + ')'; ctx.lineWidth = 2; for (let k = 0; k < 3; k++) { ctx.beginPath(); ctx.arc(P.x, P.y, 60 + k * 45 + (G.time * 120 % 45), 0, TAU); ctx.stroke(); } }
+  if (G.wall > 0) { ctx.strokeStyle = 'rgba(160,230,255,.75)'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(P.x - 10, P.y, 70, -0.9, 0.9); ctx.stroke(); ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.beginPath(); ctx.arc(P.x - 4, P.y, 64, -0.8 + Math.sin(G.time * 6) * 0.05, 0.8); ctx.stroke(); }
+  if (G.freezeB > 0) { ctx.fillStyle = 'rgba(200,235,255,.08)'; ctx.fillRect(0, 0, W, H); } }
+function drawComboCut(c) { // 두 사람 컷인을 대각선으로 나눠 동시에
+  const t = c.t, cb = COMBOS.find(x => x[0] === c.combo), [a, b] = cb[1], u = Math.max(0, t - 0.1), inK = 1 - Math.pow(1 - Math.min(1, u / 0.25), 3), E = CUT_END + 0.3;
+  ctx.save(); const bg = ctx.createLinearGradient(0, 0, W, H); bg.addColorStop(0, '#05060e'); bg.addColorStop(1, '#1a1030'); ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+  const half = (ch, left) => { ctx.save(); ctx.beginPath(); if (left) { ctx.moveTo(0, 0); ctx.lineTo(W * 0.62, 0); ctx.lineTo(W * 0.38, H); ctx.lineTo(0, H); } else { ctx.moveTo(W * 0.62, 0); ctx.lineTo(W, 0); ctx.lineTo(W, H); ctx.lineTo(W * 0.38, H); } ctx.closePath(); ctx.clip();
+    ctx.globalCompositeOperation = 'lighter'; glow(CH[ch].glow || 'gold', left ? W * 0.28 : W * 0.72, H * 0.5, 200, 0.5); ctx.globalCompositeOperation = 'source-over';
+    const L = look(ch), ph = H * 1.3, px = left ? -120 + inK * 300 : W + 120 - inK * 300; spr(L.cut, px, H * 0.62, ph, { flip: left ? CH[ch].flip : !CH[ch].flip }); ctx.restore(); };
+  half(a, true); half(b, false);
+  ctx.strokeStyle = '#fff3b0'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(W * 0.62, 0); ctx.lineTo(W * 0.38, H); ctx.stroke();
+  ctx.fillStyle = 'rgba(0,0,0,.65)'; ctx.fillRect(0, H * 0.74, W, 40); text('합체 · ' + CH[a].name + ' + ' + CH[b].name, W / 2, H * 0.74 + 14, 11, '#e8b84a', 'center'); text(cb[2], W / 2, H * 0.74 + 34, 22, '#ffffff', 'center');
+  if (t > E - 0.12) { ctx.fillStyle = 'rgba(255,255,255,' + Math.min(1, (t - (E - 0.12)) / 0.12) + ')'; ctx.fillRect(0, 0, W, H); }
+  ctx.restore(); }
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],
@@ -2916,7 +2966,11 @@ function openDex() { if (!uiOpen('dex')) return toast('1-1을 깨면 책방이 �
 function renderDex() {
   const nx = DEX_PRIZE.find(x => x[0] > (SAVE.dexPaid || 0));
   $('dexSum').textContent = '등록 ' + dexSeen() + ' / ' + dexAll() + (nx ? ' · ' + nx[0] + '종에 달조각 ' + nx[1] : ' · 모두 받음');
-  $('dexTabs').innerHTML = DEX_KIND.map(([k, nm]) => '<button type="button" data-k="' + k + '" aria-selected="' + (k === dexTab) + '">' + nm + ' ' + DEX[k].filter(d => dexN(d[0])).length + '/' + DEX[k].length + '</button>').join('');
+  $('dexTabs').innerHTML = DEX_KIND.map(([k, nm]) => '<button type="button" data-k="' + k + '" aria-selected="' + (k === dexTab) + '">' + nm + ' ' + DEX[k].filter(d => dexN(d[0])).length + '/' + DEX[k].length + '</button>').join('') + '<button type="button" data-k="combo" aria-selected="' + (dexTab === 'combo') + '">합체 기술 ' + COMBOS.filter(c => (SAVE.combos || {})[c[0]]).length + '/' + COMBOS.length + '</button>';
+  if (dexTab === 'combo') { const got = SAVE.combos || {}; if (!COMBOS.some(c => c[0] === dexSel)) dexSel = COMBOS[0][0];
+    $('dexGrid').innerHTML = COMBOS.map(c => '<button type="button" data-d="' + c[0] + '" class="cb' + (got[c[0]] ? '' : ' no') + (c[0] === dexSel ? ' on' : '') + '"><span class="pair"><img src="assets/' + look(c[1][0]).img + '.webp" alt=""><img src="assets/' + look(c[1][1]).img + '.webp" alt=""></span><span>' + (got[c[0]] ? c[2] : '???') + '</span></button>').join('');
+    const c = COMBOS.find(x => x[0] === dexSel), g = got[c[0]], el = $('dexInfo'); el.className = 'dex-info';
+    el.innerHTML = '<div class="pair big"><img src="assets/' + look(c[1][0]).img + '.webp" alt=""' + (g ? '' : ' class="sh"') + '><img src="assets/' + look(c[1][1]).img + '.webp" alt=""' + (g ? '' : ' class="sh"') + '></div><h3>' + (g ? c[2] : '???') + '</h3><span class="fl">' + (g ? CH[c[1][0]].name + ' + ' + CH[c[1][1]].name : CH[c[1][0]].name + ' + ???') + '</span><p>' + (g ? c[3] : '두 사람이 함께 있고 부적이 2개 이상일 때 부적 버튼을 길게 누르면 쓸 수 있습니다') + '</p><p class="lk">모두 찾으면 달조각 ' + FUN.comboAllMoon + '</p>'; return; }
   const L = DEX[dexTab]; if (!L.some(d => d[0] === dexSel)) dexSel = (L.find(d => dexN(d[0])) || L[0])[0];
   $('dexGrid').innerHTML = L.map(d => { const n = dexN(d[0]); return '<button type="button" data-d="' + d[0] + '" class="' + (n ? '' : 'no') + (d[0] === dexSel ? ' on' : '') + '"><img src="assets/' + dexImg(dexTab, d) + '.webp" alt="" loading="lazy"><span>' + (n ? d[1] : '???') + '</span><small>' + (d[2] < 0 ? '여러 층' : (d[2] + 1) + '층') + '</small></button>'; }).join('');
   const d = L.find(x => x[0] === dexSel), n = dexN(d[0]), lv = DEX_LV[dexTab], el = $('dexInfo');
@@ -3287,7 +3341,7 @@ $('ovTitle').addEventListener('click', ev => { const b = ev.target.closest('.bld
 $('stGo').addEventListener('click', () => showD(1)); $('stTower').addEventListener('click', openTop);
 $('eqCard').addEventListener('click', () => openEq());
 const HERO_TALK = ['오늘은 몇 층까지 갈까?', '달을 꼭 되찾을 거야!', '장터가 북적이네.', '대장간에 들러 볼까?', '구름 타고 출발!'];
-$('stHero').addEventListener('click', () => { const b = $('stBubble'); b.textContent = HERO_TALK[Math.random() * HERO_TALK.length | 0]; b.hidden = false; clearTimeout(b._t); b._t = setTimeout(() => { b.hidden = true; }, 2200); });
+$('stHero').addEventListener('click', () => { const b = $('stBubble'), hc = COMBOS.filter(c => c[1].includes(sel) && !(SAVE.combos || {})[c[0]] && uiOpen('co')); b.textContent = hc.length && Math.random() < 0.4 ? CH[hc[0][1].find(k => k !== sel)].name + '랑 같이 하면 재밌을 텐데…' : HERO_TALK[Math.random() * HERO_TALK.length | 0]; b.hidden = false; clearTimeout(b._t); b._t = setTimeout(() => { b.hidden = true; }, 2200); });
 function renderStreet() {
   const k = (G.pick || 0) * 3 + (G.pp || 0), S = STAGES[G.pick || 0];
   $('stSign').innerHTML = (G.pick + 1) + '-' + (G.pp + 1) + ' ' + S.place + ' ' + (segOpen(k) ? starStr(SAVE.stars[k + HK()] || 0) : '🔒');
@@ -3341,7 +3395,7 @@ function start() {
   if (window.ResizeObserver) new ResizeObserver(() => resize()).observe(cv); else addEventListener('resize', () => resize());
   requestAnimationFrame(frame);
 }
-window.__game = { showD, hideD, openMem, mem, openArcade, get shots() { return shots; }, releaseCharge: () => releaseCharge(), openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, weakPos, FUN, spawnLan, openOath, oathScore, openTop, rogueNext, rogueOffer, rogueTake, RSAVE, BOONS, get R() { return G.R; }, openDex, DEX, dexSeen, segMedals, medalCount, showResult, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
+window.__game = { showD, hideD, openMem, mem, openArcade, get shots() { return shots; }, releaseCharge: () => releaseCharge(), openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, weakPos, COMBOS, comboOK, FUN, spawnLan, openOath, oathScore, openTop, rogueNext, rogueOffer, rogueTake, RSAVE, BOONS, get R() { return G.R; }, openDex, DEX, dexSeen, segMedals, medalCount, showResult, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
 if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start); else start();
 })();
 </script>
