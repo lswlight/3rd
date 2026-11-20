@@ -15,6 +15,8 @@ public class MainActivity extends BridgeActivity {
         // 필살기 컷인 영상이 버튼을 누르지 않아도 재생되도록 허용
         if (this.bridge != null && this.bridge.getWebView() != null) {
             this.bridge.getWebView().getSettings().setMediaPlaybackRequiresUserGesture(false);
+            // 휴대폰 「글자 크기」 설정이 게임 화면 글자를 키워 버튼이 겹치지 않도록 100%로 고정
+            this.bridge.getWebView().getSettings().setTextZoom(100);
         }
     }
 
