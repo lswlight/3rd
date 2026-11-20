@@ -459,6 +459,12 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
 #ovD .d1-segs{margin:0}#ovD .d1-sub{font-size:max(13px,1.4cqw)}
 #ovD .d-floors{top:4.6cqw;bottom:10.4cqw}#ovD .d-floors li,#ovD .d-floors button{line-height:1}#ovD .d-floors button{padding:.15cqw .4cqw}#ovD .d1-medal{margin:0}#ovD .d-co{margin-top:0;padding:.35cqw 1.2cqw}#ovD .d-co img{width:3.8cqw;height:3.8cqw}
 #ovD .d1-scroll .d-go{position:static;flex:none;width:100%;height:max(46px,7.4cqw);margin-top:auto;padding-top:.8cqw;font-size:max(20px,2.8cqw)}
+/* 갈림길 */
+.roadv{z-index:8;background:radial-gradient(ellipse at 50% 80%,rgba(40,30,20,.9),rgba(4,5,14,.97));gap:1.2cqw}.roadv h2{margin:0;font-size:max(24px,3.4cqw);color:var(--gold)}.roadv>p{margin:0;font-size:max(14px,1.6cqw);color:var(--muted)}
+.road-signs{display:flex;gap:4cqw;align-items:flex-end}
+.sign{position:relative;width:max(170px,24cqw);padding:1.6cqw 1.4cqw 1.4cqw;display:flex;flex-direction:column;gap:.6cqw;align-items:center;background:linear-gradient(180deg,#8a5a2c,#5a3418);border:.3cqw solid #3a2412;border-radius:.6cqw;color:#f3e9d2;box-shadow:0 1cqw 2cqw rgba(0,0,0,.5)}
+.sign b{font-family:var(--display);font-weight:400;font-size:max(22px,3cqw);padding:.2cqw 2.4cqw;background:radial-gradient(ellipse at center,rgba(0,0,0,.6) 0 50%,rgba(0,0,0,0) 74%)}.sign small{font-size:max(13px,1.35cqw);line-height:1.4;min-height:2.8em}
+.sign.easy{transform:rotate(-2deg)}.sign.hard{transform:rotate(2deg);border-color:#7a1f17}.sign.hard b{color:#ff9a8a}.sign:hover,.sign:focus-visible{filter:brightness(1.15)}
 /* 합체 필살기: 부적 버튼 금테 */
 .tb-bomb.combo{box-shadow:0 0 0 .35cqw #ffd76a,0 0 2cqw rgba(255,215,106,.9);animation:cbpulse .8s ease-in-out infinite alternate}@keyframes cbpulse{from{filter:brightness(1)}to{filter:brightness(1.35)}}
 /* 그믐의 맹세(기획 8의 3) */
@@ -677,6 +683,10 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
     <div class="overlay shop helpv" id="ovHelp" hidden>
       <div class="shop-head"><b>도움말</b><div class="help-head-btns"><button type="button" id="btnStoryAgain">이야기 다시 보기</button><button type="button" id="btnTutReset">안내 다시 보기</button><button type="button" id="btnHelpX">닫기</button></div></div>
       <div class="help help-body" id="helpBody"></div>
+    </div>
+    <div class="overlay roadv" id="ovRoad" hidden>
+      <h2>갈림길</h2><p>다음 구간으로 가는 길이 둘입니다</p>
+      <div class="road-signs"><button type="button" class="sign easy" id="btnRoadEasy"><b>편한 길</b><small>그대로 갑니다</small></button><button type="button" class="sign hard" id="btnRoadHard"><b>험한 길</b><small id="roadHardTxt"></small></button></div>
     </div>
     <div class="overlay shop" id="ovOath" hidden>
       <div class="shop-head"><b>그믐의 맹세</b><span id="oathSum"></span><button type="button" id="btnOathX">닫기</button></div>
@@ -998,7 +1008,7 @@ function mis(id, n = 1) {
   D.prog[id] = (D.prog[id] || 0) + n;
   if (D.prog[id] >= MISSIONS[id][1]) { D.paid[id] = 1; SAVE.gold += MISSIONS[id][2]; if (!D.moon && D.ids.every(i => D.paid[i])) { D.moon = 1; addMoon(10, '오늘의 임무 모두 완료'); } saveGame(); if (G.mode === 'play') { float('임무 완료 +' + MISSIONS[id][2], P.x + 40, P.y - 40, '#ffd76a'); sfx.life(); } }
 }
-function addGold(n) { n = Math.round(n * (G.goldx || 1) * Math.min(2.5, 1 + 0.5 * G.loop) * (1 + eqStat(P.ch).gold / 100)); mis('gold', n); SAVE.gold += n; G.goldRun = (G.goldRun || 0) + n; }
+function addGold(n) { n = Math.round(n * (G.hard ? FUN.hardRoad.gold : 1) * (G.goldx || 1) * Math.min(2.5, 1 + 0.5 * G.loop) * (1 + eqStat(P.ch).gold / 100)); mis('gold', n); SAVE.gold += n; G.goldRun = (G.goldRun || 0) + n; }
 const TEST_UNLOCK = true; // 시험용: 대장 동료를 사지 않아도 쓸 수 있게 연다. 시험이 끝나면 false 로 되돌린다.
 const owns = ch => TEST_UNLOCK || CH[ch].from === undefined || SAVE.owned.includes(ch) || SAVE.trial === ch;
 function useTrial() { if (SAVE.trial >= 0 && (P.ch === SAVE.trial || P.co === SAVE.trial)) SAVE.trial = -1; } // 체험은 한 판(한 구간)으로 끝난다
@@ -1552,8 +1562,8 @@ function advanceTalk() {
 }
 function startStage(i, part = 0) {
   G.part = part; G.pick = i; G.pp = part; G.deaths = 0; G.dark = 0; G.duskMsg = 0; G.totems = []; G.hz = []; G.wind = 0; G.cur = 0; G.segDone = false; G.res = false; G.arc = null; G.arcDone = false; G.boon = newBoon();
-  G.stage = i; G.rank = 1 + 0.05 * i + 0.28 * Math.min(G.loop, 4); if (i === 0 && part === 0 && !G.endless && G.diff === 0) { SAVE.tut.r11 = (SAVE.tut.r11 || 0) + 1; if (SAVE.tut.r11 === 1) G.rank *= 0.85; } /* 처음 1-1은 탄 속도 0.85배 */ G.boon.shield += eqStat(P.ch).shield; G.helped = false; G.bombUsed = false; if (!G.endless && lossN() >= 2) { G.boon.shield++; G.helped = true; G.boon.txt.push('탑의 기운 · 방패 1개'); setTimeout(() => tipFlash('탑의 기운 · 방패 1개를 받았습니다 (이 도움으로 깨면 별은 최대 둘)', 5), 3200); } G.pend = []; G.chain = 0; G.chainT = 0; G.chainMax = 0; G.grazeN = 0; G.segPts = 0; G.segBase = 0; G.hpx = 1 + 0.2 * oathLv('hp'); G.rank *= 1 + 0.15 * oathLv('bs'); G.oathRage = oathLv('rage'); G.coinx = 1; G.bombX = 0; G.si = 0; G.wait = 3; G.hitN = 0; G.mobN = 0; G.mobK = 0; G.rescued = false; G.lanDone = false; G.bossAt = 0; G.bossSec = 0; G.gate = null; G.nMini = part === 1 ? 3 : 0; G.nMid = part === 1 ? 1 : 0; G.n0 = G.nMini + G.nMid; G.bossCalled = false; G.st = 0; G.boss = null; G.clearT = 0;
-  if (!G.endless) banner(STAGES[i].name + ' ' + (part + 1) + '구간', STAGES[i].place + (G.diff ? ' · ' + DN[G.diff] : '') + (oathScore() ? ' · 맹세 ' + oathScore() + '점' : ''), 3);
+  G.stage = i; G.rank = 1 + 0.05 * i + 0.28 * Math.min(G.loop, 4); if (i === 0 && part === 0 && !G.endless && G.diff === 0) { SAVE.tut.r11 = (SAVE.tut.r11 || 0) + 1; if (SAVE.tut.r11 === 1) G.rank *= 0.85; } /* 처음 1-1은 탄 속도 0.85배 */ G.boon.shield += eqStat(P.ch).shield; G.helped = false; G.bombUsed = false; if (!G.endless && lossN() >= 2) { G.boon.shield++; G.helped = true; G.boon.txt.push('탑의 기운 · 방패 1개'); setTimeout(() => tipFlash('탑의 기운 · 방패 1개를 받았습니다 (이 도움으로 깨면 별은 최대 둘)', 5), 3200); } G.hard = !!G.roadNext; G.roadNext = false; G.lan2 = 0; G.pend = []; G.chain = 0; G.chainT = 0; G.chainMax = 0; G.grazeN = 0; G.segPts = 0; G.segBase = 0; G.hpx = 1 + 0.2 * oathLv('hp'); G.rank *= 1 + 0.15 * oathLv('bs'); G.oathRage = oathLv('rage'); if (G.hard) { G.hpx *= FUN.hardRoad.hp; G.rank *= FUN.hardRoad.spd; } G.coinx = 1; G.bombX = 0; G.si = 0; G.wait = 3; G.hitN = 0; G.mobN = 0; G.mobK = 0; G.rescued = false; G.lanDone = false; G.bossAt = 0; G.bossSec = 0; G.gate = null; G.nMini = part === 1 ? 3 : 0; G.nMid = part === 1 ? 1 : 0; G.n0 = G.nMini + G.nMid; G.bossCalled = false; G.st = 0; G.boss = null; G.clearT = 0;
+  if (!G.endless) banner(STAGES[i].name + ' ' + (part + 1) + '구간', STAGES[i].place + (G.diff ? ' · ' + DN[G.diff] : '') + (oathScore() ? ' · 맹세 ' + oathScore() + '점' : '') + (G.hard ? ' · 험한 길' : ''), 3);
 }
 const towerLoop = n => 0.4 + 0.12 * n; // 무한의 탑: 층이 오를수록 적 체력과 탄 속도가 오른다
 function newGame(ch, tower) {
@@ -2424,6 +2434,7 @@ function drawHUD() {
   if (G.mode !== 'title') text('골드 ' + SAVE.gold.toLocaleString() + (uiOpen('moon') ? '  달조각 ' + SAVE.moon.toLocaleString() : ''), 10, 49, 11, '#e8b84a');
   if (G.endless && G.R && G.mode === 'play') text('그믐의 탑 ' + G.R.tf + '층' + (G.R.var ? ' · ' + G.R.var[1] : ''), 10, 63, 12, '#d9c4ff');
   if (G.mode !== 'play' && G.mode !== 'over') return;
+  if (G.hard && G.mode === 'play') text('험한 길', W - 70, H - 8, 11, '#ff9a8a', 'center');
   if (G.boon && G.boon.shield > 0 && !G.arc) text('방패 ' + G.boon.shield, W / 2, H - 32, 10, '#ffe9a0', 'center');
   // 목숨·부적·힘
   for (let i = 0; i < Math.max(0, P.lives); i++) { if (spr(look(P.ch).img, 18 + i * 22, H - 14, 19, { flip: CH[P.ch].flip })) continue; ctx.fillStyle = CH[P.ch].robe; circ(16 + i * 16, H - 13, 6); ctx.fillStyle = '#f3d2b0'; circ(16 + i * 16, H - 15, 3); }
@@ -2675,11 +2686,11 @@ const FUN = {
   hstopMini: 0.03, hstopMid: 0.07, slowmoBoss: 0.6, slowmoK: 0.3, coinStepSec: 0.5, // 손맛 덤: 문지기·수문장 처치 멈춤(초), 대장 마지막 일격 느린 화면(초·속도), 엽전 연속 줍기 간격
   comboHold: 0.45, comboCost: 2, comboAllMoon: 30, comboFreeze: 4, comboArrows: 40, comboAbsorb: 3, comboWall: 6, // 합체 필살기: 길게 누르기(초), 부적 수, 모두 찾으면 달조각
   weakHpK: 0.18, weakR: 13, weakToBoss: 0.5, weakBreakK: 0.08, weakSlow: 0.82, weakPts: 5000, weakCoins: 12, // 대장 약점: 체력(대장 체력 비), 판정 반지름, 약점 피해 중 대장에 들어가는 몫, 부수면 대장 체력 추가 감소, 패턴 속도
- hardRoad: { hp: 1.3, spd: 1.15, gold: 2, score: 1.5 },
+  hardRoad: { hp: 1.3, spd: 1.15, gold: 2, score: 1.5, lanGap: 5 }, // 험한 길: 적 체력·탄 속도, 대신 골드·점수, 구출 대상 하나 더(몇 초 뒤)
 };
 const chainMul = () => { let m = 1; for (const [n, k] of FUN.chainStep) if ((G.chain || 0) >= n) m = k; return m; };
 const chainGold = () => Math.min(FUN.goldChainCap, 1 + (chainMul() - 1) / 2);
-function funScore(n) { const v = Math.round(n * chainMul()); addScore(v); G.segPts = (G.segPts || 0) + v; }
+function funScore(n) { const v = Math.round(n * chainMul() * (G.hard ? FUN.hardRoad.score : 1)); addScore(v); G.segPts = (G.segPts || 0) + v; }
 function chainHit(kill) { if (G.mode !== 'play' || G.arc) return; G.chainT = FUN.chainSec; if (kill) { G.chain = (G.chain || 0) + 1; if (G.chain > (G.chainMax || 0)) G.chainMax = G.chain; } }
 function chainBreak(half) { G.chain = half ? Math.floor((G.chain || 0) / 2) : 0; if (!half) G.chainT = 0; }
 function grazeGain(b) { // 스치기 보상
@@ -2744,6 +2755,12 @@ function drawComboCut(c) { // 두 사람 컷인을 대각선으로 나눠 동시
   ctx.fillStyle = 'rgba(0,0,0,.65)'; ctx.fillRect(0, H * 0.74, W, 40); text('합체 · ' + CH[a].name + ' + ' + CH[b].name, W / 2, H * 0.74 + 14, 11, '#e8b84a', 'center'); text(cb[2], W / 2, H * 0.74 + 34, 22, '#ffffff', 'center');
   if (t > E - 0.12) { ctx.fillStyle = 'rgba(255,255,255,' + Math.min(1, (t - (E - 0.12)) / 0.12) + ')'; ctx.fillRect(0, 0, W, H); }
   ctx.restore(); }
+/* 갈림길(기획 12의 5): 이미 깬 구간을 다시 할 때만, 1·2구간이 끝나면 다음 구간을 편한 길 / 험한 길 중에서 */
+const roadOK = () => !G.endless && G.part < 2 && !!SAVE.stars[G.stage * 3 + G.part + 1 + HK()];
+let roadThen = null;
+function openRoad(then) { roadThen = then; const h = FUN.hardRoad; $('roadHardTxt').textContent = '적 체력 +' + Math.round((h.hp - 1) * 100) + '% · 탄 +' + Math.round((h.spd - 1) * 100) + '% · 골드 ×' + h.gold + ' · 점수 ×' + h.score + ' · 갇힌 마을 사람 하나 더'; $('ovRoad').hidden = false; }
+function pickRoad(hard) { $('ovRoad').hidden = true; G.roadNext = hard; const f = roadThen; roadThen = null; if (f) f(); }
+$('btnRoadEasy').addEventListener('click', () => pickRoad(false)); $('btnRoadHard').addEventListener('click', () => pickRoad(true));
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],
@@ -3183,7 +3200,7 @@ const MEDALS = [['무피격', '한 번도 안 맞기 (방패에 막혀도 맞은
 const MEDAL_X = { boss: 1, mini: 1, mid: 1, illu: 1, lan: 1 }, MEDAL_BOSS_T = 90, MEDAL_PRIZE = [[30, 30], [60, 60], [90, 100]];
 const medalOf = k => (SAVE.medal || {})[k] || 0, medalBits = n => (n & 1) + (n >> 1 & 1) + (n >> 2 & 1);
 const medalCount = () => Object.values(SAVE.medal || {}).reduce((a, n) => a + medalBits(n), 0);
-function spawnLan() { if (G.mode !== 'play' || G.endless || G.arc) return; spawn('lan', W + 20, rnd(70, GY - 90)); float('초롱에 갇힌 마을 사람!', W - 120, 40, '#ffe9a0'); tone(880, 0.12, 'sine', 0.06); tone(1175, 0.16, 'sine', 0.06, 0, 0.12); }
+function spawnLan() { if (G.mode !== 'play' || G.endless || G.arc) return; if (G.hard && !G.lan2) { G.lan2 = 1; G.pend.push({ t: G.st + FUN.hardRoad.lanGap, f: spawnLan }); } spawn('lan', W + 20, rnd(70, GY - 90)); float('초롱에 갇힌 마을 사람!', W - 120, 40, '#ffe9a0'); tone(880, 0.12, 'sine', 0.06); tone(1175, 0.16, 'sine', 0.06, 0, 0.12); }
 function segMedals() { // 이번 구간에서 딴 메달(비트)
   let m = 0; if (!G.hitN && !G.deaths) m |= 1;
   if (G.mobN >= 5 ? G.mobK >= G.mobN * 0.9 : G.part === 2 && G.bossSec > 0 && G.bossSec <= MEDAL_BOSS_T) m |= 2;
@@ -3205,6 +3222,7 @@ function showResult() { // 구간을 깬 뒤: 별과 골드를 보여 주고 이
 function toTitle() { $('ovHelp').hidden = true; tipHide(); G.endless = false; G.loop = 0; G.mode = 'title'; G.arc = null; G.paused = false; G.cut = null; G.bombT = 0; G.talk = null; G.boss = null; parts = []; $('ovPause').hidden = true; $('btnPause').textContent = '⏸'; enemies = []; bullets = []; shots = []; items = []; stageEl.classList.remove('playing'); $('ovOver').hidden = true; $('ovRes').hidden = true; G.res = false; $('ovTitle').hidden = false; if (document.activeElement) document.activeElement.blur(); select(sel); pickStage(0); }
 $('btnNext').addEventListener('click', () => { if (G.stage === 0 && G.part === 2 && !G.endless && !SAVE.tut.arc13) { arcadeOnce('arc13', () => $('btnNext').click()); return; } if (!owns(P.ch) || (P.co >= 0 && !owns(P.co))) { $('btnHome').click(); return; } $('ovRes').hidden = true; $('btnNext').blur();
   const go = () => { G.res = false; stageEl.classList.add('playing'); nextStage(); };
+  if (roadOK()) { openRoad(go); return; } // 다시 하는 판: 갈림길
   if (G.part === 2 && !STAGES[G.stage].last && !G.endless && G.stage + 1 < STAGES.length) { openMap({ ch: P.ch, from: G.stage, to: G.stage + 1, go: back => { if (back) toTitle(); else go(); } }); return; } // 탑을 한 층 오르는 장면
   go(); });
 $('btnHome').addEventListener('click', () => { if (G.stage === 0 && G.part === 2 && !G.endless && !SAVE.tut.arc13) { arcadeOnce('arc13', () => $('btnHome').click()); return; } const k = G.stage * 3 + G.part + 1, up = G.part === 2 && !G.endless && k < STAGES.length * 3, from = G.stage, ch = P.ch; if (k < STAGES.length * 3) { G.pick = Math.floor(k / 3); G.pp = k % 3; } toTitle(); if (up) openMap({ ch, from, to: from + 1 }); });
@@ -3395,7 +3413,7 @@ function start() {
   if (window.ResizeObserver) new ResizeObserver(() => resize()).observe(cv); else addEventListener('resize', () => resize());
   requestAnimationFrame(frame);
 }
-window.__game = { showD, hideD, openMem, mem, openArcade, get shots() { return shots; }, releaseCharge: () => releaseCharge(), openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, weakPos, COMBOS, comboOK, FUN, spawnLan, openOath, oathScore, openTop, rogueNext, rogueOffer, rogueTake, RSAVE, BOONS, get R() { return G.R; }, openDex, DEX, dexSeen, segMedals, medalCount, showResult, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
+window.__game = { showD, hideD, openMem, mem, openArcade, get shots() { return shots; }, releaseCharge: () => releaseCharge(), openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, openRoad, weakPos, COMBOS, comboOK, FUN, spawnLan, openOath, oathScore, openTop, rogueNext, rogueOffer, rogueTake, RSAVE, BOONS, get R() { return G.R; }, openDex, DEX, dexSeen, segMedals, medalCount, showResult, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
 if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start); else start();
 })();
 </script>
