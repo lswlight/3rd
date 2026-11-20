@@ -197,6 +197,8 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .res{text-align:center}.res .offer-btns{justify-content:center}
 .res-stars{font-size:max(26px,6cqw);color:var(--gold);letter-spacing:.6cqw;text-shadow:0 0 1.4cqw rgba(232,184,74,.6)}
 .res-stars i{font-style:normal;color:#3a4060;text-shadow:none}
+.res-fun{display:flex;gap:1.6cqw;justify-content:center;align-items:center;margin:0 0 .6cqw;font-size:max(14px,1.6cqw);color:var(--paper)}.res-fun b{color:var(--gold);font-family:var(--display);font-weight:400}
+.res-fun .gr{font-family:var(--display);font-size:max(28px,4cqw);line-height:1;width:max(44px,5.4cqw);height:max(44px,5.4cqw);display:inline-flex;align-items:center;justify-content:center;border-radius:50%;border:.3cqw solid currentColor}.gr.gS{color:#ff6a5a;box-shadow:0 0 2cqw rgba(255,106,90,.6)}.gr.gA{color:#ffd76a}.gr.gB{color:#9fe8ff}.gr.gC{color:#8a90a8}.res-fun .snew{color:#ff9a8a}
 .res-medals{display:flex;gap:1.4cqw;justify-content:center;margin:.4cqw 0 .6cqw}.res-medals .md{display:flex;align-items:center;gap:.5cqw;font-family:var(--display);font-size:max(15px,1.7cqw);color:#5a6080;padding:.3cqw 1.2cqw .3cqw .4cqw;border:1px solid #2c3048;border-radius:3cqw;background:rgba(10,12,22,.6)}
 .md i{font-style:normal;display:inline-flex;align-items:center;justify-content:center;width:max(24px,2.8cqw);height:max(24px,2.8cqw);border-radius:50%;background:#2c3048;color:#5a6080;font-size:.85em}
 .res-medals .md.on{color:#ffe9a0;border-color:#e8b84a}.md.on i{background:radial-gradient(circle at 35% 30%,#fff3b0,#e8b84a 60%,#a8740a);color:#5a2a08}.res-medals .md.new{animation:mdpop .6s ease-out;box-shadow:0 0 1.6cqw rgba(255,215,106,.7)}.res-medals .md.new::after{content:'새!';font-size:.75em;color:#ff9a8a;margin-left:.3cqw}
@@ -550,6 +552,7 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
       <h2 id="resName"></h2>
       <div class="res-stars" id="resStars"></div>
       <div class="res-medals" id="resMedals"></div>
+      <div class="res-fun" id="resFun"></div>
       <p id="resText"></p>
       <div class="offer-btns">
         <button type="button" class="buy" id="btnNext">다음 구간</button>
@@ -1546,13 +1549,13 @@ function advanceTalk() {
 }
 function startStage(i, part = 0) {
   G.part = part; G.pick = i; G.pp = part; G.deaths = 0; G.dark = 0; G.duskMsg = 0; G.totems = []; G.hz = []; G.wind = 0; G.cur = 0; G.segDone = false; G.res = false; G.arc = null; G.arcDone = false; G.boon = newBoon();
-  G.stage = i; G.rank = 1 + 0.05 * i + 0.28 * Math.min(G.loop, 4); if (i === 0 && part === 0 && !G.endless && G.diff === 0) { SAVE.tut.r11 = (SAVE.tut.r11 || 0) + 1; if (SAVE.tut.r11 === 1) G.rank *= 0.85; } /* 처음 1-1은 탄 속도 0.85배 */ G.boon.shield += eqStat(P.ch).shield; G.helped = false; G.bombUsed = false; if (!G.endless && lossN() >= 2) { G.boon.shield++; G.helped = true; G.boon.txt.push('탑의 기운 · 방패 1개'); setTimeout(() => tipFlash('탑의 기운 · 방패 1개를 받았습니다 (이 도움으로 깨면 별은 최대 둘)', 5), 3200); } G.pend = []; G.hpx = 1 + 0.2 * oathLv('hp'); G.rank *= 1 + 0.15 * oathLv('bs'); G.oathRage = oathLv('rage'); G.coinx = 1; G.bombX = 0; G.si = 0; G.wait = 3; G.hitN = 0; G.mobN = 0; G.mobK = 0; G.rescued = false; G.lanDone = false; G.bossAt = 0; G.bossSec = 0; G.gate = null; G.nMini = part === 1 ? 3 : 0; G.nMid = part === 1 ? 1 : 0; G.n0 = G.nMini + G.nMid; G.bossCalled = false; G.st = 0; G.boss = null; G.clearT = 0;
+  G.stage = i; G.rank = 1 + 0.05 * i + 0.28 * Math.min(G.loop, 4); if (i === 0 && part === 0 && !G.endless && G.diff === 0) { SAVE.tut.r11 = (SAVE.tut.r11 || 0) + 1; if (SAVE.tut.r11 === 1) G.rank *= 0.85; } /* 처음 1-1은 탄 속도 0.85배 */ G.boon.shield += eqStat(P.ch).shield; G.helped = false; G.bombUsed = false; if (!G.endless && lossN() >= 2) { G.boon.shield++; G.helped = true; G.boon.txt.push('탑의 기운 · 방패 1개'); setTimeout(() => tipFlash('탑의 기운 · 방패 1개를 받았습니다 (이 도움으로 깨면 별은 최대 둘)', 5), 3200); } G.pend = []; G.chain = 0; G.chainT = 0; G.chainMax = 0; G.grazeN = 0; G.segPts = 0; G.segBase = 0; G.hpx = 1 + 0.2 * oathLv('hp'); G.rank *= 1 + 0.15 * oathLv('bs'); G.oathRage = oathLv('rage'); G.coinx = 1; G.bombX = 0; G.si = 0; G.wait = 3; G.hitN = 0; G.mobN = 0; G.mobK = 0; G.rescued = false; G.lanDone = false; G.bossAt = 0; G.bossSec = 0; G.gate = null; G.nMini = part === 1 ? 3 : 0; G.nMid = part === 1 ? 1 : 0; G.n0 = G.nMini + G.nMid; G.bossCalled = false; G.st = 0; G.boss = null; G.clearT = 0;
   if (!G.endless) banner(STAGES[i].name + ' ' + (part + 1) + '구간', STAGES[i].place + (G.diff ? ' · ' + DN[G.diff] : '') + (oathScore() ? ' · 맹세 ' + oathScore() + '점' : ''), 3);
 }
 const towerLoop = n => 0.4 + 0.12 * n; // 무한의 탑: 층이 오를수록 적 체력과 탄 속도가 오른다
 function newGame(ch, tower) {
   enemies = []; bullets = []; shots = []; items = []; parts = [];
-  Object.assign(P, { ch, x: 110, y: H / 2, power: 1, lives: 2, bombs: 2, inv: 2, charge: 0, fcd: 0, famcd: 0, deadT: 0, fam: [] });
+  Object.assign(P, { ch, shard: 0, x: 110, y: H / 2, power: 1, lives: 2, bombs: 2, inv: 2, charge: 0, fcd: 0, famcd: 0, deadT: 0, fam: [] });
   Object.assign(P, { co: G.co >= 0 && G.co !== ch && owns(G.co) && uiOpen('co') ? G.co : -1, cx: 50, cy: H / 2, cofire: 0, cogust: 3, guard: 0, swapcd: 0 });
   Object.assign(G, { mode: 'play', paused: false, loop: tower ? towerLoop(1) : G.diff, endless: !!tower, tf: 1, revives: 0, score: 0, bombT: 0, shake: 0, flash: 0, overT: 0, cut: null });
   G.talk = null; G.tally = null; G.offer = false; G.goldRun = 0; G.slow = 0; G.allyT = 0; P.cz = undefined;
@@ -1582,6 +1585,7 @@ function damage(e, d) {
   d *= (1 + 0.06 * (lvOf(P.ch) - 1)) * (1 + eqStat(P.ch).atk / 100);
   if (G.buff) d *= 1.3;
   d *= G.boon.atk;
+  if (e.type === 'boss') chainHit(false);
   e.hp -= d; e.flash = 0.07;
   if (e.hp <= 0) { if (e.type === 'boss' && STAGES[G.stage].last && !e.fin && !G.endless) { e.fin = 1; e.hp = 1; e.inv = true; startArc('final'); return; } kill(e); } // 마지막 대장은 일격 구간을 거친다
 }
@@ -1589,13 +1593,13 @@ function kill(e) {
   if (e.type === 'lan') { e.dead = true; G.rescued = true; sfx.life(); burst(e.x, e.y, 30, '#ffd76a', 200); ring(e.x, e.y, 50, '#ffe9a0', 0.4); float('마을 사람을 구했다!', e.x, e.y - 30, '#ffe9a0'); for (let i = 0; i < 3; i++) items.push({ x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), type: 'C', t: 0 }); return; }
   if (!MEDAL_X[e.type] && !G.endless) G.mobK = (G.mobK || 0) + 1;
   dexAdd(e);
-  e.dead = true; const T = ET[e.type]; addScore(T.score); if (e.type === 'mini') mis('mini'); if (e.type === 'boss') mis('boss');
+  e.dead = true; const T = ET[e.type]; chainHit(true); if (T.score) G.segBase = (G.segBase || 0) + T.score; funScore(T.score); if (e.type === 'mini') mis('mini'); if (e.type === 'boss') mis('boss');
   burst(e.x, e.y, e.type === 'boss' ? 80 : 8 + e.r, e.type === 'wisp' ? '#8fd8ff' : '#ffc46b', e.type === 'boss' ? 320 : 140);
   fireball(e.x, e.y, e.type === 'boss' ? 70 : e.r);
   if (e.type === 'boss') for (let i = 1; i < 12; i++) fireball(e.x + rnd(-70, 70), e.y + rnd(-70, 70), rnd(30, 60), i * 0.14);
   if (e.drop) items.push({ x: e.x, y: e.y, type: e.drop, t: 0 });
   if (G.endless && G.R) { G.R.kills++; if (e.type === 'boss') G.R.boss++; }
-  for (let i = 0; i < (T.coins || 0) * (G.coinx || 1); i++) items.push({ x: e.x + rnd(-16, 16), y: e.y + rnd(-16, 16), type: 'C', t: 0 });
+  for (let i = 0; i < (T.coins || 0) * (G.coinx || 1); i++) items.push({ x: e.x + rnd(-16, 16), y: e.y + rnd(-16, 16), type: 'C', t: 0, gk: chainGold(), tier: chainMul() >= 3 ? 2 : chainMul() >= 2 ? 1 : 0 });
   if (e.type === 'boss') {
     G.bossSec = G.st - (G.bossAt || G.st); devLog('boss', G.stage + 1, Math.round(G.bossSec), DN[G.diff], G.deaths || 0); sfx.big(); G.shake = 0.9; G.flash = 0.5; G.boss = null; G.clearT = 7; addGold(1000 * (rb('b_shadow') ? 2 : 1)); G.tally = { lives: (P.lives + 1) * 3000, bombs: P.bombs * 1000, gold: G.goldRun || 0 }; if (!G.endless) { if (!SAVE.beaten.includes(G.stage)) SAVE.beaten.push(G.stage); const fk = G.diff + '-' + G.stage; if (!SAVE.mfirst.includes(fk)) SAVE.mfirst.push(fk); checkRewards(); } oathRecord(); saveGame();
     for (const b of bullets) items.push({ x: b.x, y: b.y, type: 'C', t: 0, auto: true });
@@ -1800,13 +1804,13 @@ function playerHit() {
   if (P.inv > 0 || P.deadT > 0 || G.clearT > 0) return;
   if (!G.arc) G.hitN = (G.hitN || 0) + 1; // 무피격 메달: 방패·날개옷에 막힌 것도 맞은 것
   if (G.arc) { if (G.arc.ph === 1) { G.arc.hits++; P.inv = 1.1; G.shake = 0.3; tone(200, 0.15, 'sawtooth', 0.1, -120); float('앗!', P.x, P.y - 26, '#ff9a8a'); burst(P.x, P.y, 20, '#ffffff', 220); ring(P.x, P.y, 46, '#ff9a8a', 0.3); G.flash = Math.max(G.flash, 0.1); bullets = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) > 40); } return; } // 아케이드에서는 목숨이 줄지 않는다
-  if (G.boon.shield > 0) { G.boon.shield--; P.inv = 1.2; bullets = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) > 70); parts.push({ x: P.x, y: P.y, vx: 0, vy: 0, life: 0.3, max: 0.3, ring: 70, col: '#ffe9a0', r: 0 }); tone(320, 0.2, 'square', 0.1, -120); float('축복이 막았다!', P.x, P.y - 30, '#ffe9a0'); return; }
-  if ((P.co === 2 || kitCo('guard')) && P.guard <= 0) { // 동료 나린의 날개옷 방패
+  if (G.boon.shield > 0) { chainBreak(true); G.boon.shield--; P.inv = 1.2; bullets = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) > 70); parts.push({ x: P.x, y: P.y, vx: 0, vy: 0, life: 0.3, max: 0.3, ring: 70, col: '#ffe9a0', r: 0 }); tone(320, 0.2, 'square', 0.1, -120); float('축복이 막았다!', P.x, P.y - 30, '#ffe9a0'); return; }
+  if ((P.co === 2 || kitCo('guard')) && P.guard <= 0) { chainBreak(true); // 동료 나린의 날개옷 방패
     P.guard = P.co === 2 ? 18 : 13; P.inv = 1; bullets = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) > 70);
     parts.push({ x: P.x, y: P.y, vx: 0, vy: 0, life: 0.3, max: 0.3, ring: 70, col: '#9fb4ff', r: 0 }); burst(P.x, P.y, 16, '#9fb4ff', 200);
     tone(260, 0.2, 'square', 0.1, -120); noise(0.15, 0.12, { f: 2500, q: 3 }); float('막았다!', P.x, P.y - 30, '#9fb4ff'); return;
   }
-  sfx.die(); burst(P.x, P.y, 40, CH[P.ch].robe, 220); G.shake = 0.5;
+  chainBreak(false); sfx.die(); burst(P.x, P.y, 40, CH[P.ch].robe, 220); G.shake = 0.5;
   P.deadT = 1.1; P.charge = 0; P.lives--; G.deaths = (G.deaths || 0) + 1;
   if (P.power > 1) { P.power--; items.push({ x: P.x + 60, y: P.y, type: 'P', t: 0 }); }
 }
@@ -1864,7 +1868,7 @@ function update(dt) {
   if (G.offer || G.res) return;
   if (G.talk) { G.talk.t += dt; if (G.talk.t > 3.4) advanceTalk(); return; }
   // 무대 진행
-  G.st += dt; tutTick(dt);
+  G.st += dt; tutTick(dt); if (G.chainT > 0 && (G.chainT -= dt) <= 0) G.chain = 0; if (G.gzT > 0) G.gzT -= dt;
   for (let i = G.pend.length - 1; i >= 0; i--) if (G.pend[i].t <= G.st) G.pend.splice(i, 1)[0].f();
   if (G.gate) { if (G.gate.dead || G.gate.gone) { G.gate = null; G.wait = 2.2; } }
   else if ((G.wait -= dt) <= 0) runStep();
@@ -1923,7 +1927,7 @@ function update(dt) {
   for (const b of bullets) {
     const bs = G.slow > 0 ? 0.4 : 1; if (b.up) { b.up(b, dt * bs); if (b.dead) continue; } b.x += b.vx * dt * bs; b.y += b.vy * dt * bs; if (G.cur > 0) b.y += G.curV * 0.8 * Math.min(1, G.cur) * dt;
     if (b.x < -12 || b.x > W + 14 || b.y < -12 || b.y > H + 12) b.dead = true;
-    else if (P.deadT <= 0) { if (meIn(b)) { b.dead = true; playerHit(); } else if (!b.gz && meIn(b, HIT.graze)) { b.gz = 1; P.graze = 0.25; if (rb('b_graze') && P.charge > 0) P.charge += 0.3; } } // 스치면 흰 점이 잠깐 커진다
+    else if (P.deadT <= 0) { if (meIn(b)) { b.dead = true; playerHit(); } else if (!b.gz && meIn(b, HIT.graze)) { b.gz = 1; P.graze = 0.25; grazeGain(b); if (rb('b_graze') && P.charge > 0) P.charge += FUN.grazeChg; } /* 축복 「아슬아슬」이면 기가 두 배 */ } // 스치면 흰 점이 잠깐 커진다
   }
   // 아이템
   for (const it of items) {
@@ -1936,7 +1940,7 @@ function update(dt) {
       if (it.type === 'P') { if (P.power < 4) { P.power++; banner('힘 ' + P.power + '단계', '', 0.9); } else addScore(2000); sfx.item(); }
       else if (it.type === 'B') { if (P.bombs < 5) P.bombs++; else addScore(2000); sfx.item(); }
       else if (it.type === 'L') { if (P.lives < 5) P.lives++; else addScore(5000); banner('목숨 하나 더!', '', 1); sfx.life(); }
-      else { addScore(200); addGold(10); tone(1200, 0.04, 'triangle', 0.03); }
+      else { addScore(200); addGold(10 * (it.gk || 1)); tone(1200, 0.04, 'triangle', 0.03); }
     }
     if (it.x < -20) it.dead = true;
   }
@@ -2208,7 +2212,7 @@ function drawShot(s) {
 }
 function drawItem(it) {
   const x = it.x, y = it.y;
-  if (it.type === 'C') { ctx.fillStyle = '#e8b84a'; ell(x, y, 5 * Math.abs(Math.cos(it.t * 6)) + 1, 5); ctx.fillStyle = '#7a5a12'; ctx.fillRect(x - 1, y - 1, 2, 2); return; }
+  if (it.type === 'C') { ctx.fillStyle = it.tier === 2 ? '#ffe14a' : it.tier === 1 ? '#dfe6ee' : '#e8b84a'; if (it.tier) glow(it.tier === 2 ? 'gold' : 'blue', x, y, 10, 0.5); ell(x, y, 5 * Math.abs(Math.cos(it.t * 6)) + 1, 5); ctx.fillStyle = '#7a5a12'; ctx.fillRect(x - 1, y - 1, 2, 2); return; }
   glow(it.type === 'P' ? 'red' : 'blue', x, y, 20 + Math.sin(it.t * 6) * 3, 0.8);
   ctx.fillStyle = it.type === 'P' ? '#e2503d' : it.type === 'L' ? '#2fae62' : '#4a7fe6'; circ(x, y, 8);
   ctx.fillStyle = '#fff'; ctx.font = '11px ' + FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(it.type === 'P' ? '힘' : it.type === 'L' ? '목' : '부', x, y + 1);
@@ -2417,6 +2421,9 @@ function drawHUD() {
   // 목숨·부적·힘
   for (let i = 0; i < Math.max(0, P.lives); i++) { if (spr(look(P.ch).img, 18 + i * 22, H - 14, 19, { flip: CH[P.ch].flip })) continue; ctx.fillStyle = CH[P.ch].robe; circ(16 + i * 16, H - 13, 6); ctx.fillStyle = '#f3d2b0'; circ(16 + i * 16, H - 15, 3); }
   for (let i = 0; i < P.bombs; i++) { ctx.fillStyle = '#ece3cf'; ctx.fillRect(88 + i * 12, H - 20, 8, 14); ctx.fillStyle = '#d8483a'; ctx.fillRect(90 + i * 12, H - 17, 4, 8); }
+  { const k = (P.shard || 0) / FUN.shardNeed, cx = 88 + Math.max(P.bombs, 1) * 12 + 6, cy = H - 13; ctx.strokeStyle = 'rgba(255,255,255,.2)'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(cx, cy, 5, 0, TAU); ctx.stroke(); if (k > 0) { ctx.strokeStyle = '#ffe9a0'; ctx.beginPath(); ctx.arc(cx, cy, 5, -Math.PI / 2, -Math.PI / 2 + TAU * k); ctx.stroke(); } } // 부적 조각
+  if ((G.chain || 0) >= 2 && !G.arc && !G.talk) { const c = G.chain, m = chainMul(), sz = Math.min(26, 14 + c * 0.12), col = m >= 3 ? '#ff6a5a' : m >= 1.5 ? '#ffd76a' : '#ffffff', a = Math.min(1, (G.chainT || 0) / 0.5 + 0.35);
+    ctx.globalAlpha = a; text('連 ' + c, W / 2, 72, sz, col, 'center'); if (m > 1) text('×' + m, W / 2, 72 + sz * 0.8, 11, col, 'center'); ctx.globalAlpha = 1; } // 연속 처치
   text('힘', 164, H - 8, 12, '#e8b84a');
   for (let i = 0; i < 4; i++) { ctx.fillStyle = i < P.power ? '#e2503d' : 'rgba(255,255,255,.18)'; ctx.fillRect(180 + i * 12, H - 18, 9, 9); }
   // 층 진행 표시: 문지기 5 · 수문장 2 · 대장
@@ -2649,6 +2656,25 @@ function starMoon() { // 별을 30개 모을 때마다 달조각 30
 }
 function checkRewards() { for (const e of EQ) if (e.cond && !SAVE.eq[e.id] && e.cond()) { SAVE.eq[e.id] = 1; if (e.show && !SAVE.outQ.includes(e.id)) SAVE.outQ.push(e.id); saveGame(); toast((e.slot === 'o' ? '새 옷 · ' : '보상 장비 · ') + e.name + '을(를) 얻었다!'); } }
 /* 무한의 탑: 층마다 대장 한 명. 열 층의 대장이 돌아가며 나오고, 오를수록 단단해진다 */
+/* ---------- 재미 강화 (기획 12): 수치는 FUN 한곳에 ---------- */
+const FUN = {
+  grazePts: 50, grazeChg: 0.15, shardNeed: 40, shardBombMax: 5, // 스치기: 점수(연 배수 적용), 기 모으는 중이면 +초, 부적 조각 40개 = 부적 1 (부적 5개까지)
+  chainSec: 1.6, chainStep: [[10, 1.5], [30, 2], [60, 3], [100, 4]], // 연속 처치 「連」: 1.6초 안에 다음 처치·대장 타격, 배수 단계
+  goldChainCap: 1.5, // 골드는 점수 배수의 절반만, 최대 ×1.5 (경제 균형)
+  grade: [['S', 1.6], ['A', 1.2], ['B', 0.8]], gradeSMoon: 5, // 점수 등급: 이 구간 기본 처치 점수 합 대비 배율(임시, 측정으로 맞춤). S 처음이면 달조각 5
+  weakHpK: 0.18, hardRoad: { hp: 1.3, spd: 1.15, gold: 2, score: 1.5 },
+};
+const chainMul = () => { let m = 1; for (const [n, k] of FUN.chainStep) if ((G.chain || 0) >= n) m = k; return m; };
+const chainGold = () => Math.min(FUN.goldChainCap, 1 + (chainMul() - 1) / 2);
+function funScore(n) { const v = Math.round(n * chainMul()); addScore(v); G.segPts = (G.segPts || 0) + v; }
+function chainHit(kill) { if (G.mode !== 'play' || G.arc) return; G.chainT = FUN.chainSec; if (kill) { G.chain = (G.chain || 0) + 1; if (G.chain > (G.chainMax || 0)) G.chainMax = G.chain; } }
+function chainBreak(half) { G.chain = half ? Math.floor((G.chain || 0) / 2) : 0; if (!half) G.chainT = 0; }
+function grazeGain(b) { // 스치기 보상
+  G.grazeN = (G.grazeN || 0) + 1; funScore(FUN.grazePts); if (P.charge > 0) P.charge += FUN.grazeChg;
+  G.gzRun = G.gzT > 0 ? (G.gzRun || 0) + 1 : 0; G.gzT = 0.8; tone(1500 + Math.min(12, G.gzRun) * 90, 0.05, 'triangle', 0.035); burst(b.x, b.y, 3, '#fff3b0', 70);
+  P.shard = (P.shard || 0) + 1; if (P.shard >= FUN.shardNeed) { P.shard = 0; if (P.bombs < FUN.shardBombMax) { P.bombs++; float('부적 +1', P.x, P.y - 34, '#ffe9a0'); sfx.item(); } }
+}
+const gradeOf = () => { const base = Math.max(1, G.segBase || 0), r = (G.segPts || 0) / base; for (const [g, k] of FUN.grade) if (r >= k) return g; return 'C'; };
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],
@@ -3097,6 +3123,9 @@ function showResult() { // 구간을 깬 뒤: 별과 골드를 보여 주고 이
   devLog('econ', G.stage + 1, G.part + 1, DN[G.diff], G.deaths || 0, G.resGold || 0); lossClear();
   SAVE.stars[k] = Math.max(SAVE.stars[k] || 0, st); const mk = G.stage * 3 + G.part, got = segMedals(), had = medalOf(mk); SAVE.medal = SAVE.medal || {}; SAVE.medal[mk] = had | got; medalPrize(); mis('seg'); if (st === 3) mis('star'); useTrial(); saveGame(); G.res = true; stageEl.classList.remove('playing');
   $('resName').textContent = segName() + (G.diff ? ' ' + DN[G.diff] : '') + ' 돌파'; starMoon(); $('resStars').innerHTML = starStr(st); $('resMedals').innerHTML = medalHtml(had | got, got & ~had);
+  { const g = gradeOf(); SAVE.sRank = SAVE.sRank || {}; let sNew = false; if (g === 'S' && !SAVE.sRank[mk]) { SAVE.sRank[mk] = 1; sNew = true; addMoon(FUN.gradeSMoon, 'S 등급'); } SAVE.segBest = SAVE.segBest || {}; SAVE.segBest[mk] = Math.max(SAVE.segBest[mk] || 0, G.segPts || 0); saveGame();
+    devLog('fun', G.stage + 1, G.part + 1, G.chainMax || 0, G.grazeN || 0, g, G.segPts || 0, G.segBase || 0);
+    $('resFun').innerHTML = '<span class="gr g' + g + '">' + g + '</span><span>점수 <b>' + (G.segPts || 0).toLocaleString() + '</b></span><span>최대 連 <b>' + (G.chainMax || 0) + '</b></span><span>스친 탄 <b>' + (G.grazeN || 0) + '</b></span>' + (sNew ? '<span class="snew">S 처음! 달조각 +' + FUN.gradeSMoon + '</span>' : ''); }
   $('resText').innerHTML = '이번 구간 골드 <b class="gold">+' + (G.resGold || 0).toLocaleString() + '</b> · 가진 골드 <b class="gold">' + SAVE.gold.toLocaleString() + '</b>';
   $('btnNext').textContent = last ? '결말 보기' : G.part === 2 ? '다음 층으로' : '다음 구간'; $('ovRes').hidden = false; $('btnNext').focus();
 }
