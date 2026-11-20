@@ -1576,7 +1576,7 @@ function newGame(ch, tower) {
   P.power = Math.min(4, 1 + pp + (lv >= 10 ? 1 : 0)); if (lv >= 4) P.bombs++; if (lv >= 7) P.lives++; P.bombs += es.bombs; P.lives += es.lives;
   G.mainCh = ch; if (oathLv('nob')) P.bombs = 0; if (oathLv('solo')) P.co = -1;
   $('padSwap').classList.toggle('ui-off', P.co < 0); if (tower) { G.R.co = P.co; rogueStart(); }
-  if (SAVE.trial >= 0 && !SAVE.owned.includes(SAVE.trial) && (P.ch === SAVE.trial || P.co === SAVE.trial)) setTimeout(() => tipFlash('체험 중 · 이 판이 끝나면 다시 골드로 데려올 수 있습니다', 5), 600); $('ovTitle').hidden = true; $('ovD').hidden = true; $('ovOver').hidden = true; $('btnPause').textContent = '⏸'; stageEl.classList.add('playing'); prepVid(P.ch); if (P.co >= 0) prepVid(P.co); comboPrep(); G.freezeB = 0; G.absorb = 0; G.wall = 0; G.comboShown = null; G.cmb = null; G.cmbSeen = {};
+  if (SAVE.trial >= 0 && !SAVE.owned.includes(SAVE.trial) && (P.ch === SAVE.trial || P.co === SAVE.trial)) setTimeout(() => tipFlash('체험 중 · 이 판이 끝나면 다시 골드로 데려올 수 있습니다', 5), 600); $('ovTitle').hidden = true; $('ovD').hidden = true; $('ovOver').hidden = true; $('btnPause').textContent = '⏸'; stageEl.classList.add('playing'); prepVid(P.ch); if (P.co >= 0) prepVid(P.co); comboPrep(); G.freezeB = 0; G.absorb = 0; G.wall = 0; G.comboShown = null; G.cmb = null; G.cmbSeen = {}; G.awake = 0; P.moonG = 0;
 }
 
 /* ---------- 효과 ---------- */
@@ -1606,7 +1606,7 @@ function damage(e, d) {
 function kill(e) {
   if (e.type === 'lan') { e.dead = true; G.rescued = true; sfx.life(); burst(e.x, e.y, 30, '#ffd76a', 200); ring(e.x, e.y, 50, '#ffe9a0', 0.4); float('마을 사람을 구했다!', e.x, e.y - 30, '#ffe9a0'); for (let i = 0; i < 3; i++) items.push({ x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), type: 'C', t: 0 }); return; }
   if (!MEDAL_X[e.type] && !G.endless) G.mobK = (G.mobK || 0) + 1;
-  dexAdd(e);
+  dexAdd(e); awakeGain(e);
   e.dead = true; const T = ET[e.type]; chainHit(true); if (T.score) G.segBase = (G.segBase || 0) + T.score; funScore(T.score); if (e.type === 'mini') mis('mini'); if (e.type === 'boss') mis('boss');
   burst(e.x, e.y, e.type === 'boss' ? 80 : 8 + e.r, e.type === 'wisp' ? '#8fd8ff' : '#ffc46b', e.type === 'boss' ? 320 : 140);
   fireball(e.x, e.y, e.type === 'boss' ? 70 : e.r);
@@ -1652,7 +1652,7 @@ function kitCharge(ch, x, y) {
   else for (let i = -2; i <= 2; i++) ps(x, y, Math.cos(i * 0.16) * 760, Math.sin(i * 0.16) * 760, 9, 5.5, 21, { kc: ch, pierce: 1, cd: 99, hit: new Map(), thin: 1 });
 }
 const kitCo = t => P.co >= 6 && CH[P.co].kit.co === t;
-function fire() { const n0 = shots.length; fire0(); if (G.endless && G.R) rogueFire(n0); }
+function fire() { const n0 = shots.length; fire0(); if (G.awake > 0) awakeFire(); if (G.endless && G.R) rogueFire(n0); }
 function rogueFire(n0) { // 그믐의 탑 축복: 기본 공격
   const nw = shots.slice(n0); if (!nw.length) return; const k = Math.pow(1.2, rb('b_sharp')), way = rb('b_way') + rb('u_wind');
   for (const s of nw) { s.dmg *= k; if (rb('b_pierce') && !s.pierce) s.pleft = 1; }
@@ -1884,7 +1884,7 @@ function update(dt) {
   if (G.offer || G.res) return;
   if (G.talk) { G.talk.t += dt; if (G.talk.t > 3.4) advanceTalk(); return; }
   // 무대 진행
-  G.st += dt; tutTick(dt); comboUpd(dt); if (G.chainT > 0 && (G.chainT -= dt) <= 0) G.chain = 0; if (G.gzT > 0) G.gzT -= dt;
+  G.st += dt; tutTick(dt); comboUpd(dt); awakeUpd(dt); if (G.chainT > 0 && (G.chainT -= dt) <= 0) G.chain = 0; if (G.gzT > 0) G.gzT -= dt;
   for (let i = G.pend.length - 1; i >= 0; i--) if (G.pend[i].t <= G.st) G.pend.splice(i, 1)[0].f();
   if (G.gate) { if (G.gate.dead || G.gate.gone) { G.gate = null; G.wait = 2.2; } }
   else if ((G.wait -= dt) <= 0) runStep();
@@ -2475,7 +2475,8 @@ function draw() {
       if (P.co === 5 && P.cloneT <= 0) { ctx.globalAlpha = 0.4; for (const dy of [-44, 44]) spr(look(P.ch).img, P.x + 2, P.y + dy, CH[P.ch].h, { flip: CH[P.ch].flip }); ctx.globalAlpha = 1; }
     }
     if (P.power >= 4 && P.deadT <= 0) { ctx.globalCompositeOperation = 'lighter'; glow(CH[P.ch].glow || 'gold', P.x, P.y, 34 + Math.sin(G.time * 5) * 4, 0.35); ctx.globalCompositeOperation = 'source-over'; } // 힘 최대: 은은한 기운
-    if (!(P.inv > 0 && Math.floor(G.time * 16) % 2)) drawPlayer(P.x, P.y, P.ch);
+    if (G.awake > 0) { ctx.save(); ctx.translate(P.x, P.y); ctx.scale(FUN2.awakeScale, FUN2.awakeScale); ctx.translate(-P.x, -P.y); drawPlayer(P.x, P.y, P.ch); ctx.restore(); }
+    else if (!(P.inv > 0 && Math.floor(G.time * 16) % 2)) drawPlayer(P.x, P.y, P.ch);
     if (P.muz > 0) { ctx.globalCompositeOperation = 'lighter'; glow(CH[P.ch].glow, P.x + 24, P.y, 14 + P.muz * 220, 0.9); ctx.globalCompositeOperation = 'source-over'; }
     { const g = Math.max(0, P.graze || 0) / 0.25; ctx.globalCompositeOperation = 'lighter'; glow('jade', P.x, P.y, 9 + g * 8, 0.5); ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = '#fff'; circ(P.x, P.y, 3 + g * 2); } // 맞는 곳(흰 점): 테두리 없이 작은 빛점
     if (P.charge > 0.12) { const full = P.charge >= chgT(); ctx.globalCompositeOperation = 'lighter'; glow(CH[P.ch].glow, P.x, P.y, 24 + P.charge * 34, 0.55); ctx.globalCompositeOperation = 'source-over'; ctx.strokeStyle = full ? '#ffe27a' : 'rgba(255,255,255,.7)'; ctx.lineWidth = full ? 3 : 2; ctx.beginPath(); ctx.arc(P.x, P.y, full ? 20 + Math.sin(G.time * 20) * 2 : 30 - P.charge * 16, -Math.PI / 2, -Math.PI / 2 + TAU * Math.min(1, P.charge / 0.6)); ctx.stroke(); }
@@ -2506,7 +2507,7 @@ function draw() {
   ctx.globalAlpha = 1;
   if (G.arc && G.mode === 'play') drawArc();
   ctx.restore();
-  drawCut(); drawCombo2();
+  drawCut(); drawCombo2(); if (!G.cmb && !(G.cut && G.cut.t >= 0.25)) drawAwake();
   if (G.mode === 'play' && G.st < 3.6 && !G.boss && !G.cut) drawTower();
   if (G.talk) drawTalk();
   if (G.tally && G.clearT > 0 && G.clearT < 5.2) drawTally();
@@ -2540,7 +2541,7 @@ addEventListener('keydown', e => {
   if (e.repeat) return;
   if (k === 'fire') G.tap = true;
   if (G.talk && (k === 'fire' || e.code === 'Enter')) { advanceTalk(); return; }
-  if (e.code === 'KeyC' || e.code === 'KeyL') bombReq = true; if (e.code === 'KeyB' || e.code === 'Semicolon') comboReq = true;
+  if (e.code === 'KeyC' || e.code === 'KeyL') bombReq = true; if (e.code === 'KeyB' || e.code === 'Semicolon') comboReq = true; if (e.code === 'KeyQ') awakeStart();
   if (e.code === 'KeyV' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') swapReq = true;
   if (e.code === 'KeyP' || e.code === 'Escape') togglePause();
   if (!$('ovEnd').hidden) { if (e.code === 'Enter' || e.code === 'Space' || e.code === 'KeyZ') nextEnding(); return; }
@@ -2557,7 +2558,7 @@ addEventListener('keydown', e => {
 addEventListener('keyup', e => { const k = KEYMAP[e.code]; if (k) keys[k] = 0; });
 addEventListener('blur', () => { for (const k in keys) keys[k] = 0; touch.down = false; });
 document.addEventListener('visibilitychange', () => { if (document.hidden && G.mode === 'play' && !G.paused) togglePause(); });
-cv.addEventListener('pointerdown', e => { G.tap = true; if (G.talk) advanceTalk(); if (e.pointerType === 'mouse') return; touch.auto = true; touch.id = e.pointerId; touch.x = e.clientX; touch.y = e.clientY; touch.down = true; try { cv.setPointerCapture(e.pointerId); } catch (_) {} if (G.paused) togglePause(); e.preventDefault(); });
+cv.addEventListener('pointerdown', e => { { const now = performance.now(); if (G.mode === 'play' && now - (G.lastTap || 0) < FUN2.awakeTap * 1000 && Math.hypot(e.clientX - (G.lastTapX || 0), e.clientY - (G.lastTapY || 0)) < 60) awakeStart(); G.lastTap = now; G.lastTapX = e.clientX; G.lastTapY = e.clientY; } G.tap = true; if (G.talk) advanceTalk(); if (e.pointerType === 'mouse') return; touch.auto = true; touch.id = e.pointerId; touch.x = e.clientX; touch.y = e.clientY; touch.down = true; try { cv.setPointerCapture(e.pointerId); } catch (_) {} if (G.paused) togglePause(); e.preventDefault(); });
 cv.addEventListener('pointermove', e => {
   if (!touch.down || e.pointerId !== touch.id) return;
   const k = W / cv.getBoundingClientRect().width * 1.15;
@@ -2766,7 +2767,8 @@ const FUN2 = {
   comboAct: [1.2, 0.6, 3.0, 1.0], comboActRepeat1: 0.5, // 합체 4막 길이(초): ①부름 ②모임 ③기술 ④마무리. 같은 판 두 번째부터 ①은 0.5초
   comboTs: [0, 0.35, 0.55, 0.18], // 막마다 게임 시간 흐름(①은 멈춤)
   comboTick: 0.22, comboTickDmg: 26, comboFinalDmg: 150, comboDmgShow: 10, // ③ 동안 화면 적 전체에 연타, ④ 마지막 일격, 피해 숫자 표시 배율
-  awakeSec: 8, awakeNeed: 60, eventChance: 0.3,
+  awakeSec: 8, awakeNeed: 60, awakeGain: { mini: 8, mid: 20, boss: 0, mob: 1 }, awakeTap: 0.32, awakeScale: 1.4, awakeChg: 1, awakeBeam: { r: 34, dmg: 2.4, sp: 520 }, awakeBlast: 260, // 달빛 각성: 게이지(잡을 때마다), 두 번 톡톡 간격, 8초 동안 크기·자동 모으기(초)·굵은 탄, 끝날 때 충격파 반지름
+  eventChance: 0.3,
 };
 const COMBO2 = { // 합체마다: 배경 색 두 개, 대사 두 줄, 도장 글자, 효과 색
   snow: { bg: ['#0c1630', '#dfeeff'], say: ['바람을 빌리겠소.', '내 눈으로 덮어 줄게.'], seal: '雪扇', col: '#bfe6ff', glow: 'blue' },
@@ -2853,6 +2855,27 @@ function combo2Scene(m, C, k) { const T = m.t, id = m.id; ctx.globalCompositeOpe
     if (id === 'feast') { ctx.fillStyle = '#e8b84a'; ctx.save(); ctx.translate(W * 0.62, -40 + q * 200); ctx.rotate(0.5); ctx.fillRect(-40, -110, 80, 160); ctx.fillStyle = '#8a5a12'; ctx.fillRect(-10, 40, 20, 90); ctx.restore(); text('뚝딱!', W * 0.62, H * 0.75, 40, '#ffd76a', 'center'); }
     if (id === 'guard') { ctx.fillStyle = 'rgba(80,180,230,.7)'; ctx.beginPath(); ctx.moveTo(-40 + q * (W + 80), 0); ctx.quadraticCurveTo(-140 + q * (W + 80), H / 2, -40 + q * (W + 80), H); ctx.lineTo(-W, H); ctx.lineTo(-W, 0); ctx.fill(); } }
 }
+/* 달빛 각성(기획 13의 2): 잡을수록 초승달이 차고, 가득 차면 화면을 두 번 톡톡(키보드 Q) → 8초 동안 직접 휩쓰는 시간 */
+function awakeGain(e) { if (G.awake > 0 || G.endless && !G.R || G.arc) return; const k = FUN2.awakeGain; const add = e.type === 'mini' ? k.mini : e.type === 'mid' ? k.mid : e.type === 'boss' ? k.boss : k.mob; const was = P.moonG || 0; P.moonG = Math.min(FUN2.awakeNeed, was + add);
+  if (was < FUN2.awakeNeed && P.moonG >= FUN2.awakeNeed) { tone(988, 0.15, 'sine', 0.08); tone(1319, 0.3, 'sine', 0.08, 0, 0.12); if (!SAVE.tut.awake) { SAVE.tut.awake = 1; saveGame(); tipFlash('보름달이 찼습니다 · 화면을 두 번 톡톡 누르면 달빛 각성!', 5); } } }
+const awakeReady = () => G.mode === 'play' && (P.moonG || 0) >= FUN2.awakeNeed && !(G.awake > 0) && !G.cmb && !G.cut && !G.arc && !G.talk && P.deadT <= 0;
+function awakeStart() { if (!awakeReady()) return; P.moonG = 0; G.awake = FUN2.awakeSec; G.awakeChg = 0.3; P.inv = Math.max(P.inv, FUN2.awakeSec + 0.4); bullets = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) > 120);
+  G.flash = 0.5; G.shake = 0.5; ring(P.x, P.y, 140, '#fff3b0', 0.5); burst(P.x, P.y, 50, '#ffe9a0', 300); banner('달빛 각성!', CH[P.ch].name + ' · ' + FUN2.awakeSec + '초', 1.4);
+  tone(523, 0.2, 'sine', 0.1); tone(784, 0.25, 'sine', 0.1, 0, 0.1); tone(1047, 0.5, 'sine', 0.1, 0, 0.2); noise(0.8, 0.12, { f: 600, f2: 4000, q: 1 }); if (typeof coSay === 'function') coSay('awake'); }
+function awakeUpd(dt) { if (!(G.awake > 0)) return; G.awake -= dt; if ((G.awakeChg -= dt) <= 0) { G.awakeChg = FUN2.awakeChg; releaseCharge(); }
+  if (G.awake <= 0) { G.awake = 0; bullets = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) > FUN2.awakeBlast); for (const e of enemies) if (Math.hypot(e.x - P.x, e.y - P.y) < FUN2.awakeBlast + e.r) damage(e, 20); ring(P.x, P.y, FUN2.awakeBlast, '#fff3b0', 0.45); G.shake = 0.6; G.flash = 0.3; sfx.boom(); } }
+function awakeFire() { const B = FUN2.awakeBeam, col = P.ch === 1 ? 1 : P.ch === 2 ? 2 : 0; // 각성 동안 기본 공격마다 굵은 달빛 탄(캐릭터마다 모양)
+  if (P.ch === 1) { for (const a of [-0.12, 0, 0.12]) ps(P.x + 18, P.y, Math.cos(a) * 900, Math.sin(a) * 900, 10, B.dmg, 11, { pierce: 1, cd: 99, hit: new Map(), chg: 1 }); }
+  else ps(P.x + 18, P.y, B.sp, 0, B.r, B.dmg, P.ch === 2 ? 12 : 10, { pierce: 1, cd: 0.12, hit: new Map(), chg: P.ch < 3 ? P.ch : 0 }); }
+function drawAwake() { if (G.mode !== 'play') return;
+  if (G.awake > 0) { const a = Math.min(1, G.awake * 2, (FUN2.awakeSec - G.awake) * 4); ctx.save(); ctx.globalAlpha = 0.5 * a; ctx.strokeStyle = '#fff3b0'; ctx.lineWidth = 10; ctx.strokeRect(4, 4, W - 8, H - 8); ctx.globalAlpha = 0.18 * a; ctx.lineWidth = 26; ctx.strokeRect(0, 0, W, H); ctx.restore();
+    ctx.globalCompositeOperation = 'lighter'; glow('gold', P.x, P.y, 60 + Math.sin(G.time * 8) * 6, 0.7); ctx.globalCompositeOperation = 'source-over'; }
+  // 초승달 게이지(왼쪽 위, 점수 아래)
+  const k = Math.min(1, (P.moonG || 0) / FUN2.awakeNeed), x = 26, y = 86, r = 13, full = k >= 1 && !(G.awake > 0);
+  ctx.save(); if (full) { ctx.globalCompositeOperation = 'lighter'; glow('gold', x, y, 30 + Math.sin(G.time * 6) * 4, 0.8); ctx.globalCompositeOperation = 'source-over'; }
+  ctx.fillStyle = 'rgba(10,12,22,.6)'; circ(x, y, r + 2); ctx.fillStyle = full ? '#fff3b0' : '#e8d9a8'; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+  if (!full) { ctx.fillStyle = 'rgba(10,12,22,.92)'; ctx.beginPath(); ctx.arc(x + (k * 2 * r) - r * 0.2 + 4, y - 2, r, 0, TAU); ctx.fill(); } // 차오를수록 그림자가 비켜 보름달이 됨
+  ctx.restore(); if (full) text('톡톡!', x + 20, y + 5, 11, '#fff3b0'); }
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],
@@ -3506,7 +3529,7 @@ function start() {
   if (window.ResizeObserver) new ResizeObserver(() => resize()).observe(cv); else addEventListener('resize', () => resize());
   requestAnimationFrame(frame);
 }
-window.__game = { showD, hideD, openMem, mem, openArcade, get shots() { return shots; }, releaseCharge: () => releaseCharge(), openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, openRoad, get cmb() { return G.cmb; }, weakPos, COMBOS, comboOK, FUN, spawnLan, openOath, oathScore, openTop, rogueNext, rogueOffer, rogueTake, RSAVE, BOONS, get R() { return G.R; }, openDex, DEX, dexSeen, segMedals, medalCount, showResult, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
+window.__game = { showD, hideD, openMem, mem, openArcade, get shots() { return shots; }, releaseCharge: () => releaseCharge(), openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, awakeStart, openRoad, get cmb() { return G.cmb; }, weakPos, COMBOS, comboOK, FUN, spawnLan, openOath, oathScore, openTop, rogueNext, rogueOffer, rogueTake, RSAVE, BOONS, get R() { return G.R; }, openDex, DEX, dexSeen, segMedals, medalCount, showResult, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
 if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start); else start();
 })();
 </script>
