@@ -2966,7 +2966,7 @@ function drawBossIntro() { const k = G.bossIntro.t, D = FUN2.bossIntro, S = STAG
 const BATTLE = {
   hp: [100, 85, 110, 95, 130, 90, 125, 90, 100, 115, 105, 95, 100], // 캐릭터 13명 체력
   dmg: { mob: 8, mini: 10, mid: 12, boss: 12, big: 25, body: 15, def: 10 }, bigR: 9, // 받는 피해: 잔챙이·문지기·수문장/대장 탄, 대장 큰 탄(반지름 9 이상), 몸 부딪힘
-  invuln: 0.8, heal: { H: 20, L: 35 }, rest: 0.02, segHeal: 0.3, dropH: 0.06, // 맞은 뒤 무적, 떡·곶감 회복, 쉬는 동료 초당 2%, 구간 사이 30%, 잔챙이 떡 확률
+  invuln: 0.8, heal: { H: 20, L: 35 }, rest: 0.002, segHeal: 0.3, dropH: 0.06, // 맞은 뒤 무적, 떡·곶감 회복, 쉬는 동료 초당 0.2%(거의 안 참), 구간 사이 30%, 잔챙이 떡 확률
   eqLife: 20, lv7Life: 15, star: [30, 80], // 「목숨 +1」 장비 = 최대 체력 +20, Lv7 = +15, 별: 받은 피해 30 이하 셋·80 이하 둘
 };
 function hpMax(ch) { const es = eqStat(ch); return (BATTLE.hp[ch] || 100) + (es.lives || 0) * BATTLE.eqLife + (lvOf(ch) >= 7 ? BATTLE.lv7Life : 0) + (G.hpBonus || 0); }
