@@ -2228,6 +2228,7 @@ function drawKitBig(s, k, x, y, a0) { // 새 동료들의 모으기 공격: 캐�
 }
 function drawShot(s) {
   const x = s.x, y = s.y;
+  if (s.beam) { ctx.globalCompositeOperation = 'lighter'; const g = ctx.createLinearGradient(x - 90, 0, x + 20, 0); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(1, s.beam); ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(x - 35, y, 60, s.r * 0.75, 0, 0, TAU); ctx.fill(); glow('gold', x, y, s.r * 1.4, 0.8); ctx.globalCompositeOperation = 'source-over'; return; } // 달빛 협공 빛줄기
   glow(s.kind === 0 || s.kind === 10 ? 'jade' : s.kind === 3 || s.kind === 4 || s.kind === 13 ? 'blue' : s.kind === 5 || s.kind === 14 ? 'fire' : s.kind >= 20 ? CH[s.kc].glow : 'gold', x, y, s.kind >= 10 ? s.r * 2.2 : s.r * 2.6 + 4, 0.55);
   if (s.kind === 10 && ok(IMG.tornado)) { glow('jade', x, y, 62, 0.5); spr('tornado', x, y - 4, 104, { sx: Math.cos(s.t * 16) >= 0 ? 1 : -1, rot: Math.sin(s.t * 9) * 0.08 }); return; }
   if (s.kind === 11 && ok(IMG.arrowfx)) { spr('arrowfx', x - 28, y, 26); return; }
@@ -2802,7 +2803,7 @@ const FUN2 = {
   comboAct: [1.2, 0.6, 3.0, 1.0], comboActRepeat1: 0.5, // 합체 4막 길이(초): ①부름 ②모임 ③기술 ④마무리. 같은 판 두 번째부터 ①은 0.5초
   comboTs: [0, 0.35, 0.55, 0.18], // 막마다 게임 시간 흐름(①은 멈춤)
   comboTick: 0.22, comboTickDmg: 26, comboFinalDmg: 150, comboDmgShow: 10, // ③ 동안 화면 적 전체에 연타, ④ 마지막 일격, 피해 숫자 표시 배율
-  awakeSec: 8, awakeNeed: 60, awakeGain: { mini: 8, mid: 20, boss: 0, mob: 1 }, awakeTap: 0.32, awakeScale: 1.4, awakeChg: 1, awakeBeam: { r: 34, dmg: 2.4, sp: 520 }, awakeBlast: 260, // 달빛 각성: 게이지(잡을 때마다), 두 번 톡톡 간격, 8초 동안 크기·자동 모으기(초)·굵은 탄, 끝날 때 충격파 반지름
+  awakeSec: 8, awakeNeed: 60, awakeGain: { mini: 8, mid: 20, boss: 0, mob: 1 }, awakeTap: 0.32, awakeScale: 1.4, awakeJoint: 1.6, awakeBeam: { r: 22, dmg: 1.5, sp: 560 }, awakeMateK: 0.7, awakeEnd: 12, awakeBlast: 220, // 달빛 각성: 게이지(잡을 때마다), 두 번 톡톡 간격, 8초 동안 크기·자동 모으기(초)·굵은 탄, 끝날 때 충격파 반지름
   bossIntro: 2, bossIntroTs: 0.25, rageAt: 0.2, rageSpd: 1.25, freeSec: 1.6, coSayGap: 20, coSaySec: 1.5, // 대장 등장 컷인(초·게임 배속), 발악(체력 20%, 패턴 1.25배), 쓰러진 뒤 원래 모습 장면, 동료 말풍선 간격·길이
   eventChance: 0.3, eventAt: 0.4, // 돌발 사건: 1·2구간마다 30%, 구간의 40% 지점
   evGob: { sec: 8, hp: 30, coins: 30, eqChance: 0.12 }, evSwarm: { sec: 15, gap: 0.11 }, evRain: { sec: 10, gap: 0.05 }, evGuest: { sec: 10, gap: 0.3 }, evShadow: { sec: 4.5, waves: 3 },
@@ -2896,14 +2897,20 @@ function combo2Scene(m, C, k) { const T = m.t, id = m.id; ctx.globalCompositeOpe
 function awakeGain(e) { if (G.awake > 0 || G.endless && !G.R || G.arc) return; const k = FUN2.awakeGain; const add = e.type === 'mini' ? k.mini : e.type === 'mid' ? k.mid : e.type === 'boss' ? k.boss : k.mob; const was = P.moonG || 0; P.moonG = Math.min(FUN2.awakeNeed, was + add);
   if (was < FUN2.awakeNeed && P.moonG >= FUN2.awakeNeed) { tone(988, 0.15, 'sine', 0.08); tone(1319, 0.3, 'sine', 0.08, 0, 0.12); if (!SAVE.tut.awake) { SAVE.tut.awake = 1; saveGame(); tipFlash('보름달이 찼습니다 · 화면을 두 번 톡톡 누르면 달빛 각성!', 5); } } }
 const awakeReady = () => G.mode === 'play' && (P.moonG || 0) >= FUN2.awakeNeed && !(G.awake > 0) && !G.cmb && !G.cut && !G.arc && !G.talk && P.deadT <= 0;
-function awakeStart() { if (!awakeReady()) return; P.moonG = 0; G.awake = FUN2.awakeSec; G.awakeChg = 0.3; P.inv = Math.max(P.inv, FUN2.awakeSec + 0.4); bullets = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) > 120);
+function awakeStart() { if (!awakeReady()) return; P.moonG = 0; G.awake = FUN2.awakeSec; G.awakeChg = 0.5; P.inv = Math.max(P.inv, FUN2.awakeSec + 0.4); bullets = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) > 120);
   G.flash = 0.5; G.shake = 0.5; ring(P.x, P.y, 140, '#fff3b0', 0.5); burst(P.x, P.y, 50, '#ffe9a0', 300); banner('달빛 각성!', CH[P.ch].name + ' · ' + FUN2.awakeSec + '초', 1.4);
   tone(523, 0.2, 'sine', 0.1); tone(784, 0.25, 'sine', 0.1, 0, 0.1); tone(1047, 0.5, 'sine', 0.1, 0, 0.2); noise(0.8, 0.12, { f: 600, f2: 4000, q: 1 }); if (typeof coSay === 'function') coSay('awake'); }
-function awakeUpd(dt) { if (!(G.awake > 0)) return; G.awake -= dt; if ((G.awakeChg -= dt) <= 0) { G.awakeChg = FUN2.awakeChg; releaseCharge(); }
-  if (G.awake <= 0) { G.awake = 0; bullets = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) > FUN2.awakeBlast); for (const e of enemies) if (Math.hypot(e.x - P.x, e.y - P.y) < FUN2.awakeBlast + e.r) damage(e, 20); ring(P.x, P.y, FUN2.awakeBlast, '#fff3b0', 0.45); G.shake = 0.6; G.flash = 0.3; sfx.boom(); } }
-function awakeFire() { const B = FUN2.awakeBeam, col = P.ch === 1 ? 1 : P.ch === 2 ? 2 : 0; // 각성 동안 기본 공격마다 굵은 달빛 탄(캐릭터마다 모양)
-  if (P.ch === 1) { for (const a of [-0.12, 0, 0.12]) ps(P.x + 18, P.y, Math.cos(a) * 900, Math.sin(a) * 900, 10, B.dmg, 11, { pierce: 1, cd: 99, hit: new Map(), chg: 1 }); }
-  else ps(P.x + 18, P.y, B.sp, 0, B.r, B.dmg, P.ch === 2 ? 12 : 10, { pierce: 1, cd: 0.12, hit: new Map(), chg: P.ch < 3 ? P.ch : 0 }); }
+function awakeUpd(dt) { if (!(G.awake > 0)) return; G.awake -= dt; if ((G.awakeChg -= dt) <= 0) { G.awakeChg = FUN2.awakeJoint; awakeJoint(); }
+  if (G.awake <= 0) { G.awake = 0; bullets = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) > FUN2.awakeBlast); for (const e of enemies) if (Math.hypot(e.x - P.x, e.y - P.y) < FUN2.awakeBlast + e.r) damage(e, FUN2.awakeEnd); ring(P.x, P.y, FUN2.awakeBlast, '#fff3b0', 0.45); G.shake = 0.6; G.flash = 0.3; sfx.boom(); } }
+const awakeMate = () => P.co >= 0 && hpOf(P.co).hp > 0 ? P.co : -1;
+const elOf = ch => { const e = SKEL[ch] === 'heavy' ? '' : SKEL[ch]; return e || COEL[ch] || null; };
+function awakeJoint() { // 달빛 협공: 주인공과 동료의 속성을 실은 빛줄기 두 개가 이어 나감(연계가 잘 터짐)
+  const a = P.ch, b = awakeMate(), B = FUN2.awakeBeam, col = c => CH[c].spark || CH[c].robe || '#fff3b0';
+  const beam = (x, y, ch) => ps(x, y, B.sp, 0, B.r, B.dmg, 10, { pierce: 1, cd: 0.15, hit: new Map(), el: elOf(ch), pen: 1, beam: col(ch) });
+  beam(P.x + 18, P.y, a); if (b >= 0) G.pend.push({ t: G.st + 0.18, f: () => { if (G.awake > 0) beam(P.cx + 16, P.cy, b); } });
+  float(b >= 0 ? CH[a].name + '·' + CH[b].name + ' 달빛 협공!' : '달빛 일격!', P.x, P.y - 46, '#fff3b0'); tone(880, 0.15, 'sine', 0.07); tone(1320, 0.2, 'sine', 0.06, 0, 0.1); }
+function awakeFire() { const b = awakeMate(); if (b < 0) return; // 각성 동안 동료가 옆에서 같이 쏨
+  if (b >= 6) kitFire(b, 2, P.cx + 14, P.cy, FUN2.awakeMateK); else for (const an of [-0.12, 0, 0.12]) ps(P.cx + 14, P.cy, Math.cos(an) * 520, Math.sin(an) * 520, 4, FUN2.awakeMateK, b === 1 ? 1 : b === 2 ? 2 : b === 4 ? 5 : b === 5 ? 6 : b === 3 ? 4 : 0); }
 function drawAwake() { if (G.mode !== 'play') return;
   if (G.awake > 0) { const a = Math.min(1, G.awake * 2, (FUN2.awakeSec - G.awake) * 4); ctx.save(); ctx.globalAlpha = 0.5 * a; ctx.strokeStyle = '#fff3b0'; ctx.lineWidth = 10; ctx.strokeRect(4, 4, W - 8, H - 8); ctx.globalAlpha = 0.18 * a; ctx.lineWidth = 26; ctx.strokeRect(0, 0, W, H); ctx.restore();
     ctx.globalCompositeOperation = 'lighter'; glow('gold', P.x, P.y, 60 + Math.sin(G.time * 8) * 6, 0.7); ctx.globalCompositeOperation = 'source-over'; }
@@ -3009,34 +3016,21 @@ function drawKeyHints() { if (coarse || G.mode !== 'play' || G.cmb || G.arc) ret
   let x = W - 8; for (let i = L.length - 1; i >= 0; i--) { const [k, n, c] = L[i]; if (c === -1) continue; const s = k + ' ' + n + (c > 0 ? ' ' + Math.ceil(c) : ''), col = c > 0 || c === -2 ? '#7a7f95' : '#ffe9a0'; ctx.font = '9px ' + FONT; const w = ctx.measureText(s).width; text(s, x - w, H - 30, 9, col); x -= w + 10; } }
 /* 기획 14-3: 캐릭터 13명 × 캐릭터 스킬 · 협력 스킬 · 등장 일격. 속성(el)은 14-4 연계에서 씀 */
 const EL = { ice: '❄ 얼림', wet: '💧 젖음', fire: '🔥 불', bolt: '⚡ 번개', wind: '🌀 바람', bind: '⛓ 묶임', mark: '✦ 표식' };
-const SKNAME = ['회오리', '꿰뚫는 세 발', '은하수 물줄기', '도깨비불 세 갈래', '쇠사슬 철퇴', '여우불 구슬', '장승 내려찍기', '눈보라 창', '번개 물결', '월도 물결', '칼비', '검은 달', '금 방망이'];
+const SKNAME = ['회오리바람', '빛 화살 세 발', '큰 물구슬', '큰 도깨비불', '굴러가는 쇠공', '여우구슬', '장승 기둥', '눈보라', '다섯 갈래 물줄기', '큰 물결', '관통 칼', '검은 달', '금 방망이'];
 const CONAME = ['바람막이', '표식 사격', '선녀의 샘', '불 춤', '탄 먹기', '분신', '수호 기둥', '얼음 지대', '번개 세례', '해일 방벽', '벼림', '어둠 걷기', '뚝딱 축복'];
 const ENNAME = ['부채 일섬', '화살비 낙하', '물기둥 솟기', '탈 던지기', '쇠공 굴리기', '홀림', '쌍 몽둥이', '얼음 파편', '몸통 박치기', '월도 베기', '망치 내려찍기', '그림자 습격', '금 나와라 뚝딱'];
 const SKEL = ['wind', 'mark', 'wet', 'fire', 'bind', 'fire', 'bind', 'ice', 'bolt', 'wet', 'mark', 'bind', 'heavy'], COEL = ['wind', 'mark', 'wet', 'fire', '', '', '', 'ice', 'bolt', 'wet', '', '', ''], ENEL = ['wind', 'mark', 'wet', 'fire', 'heavy', '', 'heavy', 'ice', 'bolt', 'wet', 'heavy', 'bind', 'heavy'];
-Object.assign(BATTLE, { markK: 1.2, statusSec: 3, bindK: 0.15, iceK: 0.5, forgeK: 1.4 });
+Object.assign(BATTLE, { skDmgK: 3, markK: 1.2, statusSec: 3, bindK: 0.15, iceK: 0.5, forgeK: 1.4 });
 function applyEl(e, el) { if (!el || el === 'heavy' || e.dead) return; e.st = e.st || {}; e.st[el] = BATTLE.statusSec; if (el === 'fire') e.burn = Math.max(e.burn || 0, 3); }
 function hitEl(e, d, el, o) { if (!e || e.dead || e.inv) return; G.hitEl = el; G.hitO = o || null; damage(e, d); G.hitEl = null; G.hitO = null; }
 const inFront = (x0, x1, y, h) => enemies.filter(e => !e.dead && !e.inv && e.x > x0 && e.x < x1 && Math.abs(e.y - y) < h + e.r && e.x < W + 20);
 const fx2 = (o) => (G.fx2 = G.fx2 || []).push(Object.assign({ t: 0 }, o));
 function skSound(f) { tone(f, 0.18, 'triangle', 0.08, f * 0.6); noise(0.15, 0.08, { f: f * 3 }); }
-function charSkill(ch) { const n0 = shots.length, x = P.x + 16, y = P.y; tipDone('charge'); G.skillT = 0.3;
-  if (ch === 0) ps(x, y, 200, 0, 36, 3, 10, { pierce: 1, cd: 0.15, hit: new Map(), el: 'wind', pull: 1, chg: 0, pen: 1 });
-  else if (ch === 1) for (const i of [-1, 0, 1]) ps(x, y + i * 20, 900, i * 45, 10, 7, 11, { pierce: 1, cd: 99, hit: new Map(), el: 'mark', chg: 1, pen: 1 });
-  else if (ch === 2) { for (const c of [P.ch, P.co]) if (c >= 0) hpHeal(c, 10, true); for (let i = 0; i < 25; i++) G.pend.push({ t: G.st + i * 0.08, f: () => ps(P.x + 18, P.y + rnd(-6, 6), 520, rnd(-30, 30), 7, 1.3, 2, { el: 'wet' }) }); }
-  else if (ch === 3) for (const a of [-0.25, 0, 0.25]) ps(x, y, Math.cos(a) * 340, Math.sin(a) * 340, 16, 6, 13, { boom: 70, el: 'fire', chg: 0 });
-  else if (ch === 4) { const t = inFront(P.x, P.x + 300, P.y, 70).sort((a, b) => a.x - b.x)[0]; if (t) { fx2({ k: 'chain', x: P.x, y: P.y, tx: t.x, ty: t.y, d: 0.35 }); hitEl(t, 15, 'bind'); if (t.type !== 'boss') t.x = Math.max(P.x + 60, t.x - 120); } else fx2({ k: 'chain', x: P.x, y: P.y, tx: P.x + 260, ty: P.y, d: 0.25 }); }
-  else if (ch === 5) for (let i = 0; i < 5; i++) { const a = (i - 2) * 0.35; ps(x, y, Math.cos(a) * 330, Math.sin(a) * 330, 9, 3.5, 15, { seek: 1, el: 'fire' }); }
-  else if (ch === 6) { const cx = Math.min(W - 40, P.x + 130); fx2({ k: 'pillar', x: cx, d: 3 }); for (const e of inFront(cx - 45, cx + 45, GY / 2, GY)) hitEl(e, 20, 'bind', { heavy: 1 }); G.shake = 0.5; skSound(120); }
-  else if (ch === 7) ps(x, y, 720, 0, 10, 6, 20, { pierce: 1, cd: 99, hit: new Map(), el: 'ice', kc: 7, pen: 1 });
-  else if (ch === 8) ps(x, y, 360, 0, 16, 3.5, 20, { pierce: 1, cd: 0.2, hit: new Map(), el: 'bolt', wave: 1, y0: y, kc: 8, pen: 1 });
-  else if (ch === 9) ps(x, y, 380, 0, 30, 5, 20, { pierce: 1, cd: 0.2, hit: new Map(), el: 'wet', push: 1, kc: 9, pen: 1 });
-  else if (ch === 10) for (let i = 0; i < 5; i++) { const a = (i - 2) * 0.22; ps(x, y, Math.cos(a) * 520, Math.sin(a) * 520, 6, 4, 20, { seek: 2, kc: 10 }); }
-  else if (ch === 11) ps(x, y, 420, 0, 22, 6, 20, { pierce: 1, cd: 99, hit: new Map(), el: 'bind', kc: 11, pen: 1 });
-  else if (ch === 12) { const cx = Math.min(W - 30, P.x + 150); fx2({ k: 'club', x: cx, y: P.y, d: 0.4 }); for (const e of enemies) if (!e.dead && Math.hypot(e.x - cx, e.y - P.y) < 90 + e.r) hitEl(e, 25, null, { heavy: 1 }); explode(cx, P.y, 60, 0); for (let i = 0; i < 6; i++) items.push({ x: cx + rnd(-30, 30), y: P.y + rnd(-30, 30), type: 'C', t: 0 }); }
-  else releaseCharge();
-  for (let i = n0; i < shots.length; i++) { if (shots[i].chg === undefined && ch < 3) shots[i].chg = ch; }
-  burst(x, y, 12, CH[ch].robe || '#fff', 200); skSound(500 + ch * 30); float(SKNAME[ch], P.x, P.y - 40, '#ffe9a0'); rogueSkillPost(n0);
-}
+function charSkill(ch) { // 캐릭터 스킬 = 예전에 기를 모아 쏘던 모으기 공격(사용자 요청). 피해 1.5배 + 속성(연계용)
+  const n0 = shots.length; releaseCharge(); const el = SKEL[ch] === 'heavy' ? null : SKEL[ch];
+  for (let i = n0; i < shots.length; i++) { const s = shots[i]; s.dmg *= BATTLE.skDmgK; if (el) s.el = el; if (s.pierce) s.pen = 1; if (s.boom || SKEL[ch] === 'heavy' || SKEL[ch] === 'bind') s.heavy = 1; if (s.home && (ch === 5 || ch === 10)) s.seek = 2; }
+  if (ch === 2) for (const c of [P.ch, P.co]) if (c >= 0) hpHeal(c, 5, true); // 나린은 조금 회복
+  float(SKNAME[ch], P.x, P.y - 40, '#ffe9a0'); }
 function rogueSkillPost(n0) { if (!(G.endless && G.R)) return; const nw = shots.slice(n0);
   if (rb('b_twice')) for (const s of nw) G.pend.push({ t: G.st + 0.55, f: () => { if (s.x < W + 20) explode(Math.min(s.x, W - 10), s.y, 60, 6); } });
   if (rb('b_echo') && P.co >= 0) for (const s of nw) shots.push(Object.assign({}, s, { x: P.cx + 16, y: P.cy, dmg: s.dmg * 0.6, hit: s.hit ? new Map() : s.hit }));
