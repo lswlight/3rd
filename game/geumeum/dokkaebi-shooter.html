@@ -114,6 +114,7 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .touch.lefty .tb-sk,.touch.lefty .tb-wp,.touch.lefty .tb-co,.touch.lefty .tb-bomb,.touch.lefty .tb-swap,.touch.lefty .tb-aw{left:var(--x);right:auto}
 .touch.lefty .tb-seal{left:calc(var(--bm) + var(--bs)*.5 + var(--bg)*.5);right:auto}.touch.lefty .tb-yk{left:calc(var(--bm) + 3*(var(--bs) + var(--bg)) + .4cqw);right:auto}
 .touch .tb-seal:not(.ready){display:none}.touch .tb-yk small{top:auto;bottom:100%;margin:0 0 .1cqw}
+.tb-yks{width:calc(var(--bs)*1.05);height:calc(var(--bs)*1.05);right:calc(var(--bm) + var(--bs)*1.6 + var(--bg)*1.5);bottom:calc(var(--bm) + 2*(var(--bs) + var(--bg)) + .6cqw);font-size:calc(var(--bs)*.18);background:radial-gradient(circle at 40% 35%,#ff8a5a,#8a1a10);border-color:#ffd76a;box-shadow:0 0 2cqw rgba(255,120,60,.8);animation:cbpulse .6s ease-in-out infinite alternate}.touch.lefty .tb-yks{left:calc(var(--bm) + var(--bs)*1.6 + var(--bg)*1.5);right:auto}
 .btnset{margin-top:1cqw;font-size:1.4cqw}.btnset button{font-size:1.3cqw;margin:0 .3cqw}.btnset button.on{background:#e8b84a;color:#3a2008}.btnset input{vertical-align:middle}
 @media (pointer:coarse){.stage.playing .touch{display:block}}
 .rotate-hint{display:none;margin:0;font-size:13px;color:var(--gold)}
@@ -710,6 +711,7 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
       <button type="button" class="tb tb-bomb" id="padBomb" aria-label="부적 폭탄"><span id="bombTxt">부적</span><small>길게=합체</small></button>
       <button type="button" class="tb tb-swap" id="padSwap" aria-label="동료와 교대"><span>교대</span><i class="cd"></i><small>등장 일격</small></button>
       <button type="button" class="tb tb-aw" id="padAwake" aria-label="달빛 각성"><span>각성</span></button>
+      <button type="button" class="tb tb-yks off" id="padYS" aria-label="요괴 기술"><span id="ysTxt">요괴<br>기술</span></button>
       <button type="button" class="tb tb-seal" id="padSeal" aria-label="봉인"><span>封</span><small id="sealLbl">봉인</small></button>
       <button type="button" class="tb tb-yk" id="padY0" aria-label="요괴 소환 1"><span></span><i class="cd"></i><em></em><small></small></button>
       <button type="button" class="tb tb-yk tb-yk2" id="padY1" aria-label="요괴 소환 2"><span></span><i class="cd"></i><em></em><small></small></button>
@@ -1620,7 +1622,7 @@ function advanceTalk() {
 }
 function startStage(i, part = 0) { G.dps = { all: {}, boss: {} }; G.eliteLeft = G.endless ? 0 : BALANCE2.elite[0] + Math.floor(Math.random() * (BALANCE2.elite[1] - BALANCE2.elite[0] + 1)); G.bAcc = 0; if (part === 0) G.floor = { st: [], gold: 0 };
   G.part = part; G.pick = i; G.pp = part; G.deaths = 0; G.dark = 0; G.duskMsg = 0; G.totems = []; G.hz = []; G.wind = 0; G.cur = 0; G.segDone = false; G.res = false; G.arc = null; G.arcDone = false; G.boon = newBoon();
-  G.stage = i; G.rank = 1 + 0.05 * i + 0.28 * Math.min(G.loop, 4); if (i === 0 && part === 0 && !G.endless && G.diff === 0) { SAVE.tut.r11 = (SAVE.tut.r11 || 0) + 1; if (SAVE.tut.r11 === 1) G.rank *= 0.85; } /* 처음 1-1은 탄 속도 0.85배 */ G.boon.shield += eqStat(P.ch).shield; G.helped = false; G.bombUsed = false; if (!G.endless && lossN() >= 2) { G.boon.shield++; G.helped = true; G.boon.txt.push('탑의 기운 · 방패 1개'); setTimeout(() => tipFlash('탑의 기운 · 방패 1개를 받았습니다 (이 도움으로 깨면 별은 최대 둘)', 5), 3200); } if (G.mode === 'play' && P.hpm && (part > 0 || G.endless)) hpAll(BATTLE.segHeal); G.segDmg = 0; G.sealN = YK.sealPerSeg; G.yks = []; G.hard = !!G.roadNext; G.roadNext = false; G.lan2 = 0; G.pend = []; G.chain = 0; G.chainT = 0; G.chainMax = 0; G.grazeN = 0; G.segPts = 0; G.segBase = 0; G.hpx = 1 + 0.2 * oathLv('hp'); G.rank *= 1 + 0.15 * oathLv('bs'); G.oathRage = oathLv('rage'); if (G.hard) { G.hpx *= FUN.hardRoad.hp; G.rank *= FUN.hardRoad.spd; } G.coinx = 1; G.bombX = 0; G.si = 0; G.wait = 3; G.hitN = 0; G.mobN = 0; G.mobK = 0; G.rescued = false; G.lanDone = false; G.bossAt = 0; G.bossSec = 0; G.gate = null; G.nMini = part === 1 ? 3 : 0; G.nMid = part === 1 ? 1 : 0; G.n0 = G.nMini + G.nMid; G.bossCalled = false; G.st = 0; G.boss = null; G.clearT = 0;
+  G.stage = i; G.rank = 1 + 0.05 * i + 0.28 * Math.min(G.loop, 4); if (i === 0 && part === 0 && !G.endless && G.diff === 0) { SAVE.tut.r11 = (SAVE.tut.r11 || 0) + 1; if (SAVE.tut.r11 === 1) G.rank *= 0.85; } /* 처음 1-1은 탄 속도 0.85배 */ G.boon.shield += eqStat(P.ch).shield; G.helped = false; G.bombUsed = false; if (!G.endless && lossN() >= 2) { G.boon.shield++; G.helped = true; G.boon.txt.push('탑의 기운 · 방패 1개'); setTimeout(() => tipFlash('탑의 기운 · 방패 1개를 받았습니다 (이 도움으로 깨면 별은 최대 둘)', 5), 3200); } if (G.mode === 'play' && P.hpm && (part > 0 || G.endless)) hpAll(BATTLE.segHeal); G.segDmg = 0; G.sealN = YK.sealPerSeg; G.yks = part === 0 || G.endless ? [] : (G.yks || []).filter(y => y.guard); if (part === 0) G.ykSk = null; G.hard = !!G.roadNext; G.roadNext = false; G.lan2 = 0; G.pend = []; G.chain = 0; G.chainT = 0; G.chainMax = 0; G.grazeN = 0; G.segPts = 0; G.segBase = 0; G.hpx = 1 + 0.2 * oathLv('hp'); G.rank *= 1 + 0.15 * oathLv('bs'); G.oathRage = oathLv('rage'); if (G.hard) { G.hpx *= FUN.hardRoad.hp; G.rank *= FUN.hardRoad.spd; } G.coinx = 1; G.bombX = 0; G.si = 0; G.wait = 3; G.hitN = 0; G.mobN = 0; G.mobK = 0; G.rescued = false; G.lanDone = false; G.bossAt = 0; G.bossSec = 0; G.gate = null; G.nMini = part === 1 ? 3 : 0; G.nMid = part === 1 ? 1 : 0; G.n0 = G.nMini + G.nMid; G.bossCalled = false; G.st = 0; G.boss = null; G.clearT = 0;
   evRoll(i, part); G.gob = null; G.swarm = 0; G.rain = 0; G.guest = null; G.shadow = null;
   if (!G.endless) banner(STAGES[i].name + ' ' + (part + 1) + '구간', STAGES[i].place + (G.diff ? ' · ' + DN[G.diff] : '') + (oathScore() ? ' · 맹세 ' + oathScore() + '점' : '') + (G.hard ? ' · 험한 길' : ''), 3);
 }
@@ -2623,7 +2625,7 @@ addEventListener('keydown', e => {
   if (e.repeat) return;
   if (k === 'fire') G.tap = true;
   if (G.talk && (k === 'fire' || e.code === 'Enter')) { advanceTalk(); return; }
-  if (e.code === 'KeyC' || e.code === 'KeyL') bombReq = true; if (e.code === 'KeyB' || e.code === 'Semicolon') comboReq = true; if (e.code === 'KeyQ') awakeStart(); if (e.code === 'KeyF') ykSealUse(); if (e.code === 'Digit1') ykSummon(0); if (e.code === 'Digit2') ykSummon(1); if (!e.repeat && G.mode === 'play') { if (e.code === 'KeyX' || e.code === 'KeyK') skillUse(); if (e.code === 'KeyE') weaponUse(); if (e.code === 'KeyR') coSkillUse(); }
+  if (e.code === 'KeyC' || e.code === 'KeyL') bombReq = true; if (e.code === 'KeyB' || e.code === 'Semicolon') comboReq = true; if (e.code === 'KeyQ') awakeStart(); if (e.code === 'KeyF') ykSealUse(); if (e.code === 'KeyG') ykSkUse(); if (e.code === 'Digit1') ykSummon(0); if (e.code === 'Digit2') ykSummon(1); if (!e.repeat && G.mode === 'play') { if (e.code === 'KeyX' || e.code === 'KeyK') skillUse(); if (e.code === 'KeyE') weaponUse(); if (e.code === 'KeyR') coSkillUse(); }
   if (e.code === 'KeyV' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') swapReq = true;
   if (e.code === 'KeyP' || e.code === 'Escape') togglePause();
   if (!$('ovEnd').hidden) { if (e.code === 'Enter' || e.code === 'Space' || e.code === 'KeyZ') nextEnding(); return; }
@@ -2649,7 +2651,7 @@ cv.addEventListener('pointermove', e => {
 });
 const endTouch = e => { if (e.pointerId === touch.id) { touch.down = false; touch.id = null; } };
 cv.addEventListener('pointerup', endTouch); cv.addEventListener('pointercancel', endTouch);
-for (const [id, f] of [['padSkill', () => skillUse()], ['padWeapon', () => weaponUse()], ['padCo', () => coSkillUse()], ['padAwake', () => awakeStart()], ['padSeal', () => ykSealUse()], ['padY0', () => ykSummon(0)], ['padY1', () => ykSummon(1)]]) { const b = $(id); b.addEventListener('pointerdown', e => { e.preventDefault(); touch.auto = true; f(); }); b.addEventListener('contextmenu', e => e.preventDefault()); }
+for (const [id, f] of [['padSkill', () => skillUse()], ['padWeapon', () => weaponUse()], ['padCo', () => coSkillUse()], ['padAwake', () => awakeStart()], ['padSeal', () => ykSealUse()], ['padY0', () => ykSummon(0)], ['padY1', () => ykSummon(1)], ['padYS', () => ykSkUse()]]) { const b = $(id); b.addEventListener('pointerdown', e => { e.preventDefault(); touch.auto = true; f(); }); b.addEventListener('contextmenu', e => e.preventDefault()); }
 $('padBomb').addEventListener('pointerdown', e => { e.preventDefault(); if (comboOK()) { clearTimeout(padHold); padHold = setTimeout(() => { padHold = null; comboReq = true; }, FUN.comboHold * 1000); } else bombReq = true; }); // 합체가 되면 길게 눌러 합체, 짧게 누르면 평소 필살기
 for (const ev of ['pointerup', 'pointercancel', 'pointerleave']) $('padBomb').addEventListener(ev, () => { if (padHold) { clearTimeout(padHold); padHold = null; bombReq = true; } });
 $('padSwap').addEventListener('pointerdown', e => { swapReq = true; touch.auto = true; e.preventDefault(); });
@@ -3243,13 +3245,13 @@ const ykSave = () => (SAVE.yokai = SAVE.yokai || {});
 const ykHas = k => TEST_UNLOCK || !!ykSave()[k];
 const ykLv = k => (ykSave()[k] && ykSave()[k].lv) || 1;
 function ykSealable(e) { return (e.type === 'mini' || e.type === 'mid') && e.def && !e.def.mirror && !e.dead && e.hp > 0 && (e.hp < e.mhp * YK.sealHp || DEV.seal); }
-function ykSealTick(dt) { for (const e of enemies) { if (ykSealable(e) && !e.sealDone) { e.sealDone = true; e.sealT = YK.sealWin; } if (e.sealT > 0) e.sealT -= dt; } }
+function ykSealTick(dt) { for (const e of enemies) { if (ykSealable(e) && !e.sealDone) { e.sealDone = true; e.sealT = YK.sealWin; tone(1760, 0.12, 'sine', 0.06); tone(2349, 0.2, 'sine', 0.05, 0, 0.1); } if (e.sealT > 0) e.sealT -= dt; } }
 const ykTarget = () => enemies.filter(e => e.sealT > 0 && !e.dead).sort((a, b) => b.sealT - a.sealT)[0];
 function ykSealUse() { if (G.mode !== 'play' || !uiOpen('seal')) return; const e = ykTarget(); if (!e) return toast('봉인할 요괴가 없습니다 · 문지기·수문장 체력이 20% 아래일 때'); if (!(G.sealN > 0) && !DEV.seal) return toast('봉인 부적이 없습니다'); if (DEV.seal) G.sealN = Math.max(G.sealN || 0, 1);
   G.sealN--; const k = e.def.img, first = !ykSave()[k], rate = DEV.seal ? 1 : (e.type === 'mid' ? YK.rateMid : YK.rateMini) + (first ? YK.rateNew : 0); fx2({ k: 'sealfly', x: P.x, y: P.y, tx: e.x, ty: e.y, d: 0.35 }); tone(660, 0.2, 'triangle', 0.08, 300);
   G.pend.push({ t: G.st + 0.32, f: () => { if (e.dead && !e.sealing) return; if (Math.random() < rate) { e.sealing = true; const S = ykSave(), o = S[k] || { lv: 0 }; o.lv = Math.min(YK.maxLv, o.lv + 1); if (e.golden) o.gold = 1; S[k] = o; saveGame();
-      fx2({ k: 'sealin', x: e.x, y: e.y, d: 0.6 }); banner(first ? '봉인 성공! 새 요괴 부적' : '봉인 성공! Lv ' + o.lv, ykName(k) + (e.golden ? ' (금빛)' : '') + ' · ' + EL[ykEl(k)], 1.8); sfx.life(); kill(e); ykPrize(); }
-    else { float('부적이 타 버렸다…', e.x, e.y - 40, '#ff9a8a'); burst(e.x, e.y - 20, 12, '#ff8a3a', 120); noise(0.3, 0.12, { f: 600 }); } } }); }
+      fx2({ k: 'sealin', x: e.x, y: e.y, d: 0.6 }); banner(first ? '봉인 성공! 새 요괴 부적' : '봉인 성공! Lv ' + o.lv, ykName(k) + (e.golden ? ' (금빛)' : '') + ' · ' + EL[ykEl(k)], 1.8); sfx.life(); sealWin(e, k); kill(e); ykPrize(); }
+    else sealFail(e); } }); }
 function ykPrize() { const n = Object.keys(ykSave()).length; SAVE.ykPaid = SAVE.ykPaid || 0; for (const [need, moon] of YK.prize) if (n >= need && SAVE.ykPaid < need) { SAVE.ykPaid = need; addMoon(moon, '요괴 부적 ' + need + '종'); }
   if (n >= YKEY().length && SAVE.ykPaid < 49) { SAVE.ykPaid = 49; const L = [eqById('a10')].filter(e => e && !SAVE.eq[e.id]); if (L.length) { SAVE.eq[L[0].id] = 1; banner('요괴 49종 봉인!', L[0].name + ' 획득', 2.4); } addMoon(YK.allMoon, '요괴 49종'); saveGame(); } }
 // 소환: 그 요괴가 적일 때 쓰던 패턴을 보이지 않는 가짜 요괴에게 돌리고, 생긴 탄을 거울처럼 뒤집어 아군 탄으로
@@ -3259,13 +3261,13 @@ function ykSummon(i) { const k = (SAVE.yokaiSel || [])[i]; if (!k || G.mode !== 
   (G.yks = G.yks || []).push({ k, slot: i, fake, mid: f.mid, t: f.mid ? YK.durMid : YK.durMini, dmg: (YK.dmg0 + YK.dmgLv * (lv - 1)) * (f.mid ? YK.midK : 1) * (gold ? YK.goldK : 1), el: ykEl(k), img: f.d.img || k });
   needImg(f.d.img || k); burst(P.x + 10, P.y + (i ? 70 : -70), 30, '#9fd8ff', 200); banner(ykName(k) + ' 소환!', EL[ykEl(k)] + ' · Lv ' + lv, 1.2); tone(392, 0.25, 'sine', 0.08); tone(523, 0.3, 'sine', 0.08, 0, 0.12); }
 function ykUpd(dt) { if (G.ykCd) for (let i = 0; i < 2; i++) if (G.ykCd[i] > 0) G.ykCd[i] -= dt;
-  for (const y of G.yks || []) { y.t -= dt; const sx = Math.min(W - 60, P.x + 30), sy = Math.max(30, Math.min(GY - 30, P.y + (y.slot ? 70 : -70))); y.x = sx; y.y = sy;
+  for (const y of G.yks || []) { if (!y.guard) y.t -= dt; const sx = y.guard ? Math.max(24, P.x - 6) : Math.min(W - 60, P.x + 30), sy = Math.max(30, Math.min(GY - 30, P.y + (y.guard ? (y.gi ? 64 : -64) : y.slot ? 70 : -70))); y.x = sx; y.y = sy;
     y.fake.t += dt; if (y.fake.t > 20) y.fake.t = 2; const b0 = bullets.length, sv = G.shooter; G.shooter = y.mid ? 'mid' : 'mini'; try { ET[y.fake.type].up(y.fake, dt); } catch (_) {} G.shooter = sv; y.fake.gone = false;
     const nw = bullets.splice(b0); for (const b of nw) ps(sx + (y.fake.x - b.x), b.y + (sy - y.fake.y), -b.vx * 1.3, b.vy, Math.max(4, b.r), y.dmg, 4, { el: y.el, ally: 1 });
     if (y.t <= 0) { burst(sx, sy, 20, '#c9d8ff', 140); float('돌아간다', sx, sy - 30, '#c9d8ff'); } }
   G.yks = (G.yks || []).filter(y => y.t > 0); }
-function drawYk() { for (const y of G.yks || []) { if (y.x == null) continue; const a = Math.min(1, y.t * 2); ctx.save(); ctx.globalAlpha = a; ctx.globalCompositeOperation = 'lighter'; glow('blue', y.x, y.y, 40, 0.5); ctx.globalCompositeOperation = 'source-over'; spr(y.img, y.x, y.y, (y.mid ? 80 : 60), { flip: 1 }); ctx.restore(); text(Math.ceil(y.t) + '', y.x, y.y - (y.mid ? 46 : 36), 10, '#9fd8ff', 'center'); }
-  for (const e of enemies) if (e.sealT > 0 && !e.dead && Math.floor(G.time * 6) % 2) text('封', e.x, e.y - (e.type === 'mid' ? 90 : 70), 22, '#ff4a3a', 'center');
+function drawYk() { for (const y of G.yks || []) { if (y.x == null) continue; const a = Math.min(1, y.t * 2); ctx.save(); ctx.globalAlpha = a; ctx.globalCompositeOperation = 'lighter'; glow('blue', y.x, y.y, 40, 0.5); ctx.globalCompositeOperation = 'source-over'; if (y.guard) ctx.globalAlpha = 0.55 + 0.1 * Math.sin(G.time * 4); spr(y.img, y.x, y.y, y.guard ? 44 : (y.mid ? 80 : 60), { flip: 1 }); ctx.restore(); if (!y.guard) text(Math.ceil(y.t) + '', y.x, y.y - (y.mid ? 46 : 36), 10, '#9fd8ff', 'center'); }
+  for (const e of enemies) if (e.sealT > 0 && !e.dead) { drawChain(e); if (Math.floor(G.time * 6) % 2) text('封', e.x, e.y - (e.type === 'mid' ? 96 : 76), 34, '#ff4a3a', 'center'); }
   for (const e of enemies) if (e.golden && !e.dead) { ctx.globalCompositeOperation = 'lighter'; glow('gold', e.x, e.y, 70, 0.35); ctx.globalCompositeOperation = 'source-over'; } }
 // 요괴 부적함·고르기 창
 function openYk() { if (!uiOpen('seal')) return toast('1층 대장을 이기면 요괴 봉인이 열립니다'); $('ovYk').hidden = false; renderYk(); }
@@ -3384,6 +3386,29 @@ function renderBtnSet() { const b = SAVE.btn, el = $('btnSet'); el.innerHTML = '
   el.querySelectorAll('[data-bsz]').forEach(x => x.onclick = () => { b.sz = x.dataset.bsz; saveGame(); btnApply(); renderBtnSet(); }); $('bOp').oninput = e => { b.op = e.target.value / 100; btnApply(); }; $('bOp').onchange = () => saveGame(); $('bLeft').onchange = e => { b.left = e.target.checked; saveGame(); btnApply(); }; }
 btnApply();
 { const a = togglePause; togglePause = function () { a(); if (G.paused) renderBtnSet(); }; }
+/* ---------- 기획 17-3: 봉인 연출(사슬·멈춤·빨려 듦·「封印」 도장·실패) + 그 판의 수호령 · 수문장 「요괴 기술」 ---------- */
+const SEAL2 = { stop: 0.4, guardMax: 2, guardDmg: 0.3, hp: 8, moon: 0.15, skDmg: 22, skCd: 0.12 };
+const YKSKN = { fire: '불길 돌진', wet: '물기둥', ice: '얼음 폭풍', bolt: '벼락 내리기', wind: '회오리', bind: '바위 굴리기', mark: '요기 폭발' };
+function drawChain(e) { const r = e.r * (e.type === 'mid' ? 1.3 : 1.7), t = G.time; ctx.save(); ctx.strokeStyle = 'rgba(230,40,30,.95)'; ctx.shadowColor = '#ff4a3a'; ctx.shadowBlur = 8; ctx.lineWidth = 4.5; ctx.setLineDash([7, 4]); for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.ellipse(e.x, e.y + (i - 1) * r * 0.4, r * 1.05, r * 0.32, Math.sin(t * 2 + i) * 0.25, 0, TAU); ctx.lineDashOffset = -t * 30 * (i % 2 ? 1 : -1); ctx.stroke(); } ctx.restore(); }
+function sealWin(e, k) { G.hstop = Math.max(G.hstop || 0, SEAL2.stop); G.shake = Math.max(G.shake, 0.3); const img = e.img || (e.def && e.def.img) || k;
+  (G.sealFx = G.sealFx || []).push({ x: e.x, y: e.y, img, sz: e.type === 'mid' ? 110 : 80, t: 0 }); G.stamp = { t: 0, name: ykName(k) };
+  hpHeal(P.ch, SEAL2.hp, true); P.moonG = Math.min(FUN2.awakeNeed, (P.moonG || 0) + FUN2.awakeNeed * SEAL2.moon); tone(196, 0.3, 'square', 0.08); tone(1047, 0.25, 'sine', 0.08, 0, 0.35);
+  if (e.type === 'mid') { G.ykSk = { k, el: ykEl(k), name: YKSKN[ykEl(k)] || '요괴 일격' }; setTimeout(() => banner('요괴 기술!', ykName(k) + ' · ' + G.ykSk.name + ' (한 번, 키보드 G)', 1.8), 1200); return; }
+  G.yks = G.yks || []; const gs = G.yks.filter(y => y.guard); if (gs.length >= SEAL2.guardMax) { const old = gs[0]; G.yks.splice(G.yks.indexOf(old), 1); }
+  const f = ykDef(k); if (!f) return; const fake = { type: 'mini', def: f.d, x: W - 120, y: GY / 2, t: 2, cd: 0.6, sa: 0, k: 0, pi: 0, pc: 0, hp: 1, mhp: 1, ph: 0 }; needImg(f.d.img || k);
+  const gi = G.yks.some(y => y.guard && y.gi === 0) ? 1 : 0; G.yks.push({ k, guard: 1, gi, fake, mid: false, t: 1e9, dmg: SEAL2.guardDmg, el: ykEl(k), img: f.d.img || k }); setTimeout(() => float('수호령 · ' + ykName(k), P.x - 40, P.y - 60, '#9fd8ff'), 900); }
+function sealFail(e) { for (let i = 0; i < 16; i++) parts.push({ x: e.x + rnd(-14, 14), y: e.y - 20 + rnd(-10, 10), vx: rnd(-50, 50), vy: rnd(-90, -20), life: 0.9, max: 0.9, col: i % 3 ? '#4a4040' : '#ff8a3a', r: 2.4 }); burst(e.x, e.y - 20, 14, '#ff6a2a', 140); float('실패!', e.x, e.y - 50, '#ff6a5a'); tone(140, 0.35, 'sawtooth', 0.08, -60); noise(0.35, 0.12, { f: 500 }); }
+function ykSkUse() { const q = G.ykSk; if (!q || G.mode !== 'play' || G.cmb || G.cut || G.awkCut) return; G.ykSk = null; const x = P.x, y = P.y;
+  withSrc('yk', () => { if (q.el === 'fire') { P.inv = Math.max(P.inv, 0.8); for (const e of inFront(x - 10, W + 20, y, 56)) hitEl(e, SEAL2.skDmg * 3, 'fire', { pen: 1 }); for (let i = 0; i < 24; i++) burst(x + i * (W - x) / 24, y + rnd(-16, 16), 3, '#ff7a2a', 180); }
+    else ps(x + 20, y, 300, 0, 30, SEAL2.skDmg, 21, { kc: 6, pierce: 1, cd: SEAL2.skCd, hit: new Map(), el: q.el, heavy: 1 }); });
+  G.shake = 0.5; G.flash = 0.2; ring(x, y, 120, '#ff9a6a', 0.5); banner(q.name + '!', ykName(q.k) + '의 기술', 1.2); tone(110, 0.4, 'sawtooth', 0.1, 60); noise(0.4, 0.14, { f: 300 }); }
+function drawSeal2() { const L = G.sealFx || []; for (const s of L) { s.t += 1 / 60; const u = Math.min(1, s.t / 0.5); if (u < 1) { ctx.save(); ctx.translate(s.x, s.y); ctx.rotate(u * 9); ctx.globalAlpha = 1 - u * 0.6; ctx.scale(1 - u, 1 - u); spr(s.img, 0, 0, s.sz, {}); ctx.restore(); ctx.save(); ctx.strokeStyle = 'rgba(200,30,30,' + (1 - u) + ')'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(s.x, s.y, s.sz * 0.6 * (1 - u) + 6, 0, TAU); ctx.stroke(); ctx.restore(); }
+    else { const v = Math.min(1, (s.t - 0.5) / 0.35), tx = s.x + (P.x - s.x) * v, ty = s.y + (P.y - s.y) * v - Math.sin(v * Math.PI) * 50; ctx.save(); ctx.translate(tx, ty); ctx.rotate(v * 8); ctx.fillStyle = '#f3e9d2'; ctx.fillRect(-6, -10, 12, 20); ctx.fillStyle = '#b8322a'; ctx.fillRect(-4, -7, 8, 14); ctx.restore(); if (v >= 1 && !s.got) { s.got = 1; ring(P.x, P.y, 40, '#ffe9a0', 0.3); } } }
+  G.sealFx = L.filter(s => s.t < 0.9);
+  const st = G.stamp; if (st) { st.t += 1 / 60; if (st.t > 1.3) G.stamp = null; else { const sc = st.t < 0.15 ? 2.2 - 1.2 * st.t / 0.15 : 1, a = Math.min(1, (1.3 - st.t) / 0.3); ctx.save(); ctx.globalAlpha = a; ctx.translate(W / 2, H * 0.24); ctx.rotate(-0.08); ctx.scale(sc, sc); ctx.fillStyle = 'rgba(190,30,25,.88)'; ctx.fillRect(-58, -34, 116, 68); ctx.strokeStyle = '#ffd8c8'; ctx.lineWidth = 3; ctx.strokeRect(-52, -28, 104, 56); ctx.font = '40px ' + FONT; ctx.textAlign = 'center'; ctx.fillStyle = '#fff2e0'; ctx.fillText('封印', 0, 14); ctx.restore(); } } }
+{ const a = drawWpFx; drawWpFx = function () { a(); drawSeal2(); }; }
+{ const a = drawHpHud; drawHpHud = function () { a(); if (G.mode !== 'play' || !uiOpen('seal')) return; const n = G.sealN || 0, x0 = 212, y0 = 8; for (let i = 0; i < Math.min(n, 6); i++) { ctx.fillStyle = '#f3e9d2'; ctx.fillRect(x0 + i * 9, y0, 7, 12); ctx.fillStyle = '#b8322a'; ctx.fillRect(x0 + i * 9 + 1.5, y0 + 2, 4, 8); } if (n > 6 || !n) text(n ? '×' + n : '봉인 0', x0 + Math.min(n, 6) * 9 + 2, y0 + 10, 9, '#f3e9d2'); } }
+{ const a = skillUi; skillUi = function (dt) { a(dt); const b = $('padYS'); b.classList.toggle('off', !(G.ykSk && G.mode === 'play')); if (G.ykSk) $('ysTxt').innerHTML = G.ykSk.name.replace(' ', '<br>'); }; }
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],
