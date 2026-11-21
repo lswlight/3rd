@@ -188,6 +188,8 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .modev{z-index:20;background:radial-gradient(ellipse at 50% 30%,#2a2040,#05060c 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4cqw;text-align:center}.modev h2{font-family:var(--display);font-size:4cqw;color:#ffd76a;margin:0}.modev p{margin:0;font-size:1.8cqw;color:#f3e9d2}
 .mode-btns{display:flex;gap:2cqw}.mode-btns button{width:30cqw;padding:2cqw 1.4cqw;border-radius:1.4cqw;display:flex;flex-direction:column;gap:.6cqw;align-items:center}.mode-btns b{font-family:var(--display);font-size:2.6cqw}.mode-btns small{font-size:1.3cqw;opacity:.85;line-height:1.4}
 #modeRel{background:#2a3a5a;border:2px solid #9fd0ff;color:#fff}#modeDev{background:#5a2a2a;border:2px solid #ffb060;color:#fff}#modeWipe{font-size:1.2cqw;opacity:.7}.mode-pill{position:absolute;left:50%;transform:translateX(-50%);top:.8cqw;z-index:3;font-size:1.2cqw;padding:.3cqw 1cqw;border-radius:2cqw;background:rgba(0,0,0,.55);color:#ffd76a;border:1px solid rgba(255,215,106,.5)}
+.build-tag{position:absolute;right:.6cqw;bottom:.3cqw;z-index:30;font-size:max(8px,.9cqw);color:rgba(255,240,200,.55);pointer-events:none;font-family:var(--body)}
+.artchk{position:fixed;inset:0;z-index:99;background:#151020;color:#f3e9d2;overflow:auto;padding:10px;font:12px sans-serif}.artchk>div{display:flex;flex-wrap:wrap;gap:8px}.artchk figure{margin:0;background:#2a2040;padding:4px;border-radius:6px;text-align:center}.artchk img{height:90px;margin:0 2px;background:#3a3050}
 .infov{z-index:7;background:radial-gradient(ellipse at 30% 40%,#2a2040,#0a0a14 75%);display:grid;grid-template-columns:42% 58%;padding:1.4cqw 1.8cqw;gap:1.6cqw;align-items:stretch;justify-content:stretch}
 .inf-left{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-height:0}.inf-back{position:absolute;left:0;top:0;z-index:3;font-size:1.4cqw}
 .inf-art{position:absolute;inset:3cqw 0 9cqw 0;width:100%;height:calc(100% - 12cqw);object-fit:contain;cursor:pointer;filter:drop-shadow(0 0 1.5cqw rgba(255,220,150,.25))}
@@ -1093,6 +1095,7 @@ addEventListener('pointerdown', audioInit, true); addEventListener('keydown', au
 /* ---------- 상태 ---------- */
 const G = { mode: 'title', paused: false, time: 0, scroll: 0, stage: 0, loop: 0, rank: 1, ev: [], evi: 0, st: 0,
   score: 0, hi: 0, banner: null, boss: null, clearT: 0, bombT: 0, shake: 0, flash: 0, overT: 0 };
+const BUILD = 'dev'; // 빌드 번호(검토용 APK 를 만들 때 커밋 앞 7자리로 바뀜)
 const REVIEW = true; // 검토판(그믐 검토판 APK·브라우저): 켤 때 「출시판으로 보기 / 개발판으로 보기」를 고른다. 출시판 빌드에서는 false
 const VIEWMODE = (() => { if (!REVIEW) return 'release'; try { return localStorage.getItem('geumeum-view') === 'release' ? 'release' : 'dev'; } catch (_) { return 'dev'; } })();
 const SAVEKEY = REVIEW && VIEWMODE === 'release' ? 'dokkaebi-save-rel' : 'dokkaebi-save'; // 검토판의 출시판 보기는 기록을 따로 씀
@@ -3686,6 +3689,11 @@ if (REVIEW) { let picked = false; try { picked = sessionStorage.getItem('geumeum
   $('modeWipe').onclick = () => { if (!confirm('출시판 보기 기록을 지우고 처음부터 할까요?')) return; try { localStorage.removeItem('dokkaebi-save-rel'); sessionStorage.setItem('geumeum-picked', '1'); localStorage.setItem('geumeum-view', 'release'); } catch (_) {} location.reload(); };
   if (!picked) $('ovMode').hidden = false;
   const pill = document.createElement('button'); pill.type = 'button'; pill.className = 'mode-pill'; pill.textContent = '검토판 · ' + (VIEWMODE === 'dev' ? '개발판' : '출시판') + ' 보기 (바꾸기)'; pill.onclick = () => { $('ovMode').hidden = false; }; $('ovTitle').appendChild(pill); }
+/* ---------- 기획 18-1: 빌드 번호 표시 · ?art=1 그림 점검 화면 ---------- */
+{ const tag = document.createElement('div'); tag.className = 'build-tag'; tag.textContent = '빌드 ' + BUILD + (REVIEW ? ' · ' + (VIEWMODE === 'dev' ? '개발판' : '출시판') + ' 보기' : ''); document.querySelector('.stage').appendChild(tag); }
+if (TEST_UNLOCK && /[?&]art=1/.test(location.search)) { const d = document.createElement('div'); d.className = 'artchk';
+  d.innerHTML = '<b>그림 점검 (캐릭터 23명 · 게임 그림 / 큰 그림 / 각성 그림) — 눌러서 닫기</b><div>' + CH.map((c, i) => '<figure><img src="assets/' + look(i).img + '.webp"><img src="assets/' + look(i).cut + '.webp"><img src="assets/' + ((AWK2.spr[i] || look(i).img)) + '.webp"><figcaption>' + i + ' ' + c.name + '</figcaption></figure>').join('') + '</div>';
+  d.onclick = () => d.remove(); document.body.appendChild(d); }
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],

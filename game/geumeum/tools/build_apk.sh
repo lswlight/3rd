@@ -23,5 +23,6 @@ fi
 cd "$G" && python3 build_release.py
 rm -rf "$A/www" && cp -r "$G/release/www" "$A/www"
 sed -i 's/const REVIEW = false;/const REVIEW = true;/' "$A/www/index.html"
+sed -i "s/const BUILD = 'dev';/const BUILD = '$(git -C /home/user/3rd rev-parse --short=7 HEAD)';/" "$A/www/index.html"
 cd "$A" && npx cap sync android >/dev/null && cd android && ./gradlew -q assembleDebug
 mkdir -p "$A/out" && cp app/build/outputs/apk/debug/app-debug.apk "$A/out/${1:-review}.apk" && ls -la "$A/out/${1:-review}.apk"
