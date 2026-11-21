@@ -1,7 +1,7 @@
 import re,os,shutil
 s=open('dokkaebi-shooter.html',encoding='utf-8').read()
-assert s.count('const TEST_UNLOCK = true;')==1
-s=s.replace('const TEST_UNLOCK = true;','const TEST_UNLOCK = false;')
+assert s.count('const REVIEW = true;')==1
+s=s.replace('const REVIEW = true;','const REVIEW = false;') # 출시판: 검토판 고르기 없음, 늘 잠김
 s=s.replace('<meta name="claude:viewport-fit-sides" content="cover">\n','')
 # 안드로이드 앱에서는 mp4만 쓴다(용량 절약)
 a="for (const [ext, type] of [['mp4', 'video/mp4'], ['webm', 'video/webm']])"

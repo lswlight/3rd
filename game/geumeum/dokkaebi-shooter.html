@@ -185,6 +185,9 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .mis li.done{border-color:var(--gold);color:var(--gold)}
 .mis li span:last-child{white-space:nowrap;color:var(--gold)}
 
+.modev{z-index:20;background:radial-gradient(ellipse at 50% 30%,#2a2040,#05060c 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4cqw;text-align:center}.modev h2{font-family:var(--display);font-size:4cqw;color:#ffd76a;margin:0}.modev p{margin:0;font-size:1.8cqw;color:#f3e9d2}
+.mode-btns{display:flex;gap:2cqw}.mode-btns button{width:30cqw;padding:2cqw 1.4cqw;border-radius:1.4cqw;display:flex;flex-direction:column;gap:.6cqw;align-items:center}.mode-btns b{font-family:var(--display);font-size:2.6cqw}.mode-btns small{font-size:1.3cqw;opacity:.85;line-height:1.4}
+#modeRel{background:#2a3a5a;border:2px solid #9fd0ff;color:#fff}#modeDev{background:#5a2a2a;border:2px solid #ffb060;color:#fff}#modeWipe{font-size:1.2cqw;opacity:.7}.mode-pill{position:absolute;left:50%;transform:translateX(-50%);top:.8cqw;z-index:3;font-size:1.2cqw;padding:.3cqw 1cqw;border-radius:2cqw;background:rgba(0,0,0,.55);color:#ffd76a;border:1px solid rgba(255,215,106,.5)}
 .infov{z-index:7;background:radial-gradient(ellipse at 30% 40%,#2a2040,#0a0a14 75%);display:grid;grid-template-columns:42% 58%;padding:1.4cqw 1.8cqw;gap:1.6cqw;align-items:stretch;justify-content:stretch}
 .inf-left{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-height:0}.inf-back{position:absolute;left:0;top:0;z-index:3;font-size:1.4cqw}
 .inf-art{position:absolute;inset:3cqw 0 9cqw 0;width:100%;height:calc(100% - 12cqw);object-fit:contain;cursor:pointer;filter:drop-shadow(0 0 1.5cqw rgba(255,220,150,.25))}
@@ -587,6 +590,12 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
 
   <div class="stage">
     <canvas id="cv" aria-label="게임 화면"></canvas>
+    <div class="overlay modev" id="ovMode" hidden>
+      <h2>그믐 검토판</h2><p>어떻게 볼까요?</p>
+      <div class="mode-btns"><button type="button" id="modeRel"><b>출시판으로 보기</b><small>처음 하는 사람처럼 · 잠김·단계적 열림 · 기록 따로</small></button>
+      <button type="button" id="modeDev"><b>개발판으로 보기</b><small>모든 캐릭터·장비·기능 열림 · 일시정지에 개발 도구</small></button></div>
+      <button type="button" id="modeWipe">출시판 보기 기록 지우기(처음부터)</button>
+    </div>
     <div class="overlay cover" id="ovCover" role="button" tabindex="0" aria-label="게임 시작">
       <img src="assets/cover6.jpg" alt="">
       <div class="cover-txt">
@@ -1084,8 +1093,11 @@ addEventListener('pointerdown', audioInit, true); addEventListener('keydown', au
 /* ---------- 상태 ---------- */
 const G = { mode: 'title', paused: false, time: 0, scroll: 0, stage: 0, loop: 0, rank: 1, ev: [], evi: 0, st: 0,
   score: 0, hi: 0, banner: null, boss: null, clearT: 0, bombT: 0, shake: 0, flash: 0, overT: 0 };
+const REVIEW = true; // 검토판(그믐 검토판 APK·브라우저): 켤 때 「출시판으로 보기 / 개발판으로 보기」를 고른다. 출시판 빌드에서는 false
+const VIEWMODE = (() => { if (!REVIEW) return 'release'; try { return localStorage.getItem('geumeum-view') === 'release' ? 'release' : 'dev'; } catch (_) { return 'dev'; } })();
+const SAVEKEY = REVIEW && VIEWMODE === 'release' ? 'dokkaebi-save-rel' : 'dokkaebi-save'; // 검토판의 출시판 보기는 기록을 따로 씀
 const SAVE = { gold: 0, owned: [], beaten: [], hi: 0, co: 1 };
-try { Object.assign(SAVE, JSON.parse(localStorage.getItem('dokkaebi-save') || '{}')); if (!SAVE.hi) SAVE.hi = +localStorage.getItem('dokkaebi-hi') || 0; } catch (e) {}
+try { Object.assign(SAVE, JSON.parse(localStorage.getItem(SAVEKEY) || '{}')); if (!SAVE.hi) SAVE.hi = +localStorage.getItem('dokkaebi-hi') || 0; } catch (e) {}
 if (!SAVE.stars || typeof SAVE.stars !== 'object') SAVE.stars = {}; if (!SAVE.lv || typeof SAVE.lv !== 'object') SAVE.lv = {};
 if (!Array.isArray(SAVE.tried)) SAVE.tried = []; if (!Number.isInteger(SAVE.trial)) SAVE.trial = -1;
 if (!Array.isArray(SAVE.owned)) SAVE.owned = []; if (!Array.isArray(SAVE.beaten)) SAVE.beaten = []; SAVE.gold = +SAVE.gold || 0;
@@ -1097,7 +1109,7 @@ function lookId(ch) { const L = LOOKS[ch]; if (!L) return 'o0'; const s = SAVE.l
 var SKINS; // 기획 15-5: 동료 스킨(아래에서 채움)
 function look(ch) { const c = CH[ch]; if (!c) return {}; const sk = SAVE.skinOn && SAVE.skinOn[ch]; if (sk && SKINS && SKINS[ch] && SKINS[ch][sk] && (TEST_UNLOCK || (SAVE.skin && SAVE.skin[ch + ':' + sk]))) return Object.assign({}, c, SKINS[ch][sk]); const L = LOOKS[ch] && LOOKS[ch][lookId(ch)]; return L || c; }
 G.diff = SAVE.diff; G.hi = SAVE.hi; G.co = Number.isInteger(SAVE.co) ? SAVE.co : 1;
-function saveGame() { SAVE.hi = G.hi; try { localStorage.setItem('dokkaebi-save', JSON.stringify(SAVE)); } catch (e) {} }
+function saveGame() { SAVE.hi = G.hi; try { localStorage.setItem(SAVEKEY, JSON.stringify(SAVE)); } catch (e) {} }
 const MAXLV = 10, lvOf = ch => Math.min(MAXLV, SAVE.lv[ch] || 1), upCost = ch => 500 * lvOf(ch); // 강화: 레벨마다 화력 +6%
 const MISSIONS = { seg: ['구간 3개 돌파', 3, 500], boss: ['층 대장 1명 처치', 1, 800], bomb: ['필살기 3번 쓰기', 3, 300], star: ['별 셋으로 구간 1개 돌파', 1, 600], mini: ['문지기 10명 처치', 10, 400], gold: ['골드 2,000 모으기', 2000, 500] };
 function daily() { // 날짜가 바뀌면 임무 셋을 새로 뽑는다(같은 날에는 누구나 같은 임무)
@@ -1112,7 +1124,7 @@ function mis(id, n = 1) {
   if (D.prog[id] >= MISSIONS[id][1]) { D.paid[id] = 1; SAVE.gold += MISSIONS[id][2]; if (!D.moon && D.ids.every(i => D.paid[i])) { D.moon = 1; addMoon(10, '오늘의 임무 모두 완료'); } saveGame(); if (G.mode === 'play') { float('임무 완료 +' + MISSIONS[id][2], P.x + 40, P.y - 40, '#ffd76a'); sfx.life(); } }
 }
 function addGold(n) { n = Math.round(n * (G.hard ? FUN.hardRoad.gold : 1) * (G.goldx || 1) * Math.min(2.5, 1 + 0.5 * G.loop) * (1 + eqStat(P.ch).gold / 100)); mis('gold', n); SAVE.gold += n; G.goldRun = (G.goldRun || 0) + n; }
-const TEST_UNLOCK = true; // 시험용: 대장 동료를 사지 않아도 쓸 수 있게 연다. 시험이 끝나면 false 로 되돌린다.
+const TEST_UNLOCK = REVIEW && VIEWMODE === 'dev'; // 개발판 보기: 모든 캐릭터·장비·기능이 열림 + 개발 도구. 출시판 빌드(REVIEW=false)와 검토판의 출시판 보기는 잠김
 const owns = ch => TEST_UNLOCK || (CH[ch].from === undefined) || SAVE.owned.includes(ch) || SAVE.trial === ch;
 function useTrial() { if (SAVE.trial >= 0 && (P.ch === SAVE.trial || P.co === SAVE.trial)) SAVE.trial = -1; } // 체험은 한 판(한 구간)으로 끝난다
 const P = { ch: 0, x: 70, y: H / 2, power: 1, lives: 2, bombs: 2, inv: 0, charge: 0, fcd: 0, famcd: 0, deadT: 0, fam: [] };
@@ -3666,6 +3678,13 @@ SKINS = {}; { const NM = { 3: '달밤 탈', 4: '청동 껍질', 5: '은여우 �
 $('infBody').addEventListener('click', e => { const c = infC, b = e.target.closest('[data-skin],[data-skbuy]'); if (!b) return; SAVE.skinOn = SAVE.skinOn || {}; SAVE.skin = SAVE.skin || {};
   if (b.dataset.skbuy) { const k = b.dataset.skbuy, v = SKINS[c][k]; if (SAVE.moon < v.moon) return; SAVE.moon -= v.moon; SAVE.skin[c + ':' + k] = 1; SAVE.skinOn[c] = k; toast(v.name + ' 스킨을 얻었다!'); }
   else { const k = b.dataset.skin; SAVE.skinOn[c] = SAVE.skinOn[c] === k ? null : k; } saveGame(); needImg(look(c).img); const pb = $('pick' + c); if (pb) pb.querySelector('img').src = 'assets/' + look(c).img + '.webp'; renderInfo(); });
+/* ---------- 검토판: 켤 때 출시판/개발판 고르기(사용자 요청) ---------- */
+if (REVIEW) { let picked = false; try { picked = sessionStorage.getItem('geumeum-picked') === '1'; } catch (_) {}
+  const choose = m => { try { sessionStorage.setItem('geumeum-picked', '1'); localStorage.setItem('geumeum-view', m); } catch (_) {} if (m !== VIEWMODE) location.reload(); else $('ovMode').hidden = true; };
+  $('modeRel').onclick = () => choose('release'); $('modeDev').onclick = () => choose('dev');
+  $('modeWipe').onclick = () => { if (!confirm('출시판 보기 기록을 지우고 처음부터 할까요?')) return; try { localStorage.removeItem('dokkaebi-save-rel'); sessionStorage.setItem('geumeum-picked', '1'); localStorage.setItem('geumeum-view', 'release'); } catch (_) {} location.reload(); };
+  if (!picked) $('ovMode').hidden = false;
+  const pill = document.createElement('button'); pill.type = 'button'; pill.className = 'mode-pill'; pill.textContent = '검토판 · ' + (VIEWMODE === 'dev' ? '개발판' : '출시판') + ' 보기 (바꾸기)'; pill.onclick = () => { $('ovMode').hidden = false; }; $('ovTitle').appendChild(pill); }
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],

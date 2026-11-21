@@ -1,5 +1,5 @@
 #!/bin/bash
-# 검토용 APK: 출시판을 만든 뒤 TEST_UNLOCK 을 켠 채(모두 열린 상태) com.graftkorea.geumeum.test 로 디버그 빌드
+# 검토용 APK: 출시판을 만든 뒤 REVIEW 를 켠 채(켤 때 출시판·개발판 보기를 고름) com.graftkorea.geumeum.test 로 디버그 빌드
 # 사용: tools/build_apk.sh 이름     (결과: $APK_DIR/out/이름.apk)
 # 필요: Node, JDK 21, Android SDK(platforms;android-36, build-tools) — ANDROID_HOME 으로 위치 지정
 set -e
@@ -22,6 +22,6 @@ PY
 fi
 cd "$G" && python3 build_release.py
 rm -rf "$A/www" && cp -r "$G/release/www" "$A/www"
-sed -i 's/const TEST_UNLOCK = false;/const TEST_UNLOCK = true;/' "$A/www/index.html"
+sed -i 's/const REVIEW = false;/const REVIEW = true;/' "$A/www/index.html"
 cd "$A" && npx cap sync android >/dev/null && cd android && ./gradlew -q assembleDebug
 mkdir -p "$A/out" && cp app/build/outputs/apk/debug/app-debug.apk "$A/out/${1:-review}.apk" && ls -la "$A/out/${1:-review}.apk"
