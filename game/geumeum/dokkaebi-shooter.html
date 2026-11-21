@@ -185,6 +185,17 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .mis li.done{border-color:var(--gold);color:var(--gold)}
 .mis li span:last-child{white-space:nowrap;color:var(--gold)}
 
+.infov{z-index:7;background:radial-gradient(ellipse at 30% 40%,#2a2040,#0a0a14 75%);display:grid;grid-template-columns:42% 58%;padding:1.4cqw 1.8cqw;gap:1.6cqw;align-items:stretch;justify-content:stretch}
+.inf-left{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-height:0}.inf-back{position:absolute;left:0;top:0;z-index:3;font-size:1.4cqw}
+.inf-art{position:absolute;inset:3cqw 0 9cqw 0;width:100%;height:calc(100% - 12cqw);object-fit:contain;cursor:pointer;filter:drop-shadow(0 0 1.5cqw rgba(255,220,150,.25))}
+.inf-say{position:absolute;top:4cqw;left:6%;right:6%;z-index:3;background:rgba(255,248,230,.95);color:#3a2008;border-radius:1cqw;padding:.8cqw 1.2cqw;font-size:1.4cqw}
+.inf-name{z-index:2;display:flex;gap:1cqw;align-items:baseline;font-family:var(--display);font-size:2.6cqw;text-shadow:0 0 .6cqw #000}.inf-name span{color:#ffd76a;font-size:2cqw;letter-spacing:.1em}
+.inf-power{z-index:2;margin:.2cqw 0 .6cqw;font-size:1.4cqw;color:#f4e3c0;text-shadow:0 0 .4cqw #000}.inf-power b{color:#ffd76a;font-size:1.8cqw}
+.inf-nav{z-index:2;display:flex;gap:1cqw}.inf-nav button{font-size:1.3cqw}
+.inf-right{display:flex;flex-direction:column;min-height:0;background:rgba(243,233,210,.06);border:1px solid rgba(232,184,74,.35);border-radius:1.2cqw;padding:1cqw 1.4cqw}
+.inf-tabs{display:flex;gap:.6cqw;margin-bottom:1cqw}.inf-tabs button{flex:1;font-size:1.5cqw;padding:.6cqw 0}.inf-tabs button.on{background:#e8b84a;color:#3a2008}
+.inf-body{flex:1;overflow:auto;font-size:1.45cqw;line-height:1.6;color:#f3e9d2}.inf-body h4{margin:.8cqw 0 .2cqw;color:#ffd76a;font-size:1.6cqw}.inf-body .muted{opacity:.6}.inf-body table{width:100%;border-collapse:collapse}.inf-body td{padding:.3cqw .4cqw;border-bottom:1px solid rgba(255,255,255,.08)}
+.inf-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1cqw}.inf-card{background:rgba(0,0,0,.3);border:1px solid rgba(232,184,74,.4);border-radius:1cqw;padding:.6cqw;text-align:center;font-size:1.25cqw}.inf-card img{width:100%;height:10cqw;object-fit:contain}.inf-card.lock img{filter:brightness(.25)}.inf-card.on{border-color:#ff7a8a;box-shadow:0 0 1cqw rgba(255,120,140,.5)}.inf-card button{font-size:1.2cqw;margin-top:.3cqw}
 .shop{z-index:6;background:rgba(8,10,20,.985);justify-content:flex-start;gap:1cqw;padding:1.6cqw 2cqw}
 .shop-head{display:flex;align-items:center;gap:1.6cqw;width:100%}
 .shop-head>b{font-family:var(--display);font-weight:400;font-size:max(12px,2cqw);color:var(--gold);text-align:left;flex:1}
@@ -735,6 +746,12 @@ button.chip.on{border-color:var(--gold);color:var(--gold);background:rgba(232,18
     <div class="overlay roadv" id="ovRoad" hidden>
       <h2>갈림길</h2><p>다음 구간으로 가는 길이 둘입니다</p>
       <div class="road-signs"><button type="button" class="sign easy" id="btnRoadEasy"><b>편한 길</b><small>그대로 갑니다</small></button><button type="button" class="sign hard" id="btnRoadHard"><b>험한 길</b><small id="roadHardTxt"></small></button></div>
+    </div>
+    <div class="overlay infov" id="ovInfo" hidden>
+      <div class="inf-left"><button type="button" class="inf-back" id="infBack">◀ 돌아가기</button><img class="inf-art" id="infArt" alt=""><div class="inf-say" id="infSay" hidden></div>
+        <div class="inf-name"><b id="infName"></b><span id="infStars"></span></div><p class="inf-power" id="infPower"></p>
+        <div class="inf-nav"><button type="button" id="infPrev">◀ 이전</button><button type="button" id="infNext">다음 ▶</button></div></div>
+      <div class="inf-right"><nav class="inf-tabs" id="infTabs"><button type="button" data-t="info">정보</button><button type="button" data-t="sk">스킬</button><button type="button" data-t="eq">장비</button><button type="button" data-t="skin">스킨</button><button type="button" data-t="story">이야기</button></nav><div class="inf-body" id="infBody"></div></div>
     </div>
     <div class="overlay shop" id="ovYk" hidden>
       <div class="shop-head"><b>요괴 부적함</b><span id="ykSum"></span><button type="button" id="btnYkX">닫기</button></div>
@@ -3537,6 +3554,45 @@ function spark3(x, y) { for (let i = 0; i < 3; i++) parts.push({ x: x - i * 10, 
   G.srcCtx = sv; }; }
 // 각성판 캐릭터 스킬: 같은 기술이 두 겹 더(한별 쌍회오리 · 달래 다섯 발 관통 · 나린 은하수 폭포)
 { const a = charSkill; charSkill = function (ch) { const n0 = shots.length; const r = a(ch); if (G.awake > 0) { const nw = shots.slice(n0); for (const s of nw) for (const oy of AWK2.skOff) shots.push(Object.assign({}, s, { y: s.y + oy, dmg: s.dmg * AWK2.skK, hit: (s.hit || ch === 1) ? new Map() : s.hit, pierce: ch === 1 ? 1 : s.pierce, cd: s.cd || 0.2 })); if (nw.length) float('각성 ' + (SKNAME[ch] || '스킬'), P.x, P.y - 70, awCol(ch)); } return r; }; }
+/* ---------- 기획 15-3: 캐릭터 정보 화면(큰 그림·별·종합 전투력 + 정보·스킬·장비·스킨·이야기) ---------- */
+const STAR5 = c => Math.min(5, Math.floor(lvOf(c) / 2)), starStr5 = n => '★'.repeat(n) + '☆'.repeat(5 - n);
+function powerOf(c) { const es = eqStat(c); let lvSum = 0; const d = SAVE.eqd[c] || {}; for (const sl of 'wtao') { const e = eqById(d[sl]); if (e && SAVE.eq[e.id]) lvSum += SAVE.eq[e.id]; }
+  return Math.round(hpMax(c) * 3 + (lvOf(c) - 1) * 80 + es.atk * 12 + es.bomb * 4 + lvSum * 25 + ((SAVE.yokai && Object.keys(SAVE.yokai).length) || 0) * 2 + 400); }
+const STORY = { // 동료 이야기 3장면(호감 단계 1·2·3에서 열림)
+  0: ['장터 끝 정자에서 부채를 고쳐 매며, 사라진 달 이야기를 처음 꺼낸다.', '바람이 멎은 밤, 한별은 스승이 남긴 부적 한 장을 보여 준다.', '「달을 되찾으면 부채를 접겠다」던 약속을 다시 떠올린다.'],
+  1: ['과녁 대신 별을 겨누던 어린 날의 이야기.', '부러진 활을 고치려 밤새 대장간 앞을 서성인다.', '「다음 화살은 너를 지키는 데 쓸게」'],
+  2: ['날개옷을 잃고 장터에 내려앉았던 첫날.', '은하수 물을 길어 아픈 아이를 낫게 한 일.', '하늘로 돌아갈 수 있어도 남기로 한 까닭.'],
+};
+const bondOf = c => (SAVE.bond && SAVE.bond[c]) || 0, bondLv = c => bondOf(c) >= 12 ? 3 : bondOf(c) >= 6 ? 2 : bondOf(c) >= 2 ? 1 : 0;
+let infC = 0, infT = 'info';
+function openInfo(c) { infC = c; $('ovInfo').hidden = false; renderInfo(); }
+function infList() { return CH.map((_, i) => i).filter(i => !CH[i].hide); }
+function renderInfo() { const c = infC, own = owns(c), L = look(c); const a = $('infArt'); a.src = 'assets/' + (L.cut || L.img) + '.webp'; a.style.transform = CH[c].flip ? 'scaleX(-1)' : ''; a.style.filter = own ? '' : 'brightness(.35)';
+  $('infName').textContent = CH[c].name; $('infName').style.color = SELCOL[c] || '#fff'; $('infStars').textContent = starStr5(own ? STAR5(c) : 0);
+  $('infPower').innerHTML = '체력 ' + hpMax(c) + ' · 종합 전투력 <b>' + (own ? powerOf(c).toLocaleString() : '—') + '</b>' + (own ? '' : ' · 🔒 아직 동료가 아님');
+  $('infTabs').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === infT)); $('infSay').hidden = true; $('infBody').innerHTML = INFTAB[infT](c); }
+const INFTAB = {
+  info: c => { const I = INFO[c] || {}, el = typeof SKEL !== 'undefined' ? SKEL[c] : ''; return '<h4>' + (I.role || '') + '</h4><p>' + (I.desc || '') + '</p><table><tr><td>속성</td><td>' + (EL[el] || '없음(강한 타격)') + '</td></tr><tr><td>체력</td><td>' + hpMax(c) + '</td></tr><tr><td>강화</td><td>Lv ' + lvOf(c) + ' / ' + MAXLV + ' · 별은 Lv 2마다 하나</td></tr><tr><td>얻는 곳</td><td>' + (CH[c].from === undefined ? '처음부터' : CH[c].get || (CH[c].from + 1) + '층 대장을 이기고 데려오기') + '</td></tr>' + (CH[c].join ? '<tr><td>한마디</td><td>「' + CH[c].join + '」</td></tr>' : '') + '</table>'; },
+  sk: c => { const t = coTy(c); return '<h4>캐릭터 스킬 · ' + (SKNAME[c] || '') + '</h4><p>조종할 때 쓰는 기 모은 공격(피해 3배, ' + (EL[SKEL[c]] || '강한 타격') + '). Lv 4 쿨 −15%, Lv 10 진화(한 겹 더). 각성 중에는 두 겹 더.</p>'
+    + '<h4>협력 · ' + t[1] + ' <small>(' + COTN[t[0]] + '형)</small></h4><p>' + ({ cmd: '동료로 옆에 있을 때 협력 버튼을 누른 채 끌어서 위치를 정하고 떼면, 그 자리에 ' + t[1] + '이(가) 펼쳐집니다.', ride: '협력 버튼을 누르면 5초 동안 ' + CH[c].name + '에 올라타 빠르게 달리며 적을 들이받습니다.', guard: '대장 공격 예고 때 누르면 ' + CH[c].name + '이(가) 앞에서 막고 반격합니다. 예고 끝에 맞추면 완벽 반격.' })[t[0]] + '</p>'
+    + '<h4>등장 일격 · ' + (ENNAME[c] || '') + '</h4><p>교대로 들어올 때 자동으로 나가는 일격.</p>'
+    + (BOSSK[CH[c].from] ? '<h4>대장일 때 쓰던 기술</h4><p class="muted">' + BOSSK[CH[c].from].slice(0, 3).map(x => x[1]).join(' · ') + ' · 필살기 ' + BOSSK[CH[c].from][3][0] + '</p>' : ''); },
+  eq: c => { const d = SAVE.eqd[c] || {}; return '<table>' + [...'wtao'].map(sl => { const e = eqById(d[sl] || (sl === 'o' ? 'o0' : '')); return '<tr><td>' + SLOT[sl] + '</td><td>' + (e ? '<b>' + e.name + '</b> ' + (e.base ? '' : 'Lv ' + (SAVE.eq[e.id] || 1)) + '<br><small class="muted">' + eqDesc(e, SAVE.eq[e.id] || 1) + '</small>' : '<span class="muted">비어 있음</span>') + '</td></tr>'; }).join('') + '</table>' + (owns(c) ? '<p><button type="button" id="infEqGo">장비 바꾸기</button></p>' : ''); },
+  skin: c => { const L = LOOKS[c] || {}, cards = [['o0', { img: CH[c].img, cut: CH[c].cut }]].concat(Object.entries(L).filter(([k]) => k !== 'o0')), cur = lookId(c);
+    const SK = (typeof SKINS !== 'undefined' && SKINS[c]) || {}; let h = '<div class="inf-cards">' + cards.slice(0, 3).map(([k, v]) => { const has = k === 'o0' || SAVE.eq[k] || (SK[k] && SAVE.skin && SAVE.skin[c + ':' + k]), e = eqById(k), s = SK[k]; return '<div class="inf-card' + (has ? '' : ' lock') + (cur === k ? ' on' : '') + '"><img src="assets/' + (v.img || CH[c].img) + '.webp" alt=""><b>' + (k === 'o0' ? '기본' : (e ? e.name : s ? s.name : k)) + (cur === k ? ' ♥' : '') + '</b><br><small>' + (k === 'o0' ? '처음 모습' : has ? (s ? s.desc : '옷 칸에서 고름') : '얻는 곳: ' + (e && e.need ? e.need : s ? s.get : '상점')) + '</small></div>'; }).join('');
+    if (cards.length < 3) for (let i = cards.length; i < 3; i++) h += '<div class="inf-card lock"><img src="assets/' + CH[c].img + '.webp" alt=""><b>스킨 ' + i + '</b><br><small>준비 중 · 행사·업적·달조각 상점</small></div>';
+    h += '</div>'; if (SAVE.awkSeen && SAVE.awkSeen[c] && AWK.img[c]) h += '<h4>각성 그림</h4><div class="inf-cards"><div class="inf-card on"><img src="assets/' + AWK.img[c] + '.webp" alt=""><b>달빛 각성</b><br><small>처음 각성해서 열림</small></div></div>'; else h += '<p class="muted">처음 각성하면 각성 그림이 여기에 열립니다</p>'; return h; },
+  story: c => { const S = STORY[c] || ['「' + (CH[c].join || '같이 가자.') + '」', CH[c].name + '이(가) 탑에 묶여 있던 까닭을 털어놓는다.', '달이 돌아온 밤, ' + CH[c].name + '이(가) 하고 싶던 말.'], b = bondLv(c);
+    return '<p>호감 ' + '♥'.repeat(b) + '♡'.repeat(3 - b) + ' <small class="muted">(같이 출격한 판 ' + bondOf(c) + ' · 2·6·12판에서 장면이 열림)</small></p>' + S.map((s, i) => '<h4>장면 ' + (i + 1) + '</h4><p' + (i < b ? '' : ' class="muted"') + '>' + (i < b ? s : '🔒 호감 ' + (i + 1) + '단계에서 열림') + '</p>').join(''); },
+};
+$('infTabs').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (!b) return; infT = b.dataset.t; renderInfo(); });
+$('infBody').addEventListener('click', e => { if (e.target.id === 'infEqGo') { $('ovInfo').hidden = true; select(infC); openEq(); } });
+$('infBack').addEventListener('click', () => { $('ovInfo').hidden = true; });
+for (const [id, d] of [['infPrev', -1], ['infNext', 1]]) $(id).addEventListener('click', () => { const L = infList(), i = L.indexOf(infC); infC = L[(i + d + L.length) % L.length]; renderInfo(); });
+$('infArt').addEventListener('click', () => { const c = infC, L = CO_SAY[c] || [CH[c].join || '…'], s = $('infSay'); s.textContent = L[Math.floor(Math.random() * L.length)] || '…'; s.hidden = false; const a = $('infArt'); a.animate([{ transform: (CH[c].flip ? 'scaleX(-1) ' : '') + 'translateY(0)' }, { transform: (CH[c].flip ? 'scaleX(-1) ' : '') + 'translateY(-1.2cqw)' }, { transform: (CH[c].flip ? 'scaleX(-1) ' : '') + 'translateY(0)' }], { duration: 380 }); clearTimeout(s._t); s._t = setTimeout(() => { s.hidden = true; }, 2600); });
+{ const a = pkShow; pkShow = function (c) { a(c); if (c >= 0) $('pkBtns').insertAdjacentHTML('beforeend', '<button type="button" data-pk="info">정보 보기</button>'); }; }
+$('pkBtns').addEventListener('click', ev => { const b = ev.target.closest('[data-pk="info"]'); if (b) { ev.stopImmediatePropagation(); openInfo(pkSel); } }, { capture: true });
+{ const a = newGame; newGame = function (ch, tower) { const r = a(ch, tower); SAVE.bond = SAVE.bond || {}; if (P.co >= 0) SAVE.bond[P.co] = (SAVE.bond[P.co] || 0) + 1; SAVE.bond[ch] = (SAVE.bond[ch] || 0) + 1; saveGame(); return r; }; }
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],
