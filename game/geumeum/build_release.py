@@ -18,7 +18,7 @@ for f in sorted(os.listdir('assets')):
     if os.path.isdir('assets/'+f) or '.' not in f: continue
     base,ext=f.rsplit('.',1)
     if ext=='webm': continue
-    if base in names or base.startswith('cutv') and base in s:
+    if base in names or base.startswith('cutv') and base in s or base.endswith('_s1') and base[:-3] in names: # _s1 = 동료 스킨(이름을 코드에서 만들어 씀)
         shutil.copy('assets/'+f,'release/www/assets/'+f); n+=1
 shutil.copytree('assets/fonts','release/www/assets/fonts'); shutil.copytree('assets/eq','release/www/assets/eq')
 print('copied',n)
