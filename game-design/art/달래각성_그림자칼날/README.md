@@ -9,3 +9,9 @@
 | `1_dive_blades` | 두 칼날을 쥐고 날아듦, 그림자 날개 | 190a81ed-0686-4644-ad3d-ce3b423455cd |
 | `2_throw_blades` | 날아들며 칼날을 던짐(그림자 실로 이어져 돌아옴) | 25add65d-2075-409a-aee6-6d333e67ca18 |
 | `3_split_moment` | 공중에서 활을 양손으로 가르는 각성 순간 | 971bddb5-002d-44ff-a99c-1b000197eb77 |
+
+## 게임 그림 (11/21)
+- `../게임용/aw1p.webp` (280px) / `aw1p_hi.webp` (640px): 각성 모습. 첫 참고 원본 게임 그림 `hp1_o0`, 옷 C안, 무기 `0_weapon_design`. 앞으로 뛰어드는 자세, 두 칼날 + 그림자 실, 구름 탐. job 7c5b9dc1-5cb5-402e-bb07-09ccdb77c649
+- `../게임용/dl_blade.webp` (128px) / `dl_blade_hi.webp` (256px): 칼날 탄(연기 없음, 게임에서 돌리고 연기는 코드로). job 4bd17618-0435-4596-b50b-f0af62823305 · 연기 있는 판 `dl_blade_smoke.webp`
+- `../게임용/aw1.webp`: 각성 일러스트 = `3_split_moment`
+배경은 Higgsfield 배경 제거 + 테두리 1픽셀 정리.
