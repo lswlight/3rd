@@ -934,6 +934,37 @@ const CH = [
   { name: '도깨비 여왕', robe: '#e8b84a', speed: 200, img: 'p12', h: 68, cut: 'cut12x', cutv: 'cutv12x', glow: 'gold', spark: '#fff0b0', tint: 'rgba(255,210,90,', bomb: '금 나와라 뚝딱', line: '후후, 이번엔 훔치지 않고 같이 놀러 가는 거야.', from: 9,
     join: '졌네. 달은 돌려줄게. 밤을 전부 가지려던 건 내 욕심이었어. 한 달에 하루면 충분해. 그날은 같이 놀아 줄 거지?',
     kit: { shot: 'fan', shape: 'coin', c: '#ffd76a', dmg: 1.15, rate: 0.11, sp: 560, charge: 'boom', bomb: 'rain', co: 'gold', sf: 1000 }, col: '#ffd76a', codesc: '골드 더 얻기', info: { role: '10층 대장 · 동료', st: [75, 80, 85], desc: '금 엽전이 넓게 퍼집니다. 모으기는 터지는 금 방망이, 필살기는 금 나와라 뚝딱.' } },
+  // 기획 15-4: 새 캐릭터 10명(한국 설화). 그림은 실루엣 임시(tmp), from: -1 = 대장이 아니라 다른 곳에서 얻음(get)
+  { name: '저승사자', robe: '#2a2a3a', speed: 185, img: 'p13', h: 70, cut: 'cut13', glow: 'purple', spark: '#d8d8f0', tint: 'rgba(170,170,220,', bomb: '명부 심판', line: '명부에 이름이 없는 넋은 내가 데려간다.', from: -1, get: '그믐의 탑 10층', tmp: 1,
+    join: '달이 사라진 밤, 길 잃은 넋이 너무 많아. 너희가 달을 찾는다면 나도 따라가겠다.',
+    kit: { shot: 'line', shape: 'blade', c: '#c0c0d8', dmg: 1.5, rate: 0.09, sp: 740, charge: 'pierce', bomb: 'sweep', sf: 700 }, col: '#b8b8d8', info: { role: '저승 차사 · 동료', st: [60, 60, 60], desc: '갓 쓴 저승 차사. 곧게 나가는 검은 칼날, 캐릭터 스킬 명부 사슬로 적을 묶습니다.' } },
+  { name: '바리공주', robe: '#e8f4ff', speed: 175, img: 'p14', h: 70, cut: 'cut14', glow: 'blue', spark: '#e0f8ff', tint: 'rgba(150,230,255,', bomb: '생명수 비', line: '생명수 한 모금이면 다시 일어설 수 있어요.', from: -1, get: '요괴 도감 40종', tmp: 1,
+    join: '저승에서 길어 온 생명수가 아직 남았어요. 다친 사람이 있으면 저를 불러 주세요.',
+    kit: { shot: 'fan', shape: 'shard', c: '#9fe8ff', dmg: 1, rate: 0.11, sp: 540, charge: 'boom', bomb: 'rain', sf: 1000 }, col: '#9fe8ff', info: { role: '생명수 무녀 · 동료', st: [60, 60, 60], desc: '저승에서 생명수를 길어 온 무녀. 캐릭터 스킬 생명수는 물줄기와 함께 체력 15를 되찾습니다.' } },
+  { name: '해태', robe: '#c8502a', speed: 170, img: 'p15', h: 70, cut: 'cut15', glow: 'fire', spark: '#ffd0a0', tint: 'rgba(255,140,70,', bomb: '불 삼킨 포효', line: '옳고 그름은 내 뿔이 가린다!', from: -1, get: '어려움 10층 대장', tmp: 1,
+    join: '불을 먹는 게 내 일인데, 달이 없으니 밤이 다 타 버릴 것 같아. 같이 가 줄게.',
+    kit: { shot: 'fan', shape: 'cres', c: '#ff9a5a', dmg: 1.1, rate: 0.12, sp: 540, charge: 'boom', bomb: 'spiral', sf: 1000 }, col: '#ff8a4a', info: { role: '수호수 소녀 · 동료', st: [60, 60, 60], desc: '불을 먹고 시비를 가리는 수호수. 캐릭터 스킬 불 삼키기는 앞의 적 탄을 먹고 불꽃으로 되뿜습니다.' } },
+  { name: '홍길동', robe: '#3a5a4a', speed: 230, img: 'p16', h: 70, cut: 'cut16', glow: 'jade', spark: '#d0fff0', tint: 'rgba(120,240,200,', bomb: '천 개의 분신', line: '동에 번쩍, 서에 번쩍!', from: -1, get: '돌발 사건 「길 잃은 동료」 10번', tmp: 1,
+    join: '탐관오리 혼내 주러 다니다 보니 달 도둑 소문이 들리더군. 이번엔 너희 편이다.',
+    kit: { shot: 'line', shape: 'blade', c: '#9fffe0', dmg: 1.3, rate: 0.08, sp: 800, charge: 'multi', bomb: 'sweep', sf: 700 }, col: '#9fffe0', info: { role: '의적 · 동료', st: [60, 60, 60], desc: '바람처럼 나타나는 의적. 가장 빠르고, 캐릭터 스킬 분신술은 여러 갈래로 벱니다.' } },
+  { name: '우렁각시', robe: '#4a8a9a', speed: 180, img: 'p17', h: 70, cut: 'cut17', glow: 'teal', spark: '#d0f8ff', tint: 'rgba(110,220,230,', bomb: '큰 물결', line: '껍데기 속은 생각보다 넓답니다.', from: -1, get: '달조각 상점', tmp: 1,
+    join: '우렁이 껍데기 밖 세상이 궁금했어요. 물이 필요하면 언제든 불러요.',
+    kit: { shot: 'home', shape: 'cres', c: '#7fd6e6', dmg: 1.05, rate: 0.15, sp: 430, charge: 'boom', bomb: 'rain', sf: 1000 }, col: '#7fd6e6', info: { role: '물의 각시 · 동료', st: [60, 60, 60], desc: '우렁이 껍데기에서 나온 물의 각시. 따라가는 물방울, 캐릭터 스킬 소용돌이.' } },
+  { name: '직녀', robe: '#b8a8f0', speed: 195, img: 'p18', h: 70, cut: 'cut18', glow: 'purple', spark: '#f0e8ff', tint: 'rgba(200,180,255,', bomb: '은하수 그물', line: '은하수 실로 길을 엮어 드릴게요.', from: -1, get: '칠석 행사(준비 중) · 달조각', tmp: 1,
+    join: '하늘 베틀이 멈춘 지 오래예요. 달이 돌아와야 은하수도 다시 흐르겠죠.',
+    kit: { shot: 'fan', shape: 'shard', c: '#e0d8ff', dmg: 1, rate: 0.11, sp: 560, charge: 'pierce', bomb: 'spiral', sf: 1200 }, col: '#e0d8ff', info: { role: '하늘 베틀 선녀 · 동료', st: [60, 60, 60], desc: '은하수를 짜는 선녀. 넓게 퍼지는 은실, 캐릭터 스킬 은실 베틀로 적을 묶습니다.' } },
+  { name: '산군', robe: '#8a5a2a', speed: 190, img: 'p19', h: 70, cut: 'cut19', glow: 'orange', spark: '#ffe0a0', tint: 'rgba(255,180,80,', bomb: '산신의 포효', line: '산의 주인이 왔다. 물러서라!', from: -1, get: '그믐의 탑 30층', tmp: 1,
+    join: '산이 어두우면 짐승도 사람도 길을 잃는다. 내 발톱을 빌려주마.',
+    kit: { shot: 'heavy', shape: 'log', c: '#e8a040', dmg: 2.4, rate: 0.18, sp: 440, charge: 'boom', bomb: 'sweep', sf: 150 }, col: '#e8a040', info: { role: '산신의 장수 · 동료', st: [60, 60, 60], desc: '호랑이 탈을 쓴 산신의 장수. 묵직한 한 방, 캐릭터 스킬 범 울음은 앞의 탄을 지웁니다.' } },
+  { name: '처용', robe: '#c83a3a', speed: 185, img: 'p20', h: 70, cut: 'cut20', glow: 'red', spark: '#ffd8c0', tint: 'rgba(255,120,100,', bomb: '처용 탈 춤판', line: '달 밝은 밤에 춤을 추면 역신도 물러간다네.', from: -1, get: '오락실 짝 맞추기 모든 단계', tmp: 1,
+    join: '달이 없으니 춤출 맛이 안 나는군. 달을 찾으면 한바탕 추어 주지.',
+    kit: { shot: 'home', shape: 'coin', c: '#ffd76a', dmg: 1.05, rate: 0.15, sp: 430, charge: 'multi', bomb: 'spiral', sf: 1000 }, col: '#ffd76a', info: { role: '탈춤꾼 · 동료', st: [60, 60, 60], desc: '춤으로 역신을 쫓는 탈춤꾼. 따라가는 탈, 캐릭터 스킬 처용무가 적에게 표식을 남깁니다.' } },
+  { name: '세오녀', robe: '#e8a050', speed: 185, img: 'p21', h: 70, cut: 'cut21', glow: 'gold', spark: '#fff0c0', tint: 'rgba(255,200,110,', bomb: '일월 비단', line: '해와 달의 빛을 비단에 짜 두었어요.', from: -1, get: '정월대보름 행사(준비 중) · 달조각', tmp: 1,
+    join: '달빛 한 올이 모자라 비단을 끝내지 못했어요. 함께 찾아 주세요.',
+    kit: { shot: 'fan', shape: 'cres', c: '#ffb060', dmg: 1.1, rate: 0.12, sp: 540, charge: 'pierce', bomb: 'rain', sf: 1000 }, col: '#ffb060', info: { role: '일월 비단 짜는 이 · 동료', st: [60, 60, 60], desc: '비단에 해와 달의 빛을 짜는 여인. 넓은 빛 비단, 캐릭터 스킬 햇빛 비단(불).' } },
+  { name: '강림도령', robe: '#5a2a2a', speed: 215, img: 'p22', h: 70, cut: 'cut22', glow: 'gold', spark: '#fff8b0', tint: 'rgba(255,230,120,', bomb: '저승 번개', line: '저승길도 다녀온 몸이다. 이쯤이야!', from: -1, get: '맹세 점수 15', tmp: 1,
+    join: '염라대왕 심부름도 했는데 달 도둑 하나 못 잡겠나. 내가 앞장서지.',
+    kit: { shot: 'line', shape: 'blade', c: '#fff08a', dmg: 1.5, rate: 0.09, sp: 760, charge: 'pierce', bomb: 'sweep', sf: 700 }, col: '#fff08a', info: { role: '저승 관원 · 동료', st: [60, 60, 60], desc: '저승에 다녀온 날쌘 관원. 빠른 번개 칼날, 캐릭터 스킬 저승 번개 창(관통).' } },
 ];
 const priceOf = ch => 10000 + 3000 * (CH[ch].from || 0), won = n => (n / 10000).toLocaleString() + '만'; // 대장 동료 값(골드): 1층 1만, 층마다 3천씩 비싸진다
 const VEC = [ // 그림을 못 불러왔을 때 쓰는 색
@@ -1063,7 +1094,8 @@ if (!Number.isInteger(SAVE.diff)) SAVE.diff = SAVE.hard ? 1 : 0; SAVE.moon = +SA
 const LOOKS = { 1: { o0: { img: 'hp1_o0', cut: 'hc1_o0', cutv: 'cutvh1_o0' }, o3: { img: 'hp1', cut: 'hc1w', cutv: 'cutvh1w' } }, 2: { o6: { img: 'hp2s', cut: 'hc2s', cutv: 'cutvh2s' } } };
 const hasLook = ch => ch >= 0 && ch <= 2; // 외형이 바뀌는 주인공
 function lookId(ch) { const L = LOOKS[ch]; if (!L) return 'o0'; const s = SAVE.look[ch]; if (s && L[s] && SAVE.eq[s]) return s; const o = (SAVE.eqd[ch] || {}).o; return o && L[o] && SAVE.eq[o] ? o : 'o0'; }
-function look(ch) { const c = CH[ch]; if (!c) return {}; const L = LOOKS[ch] && LOOKS[ch][lookId(ch)]; return L || c; }
+var SKINS; // 기획 15-5: 동료 스킨(아래에서 채움)
+function look(ch) { const c = CH[ch]; if (!c) return {}; const sk = SAVE.skinOn && SAVE.skinOn[ch]; if (sk && SKINS && SKINS[ch] && SKINS[ch][sk] && (TEST_UNLOCK || (SAVE.skin && SAVE.skin[ch + ':' + sk]))) return Object.assign({}, c, SKINS[ch][sk]); const L = LOOKS[ch] && LOOKS[ch][lookId(ch)]; return L || c; }
 G.diff = SAVE.diff; G.hi = SAVE.hi; G.co = Number.isInteger(SAVE.co) ? SAVE.co : 1;
 function saveGame() { SAVE.hi = G.hi; try { localStorage.setItem('dokkaebi-save', JSON.stringify(SAVE)); } catch (e) {} }
 const MAXLV = 10, lvOf = ch => Math.min(MAXLV, SAVE.lv[ch] || 1), upCost = ch => 500 * lvOf(ch); // 강화: 레벨마다 화력 +6%
@@ -1081,7 +1113,7 @@ function mis(id, n = 1) {
 }
 function addGold(n) { n = Math.round(n * (G.hard ? FUN.hardRoad.gold : 1) * (G.goldx || 1) * Math.min(2.5, 1 + 0.5 * G.loop) * (1 + eqStat(P.ch).gold / 100)); mis('gold', n); SAVE.gold += n; G.goldRun = (G.goldRun || 0) + n; }
 const TEST_UNLOCK = true; // 시험용: 대장 동료를 사지 않아도 쓸 수 있게 연다. 시험이 끝나면 false 로 되돌린다.
-const owns = ch => TEST_UNLOCK || CH[ch].from === undefined || SAVE.owned.includes(ch) || SAVE.trial === ch;
+const owns = ch => TEST_UNLOCK || (CH[ch].from === undefined) || SAVE.owned.includes(ch) || SAVE.trial === ch;
 function useTrial() { if (SAVE.trial >= 0 && (P.ch === SAVE.trial || P.co === SAVE.trial)) SAVE.trial = -1; } // 체험은 한 판(한 구간)으로 끝난다
 const P = { ch: 0, x: 70, y: H / 2, power: 1, lives: 2, bombs: 2, inv: 0, charge: 0, fcd: 0, famcd: 0, deadT: 0, fam: [] };
 let enemies = [], bullets = [], shots = [], items = [], parts = [];
@@ -2840,6 +2872,10 @@ const COMBOS = [ // [id, 두 사람, 이름, 효과 설명]
   ['feast', [3, 12], '도깨비 잔치', '화면의 모든 탄을 엽전으로 바꾸고 금 방망이가 내려침'],
   ['forge', [4, 10], '쇠 먹는 대장간', '3초 동안 다가오는 탄을 빨아들인 뒤, 그 수만큼 칼을 되쏨'],
   ['guard', [6, 9], '수호진', '6초 동안 앞에 물결 방벽(탄 막음) + 장승 기둥 셋이 내려침'],
+  ['hell', [13, 22], '저승 행차', '화면의 모든 적을 명부 사슬로 묶고, 저승 번개 창 여덟 자루가 꿰뚫음'],
+  ['sunmoon', [18, 21], '일월 은하', '화면이 밝아지며 모든 적에 표식, 은하수 실과 햇빛 비단이 휩쓸어 큰 불 피해'],
+  ['firesea', [15, 3], '불바다 잔치', '화면의 모든 탄을 삼켜 도깨비불로 되뿜고, 불바다가 적을 태움'],
+  ['life', [14, 2], '생명의 샘', '두 사람 체력 절반 회복 + 물기둥 셋이 솟아 적을 적심'],
 ];
 const comboOf = () => P.co < 0 ? null : COMBOS.find(c => c[1].includes(P.ch) && c[1].includes(P.co)) || null;
 const comboOK = () => G.mode === 'play' && !G.arc && !G.cmb && !G.cut && !G.talk && !rb('b_bare') && G.bombT <= 0 && P.bombs >= FUN.comboCost && !!comboOf();
@@ -2853,6 +2889,10 @@ function comboStart(c) { const [id, , name] = c; SAVE.combos = SAVE.combos || {}
   else if (id === 'river') { for (let i = 0; i < 5; i++) at(0.1 + i * 0.16, () => { const cx = W * (0.3 + i * 0.15); bullets = bullets.filter(b => Math.abs(b.x - cx) > 30); for (const e of enemies) if (Math.abs(e.x - cx) < 40 + e.r) damage(e, 22); for (let y = 10; y < GY; y += 26) burst(cx + rnd(-8, 8), y, 3, y % 52 ? '#bfe8ff' : '#ffffff', 160); ring(cx, GY - 20, 60, '#9fd8ff', 0.4); G.shake = Math.max(G.shake, 0.3); }); }
   else if (id === 'feast') at(0.1, () => { for (const b of bullets) items.push({ x: b.x, y: b.y, type: 'C', t: 0, auto: true, gk: chainGold() }); bullets = []; for (const e of enemies) if (e.x < W + 10) { damage(e, 40); fireball(e.x, e.y, 40); } confetti(); G.shake = 0.8; G.flash = 0.4; });
   else if (id === 'forge') { at(0.1, () => { G.absorb = FUN.comboAbsorb; G.absorbN = 0; }); at(0.1 + FUN.comboAbsorb, () => { const n = Math.min(60, 8 + (G.absorbN || 0)); for (let i = 0; i < n; i++) { const t = enemies.filter(e => !e.dead && e.x < W)[i % Math.max(1, enemies.length)], a = t ? Math.atan2(t.y - P.y, t.x - P.x) + rnd(-0.12, 0.12) : rnd(-0.6, 0.6); ps(P.x + 14, P.y, Math.cos(a) * 640, Math.sin(a) * 640, 5, 3, 4); } float('칼 ' + n + '자루!', P.x, P.y - 34, '#ffb060'); G.absorb = 0; }); }
+  else if (id === 'hell') { at(0.1, () => { for (const e of enemies) if (!e.dead && e.x < W + 10) { applyEl(e, 'bind'); hitEl(e, 20, 'bind'); } }); for (let i = 0; i < 8; i++) at(0.3 + i * 0.08, () => ps(P.x + 20, GY * (0.12 + i * 0.11), 900, 0, 8, 10, 20, { kc: 22, pierce: 1, pen: 1, cd: 0.1, hit: new Map(), el: 'bolt' })); }
+  else if (id === 'sunmoon') at(0.1, () => { G.flash = 0.6; G.dark = 0; for (const e of enemies) if (!e.dead && e.x < W + 10) { applyEl(e, 'mark'); hitEl(e, 45, 'fire'); burst(e.x, e.y, 14, '#ffe0a0', 200); } confetti(); });
+  else if (id === 'firesea') at(0.1, () => { const n = bullets.length; for (const b of bullets.slice(0, 60)) ps(b.x, b.y, 420, rnd(-60, 60), 6, 4, 20, { kc: 15, el: 'fire' }); bullets = []; for (const e of enemies) if (!e.dead && e.x < W + 10) hitEl(e, 30, 'fire'); G.shake = 0.7; float('탄 ' + n + '개를 삼켰다!', P.x, P.y - 60, '#ff8a4a'); });
+  else if (id === 'life') { at(0.1, () => { for (const k of [P.ch, P.co]) if (k >= 0) hpHeal(k, hpOf(k).max * 0.5, true); }); for (let i = 0; i < 3; i++) at(0.3 + i * 0.2, () => { const cx = W * (0.45 + i * 0.17); fx2({ k: 'col', x: cx, d: 0.6, col: '#9fe8ff' }); bullets = bullets.filter(b => Math.abs(b.x - cx) > 34); for (const e of enemies) if (!e.dead && Math.abs(e.x - cx) < 40 + e.r) hitEl(e, 30, 'wet'); }); }
   else if (id === 'guard') { at(0.1, () => { G.wall = FUN.comboWall; }); for (let i = 0; i < 3; i++) at(0.4 + i * 0.35, () => { const t = G.boss || nearest(P.x, P.y) || { x: W * 0.75, y: GY / 2 }; explode(t.x + rnd(-30, 30), t.y + rnd(-20, 20), 70, 30); burst(t.x, 0, 20, '#7be08a', 260); }); }
 }
 function comboUpd(dt) { // 합체 기술의 이어지는 효과
@@ -2898,6 +2938,10 @@ const COMBO2 = { // 합체마다: 배경 색 두 개, 대사 두 줄, 도장 글
   feast: { bg: ['#2a1a04', '#e8b84a'], say: ['잔치 시작이다!', '금 나와라, 뚝딱!'], seal: '宴', col: '#ffd76a', glow: 'gold' },
   forge: { bg: ['#1a0402', '#e0632e'], say: ['끄윽, 다 먹어 주마.', '먹은 만큼 벼려 줄게!'], seal: '鍛', col: '#ffb060', glow: 'fire' },
   guard: { bg: ['#03141c', '#2f7a8a'], say: ['이 길은 우리가 지킨다.', '바다여, 일어나라!'], seal: '守', col: '#a8f4ff', glow: 'teal' },
+  hell: { bg: ['#06060c', '#5a2a2a'], say: ['명부를 펼쳐라.', '저승길을 연다!'], seal: '冥', col: '#fff08a', glow: 'purple' },
+  sunmoon: { bg: ['#0c0a24', '#e8a050'], say: ['은하수를 엮을게요.', '해와 달을 함께!'], seal: '日月', col: '#ffe0a0', glow: 'gold' },
+  firesea: { bg: ['#2a0602', '#ff6a2a'], say: ['다 먹어 주마!', '크하하, 잔치다!'], seal: '火', col: '#ff8a4a', glow: 'fire' },
+  life: { bg: ['#041824', '#9fe8ff'], say: ['생명수를 나눠요.', '은하수 물도 보탤게요!'], seal: '生', col: '#9fe8ff', glow: 'blue' },
 };
 function combo2Begin(c) { // 부적 2개를 쓰고 4막 시작
   const id = c[0], first = !(G.cmbSeen || {})[id]; G.cmbSeen = G.cmbSeen || {}; G.cmbSeen[id] = 1;
@@ -3054,7 +3098,7 @@ function drawBossIntro() { const k = G.bossIntro.t, D = FUN2.bossIntro, S = STAG
   ctx.restore(); }
 /* ---------- 기획 14: 전투 개편 — 슈팅 + 액션 스킬. 수치는 BATTLE 한곳에 ---------- */
 const BATTLE = {
-  hp: [100, 85, 110, 95, 130, 90, 125, 90, 100, 115, 105, 95, 100], // 캐릭터 13명 체력
+  hp: [100, 85, 110, 95, 130, 90, 125, 90, 100, 115, 105, 95, 100, 105, 100, 125, 90, 95, 90, 120, 100, 95, 95], // 캐릭터 23명 체력
   dmg: { mob: 8, mini: 10, mid: 12, boss: 12, big: 25, body: 15, def: 10 }, bigR: 9, // 받는 피해: 잔챙이·문지기·수문장/대장 탄, 대장 큰 탄(반지름 9 이상), 몸 부딪힘
   invuln: 0.8, heal: { H: 20, L: 35 }, rest: 0.002, segHeal: 0.3, dropH: 0.06, // 맞은 뒤 무적, 떡·곶감 회복, 쉬는 동료 초당 0.2%(거의 안 참), 구간 사이 30%, 잔챙이 떡 확률
   eqLife: 20, lv7Life: 15, star: [30, 80], // 「목숨 +1」 장비 = 최대 체력 +20, Lv7 = +15, 별: 받은 피해 30 이하 셋·80 이하 둘
@@ -3074,7 +3118,7 @@ function drawHpHud() { // 왼쪽 위: 얼굴 + 체력바(빨강) + 달빛, 그 �
 }
 function drawHurt() { if (!(G.hurt > 0)) return; const a = Math.min(1, G.hurt * 2.2) * 0.5, g = ctx.createRadialGradient(W / 2, H / 2, H * 0.35, W / 2, H / 2, W * 0.62); g.addColorStop(0, 'rgba(200,20,20,0)'); g.addColorStop(1, 'rgba(200,20,20,' + a + ')'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
 /* 기획 14-2: 버튼 배치·쿨타임. 기 모으기(꾹 눌렀다 떼기)는 없애고 캐릭터 스킬(톡)로 */
-const SKCD = [6, 5, 7, 6, 7, 6, 7, 6, 6, 6, 6, 7, 7], COCD = [12, 10, 14, 12, 14, 12, 13, 12, 11, 13, 14, 13, 14]; // 캐릭터 스킬·협력 스킬 쿨(초)
+const SKCD = [6, 5, 7, 6, 7, 6, 7, 6, 6, 6, 6, 7, 7, 6, 7, 7, 6, 6, 6, 7, 6, 6, 6], COCD = [12, 10, 14, 12, 14, 12, 13, 12, 11, 13, 14, 13, 14]; // 캐릭터 스킬·협력 스킬 쿨(초)
 Object.assign(BATTLE, { wpCd: 5, grazeCd: 0.2, lv4Cd: 0.85 });
 const cdK = ch => (1 - eqStat(ch).chg / 100) * rChg() * (lvOf(ch) >= 4 ? BATTLE.lv4Cd : 1) * (rCombo() ? 0.8 : 1) * Math.pow(0.8, rb('b_cd')); // 옷「스킬 쿨」, 탑 축복, Lv4
 function cdTick(dt) { const C = P.cd; if (!C) return; for (const k in C) if (C[k] > 0) C[k] = Math.max(0, C[k] - dt); if (typeof wpReadyPing === 'function') wpReadyPing(); }
@@ -3579,8 +3623,8 @@ const INFTAB = {
     + (BOSSK[CH[c].from] ? '<h4>대장일 때 쓰던 기술</h4><p class="muted">' + BOSSK[CH[c].from].slice(0, 3).map(x => x[1]).join(' · ') + ' · 필살기 ' + BOSSK[CH[c].from][3][0] + '</p>' : ''); },
   eq: c => { const d = SAVE.eqd[c] || {}; return '<table>' + [...'wtao'].map(sl => { const e = eqById(d[sl] || (sl === 'o' ? 'o0' : '')); return '<tr><td>' + SLOT[sl] + '</td><td>' + (e ? '<b>' + e.name + '</b> ' + (e.base ? '' : 'Lv ' + (SAVE.eq[e.id] || 1)) + '<br><small class="muted">' + eqDesc(e, SAVE.eq[e.id] || 1) + '</small>' : '<span class="muted">비어 있음</span>') + '</td></tr>'; }).join('') + '</table>' + (owns(c) ? '<p><button type="button" id="infEqGo">장비 바꾸기</button></p>' : ''); },
   skin: c => { const L = LOOKS[c] || {}, cards = [['o0', { img: CH[c].img, cut: CH[c].cut }]].concat(Object.entries(L).filter(([k]) => k !== 'o0')), cur = lookId(c);
-    const SK = (typeof SKINS !== 'undefined' && SKINS[c]) || {}; let h = '<div class="inf-cards">' + cards.slice(0, 3).map(([k, v]) => { const has = k === 'o0' || SAVE.eq[k] || (SK[k] && SAVE.skin && SAVE.skin[c + ':' + k]), e = eqById(k), s = SK[k]; return '<div class="inf-card' + (has ? '' : ' lock') + (cur === k ? ' on' : '') + '"><img src="assets/' + (v.img || CH[c].img) + '.webp" alt=""><b>' + (k === 'o0' ? '기본' : (e ? e.name : s ? s.name : k)) + (cur === k ? ' ♥' : '') + '</b><br><small>' + (k === 'o0' ? '처음 모습' : has ? (s ? s.desc : '옷 칸에서 고름') : '얻는 곳: ' + (e && e.need ? e.need : s ? s.get : '상점')) + '</small></div>'; }).join('');
-    if (cards.length < 3) for (let i = cards.length; i < 3; i++) h += '<div class="inf-card lock"><img src="assets/' + CH[c].img + '.webp" alt=""><b>스킨 ' + i + '</b><br><small>준비 중 · 행사·업적·달조각 상점</small></div>';
+    const SK = (typeof SKINS !== 'undefined' && SKINS[c]) || {}; let h = '<div class="inf-cards">' + cards.slice(0, 3).map(([k, v]) => { const has = k === 'o0' || SAVE.eq[k] || (SK[k] && SAVE.skin && SAVE.skin[c + ':' + k]), e = eqById(k), s = SK[k]; return '<div class="inf-card' + (has ? '' : ' lock') + (cur === k && !(SAVE.skinOn && SAVE.skinOn[c]) ? ' on' : '') + '"><img src="assets/' + (v.img || CH[c].img) + '.webp" alt=""><b>' + (k === 'o0' ? '기본' : (e ? e.name : s ? s.name : k)) + (cur === k && !(SAVE.skinOn && SAVE.skinOn[c]) ? ' ♥' : '') + '</b><br><small>' + (k === 'o0' ? '처음 모습' : has ? (s ? s.desc : '옷 칸에서 고름') : '얻는 곳: ' + (e && e.need ? e.need : s ? s.get : '상점')) + '</small></div>'; }).join('');
+    if (cards.length < 3) for (let i = cards.length + (SK && SKINS && SKINS[c] ? 1 : 0) - (SKINS && SKINS[c] ? 1 : 0) + (SKINS && SKINS[c] ? 1 : 0); i < 3; i++) h += '<div class="inf-card lock"><img src="assets/' + CH[c].img + '.webp" alt=""><b>스킨 ' + i + '</b><br><small>준비 중 · 행사·업적·달조각 상점</small></div>';
     h += '</div>'; if (SAVE.awkSeen && SAVE.awkSeen[c] && AWK.img[c]) h += '<h4>각성 그림</h4><div class="inf-cards"><div class="inf-card on"><img src="assets/' + AWK.img[c] + '.webp" alt=""><b>달빛 각성</b><br><small>처음 각성해서 열림</small></div></div>'; else h += '<p class="muted">처음 각성하면 각성 그림이 여기에 열립니다</p>'; return h; },
   story: c => { const S = STORY[c] || ['「' + (CH[c].join || '같이 가자.') + '」', CH[c].name + '이(가) 탑에 묶여 있던 까닭을 털어놓는다.', '달이 돌아온 밤, ' + CH[c].name + '이(가) 하고 싶던 말.'], b = bondLv(c);
     return '<p>호감 ' + '♥'.repeat(b) + '♡'.repeat(3 - b) + ' <small class="muted">(같이 출격한 판 ' + bondOf(c) + ' · 2·6·12판에서 장면이 열림)</small></p>' + S.map((s, i) => '<h4>장면 ' + (i + 1) + '</h4><p' + (i < b ? '' : ' class="muted"') + '>' + (i < b ? s : '🔒 호감 ' + (i + 1) + '단계에서 열림') + '</p>').join(''); },
@@ -3593,6 +3637,35 @@ $('infArt').addEventListener('click', () => { const c = infC, L = CO_SAY[c] || [
 { const a = pkShow; pkShow = function (c) { a(c); if (c >= 0) $('pkBtns').insertAdjacentHTML('beforeend', '<button type="button" data-pk="info">정보 보기</button>'); }; }
 $('pkBtns').addEventListener('click', ev => { const b = ev.target.closest('[data-pk="info"]'); if (b) { ev.stopImmediatePropagation(); openInfo(pkSel); } }, { capture: true });
 { const a = newGame; newGame = function (ch, tower) { const r = a(ch, tower); SAVE.bond = SAVE.bond || {}; if (P.co >= 0) SAVE.bond[P.co] = (SAVE.bond[P.co] || 0) + 1; SAVE.bond[ch] = (SAVE.bond[ch] || 0) + 1; saveGame(); return r; }; }
+/* ---------- 기획 15-4: 새 캐릭터 10명 — 스킬·협력·등장 일격·속성·얻는 곳 ---------- */
+SKNAME.push('명부 사슬', '생명수', '불 삼키기', '분신술', '소용돌이', '은실 베틀', '범 울음', '처용무', '햇빛 비단', '저승 번개 창');
+ENNAME.push('갓 그림자 베기', '꽃잎 회오리', '뿔 들이받기', '구름 타고 내려찍기', '물방울 폭탄', '은하수 실 채찍', '호랑이 발톱', '탈 던지기', '해 원반 던지기', '붉은 오랏줄');
+SKEL.push('bind', 'wet', 'fire', 'wind', 'wet', 'bind', 'wind', 'mark', 'fire', 'bolt');
+Object.assign(COTYPE, { 13: ['guard', '넋 거두기', 'bind', '#c0c0e0'], 14: ['guard', '환생의 꽃', 'wet', '#9fe8ff'], 15: ['ride', '해태 타기', 'fire', '#ff8a4a'], 16: ['guard', '축지법', 'wind', '#9fffe0'], 17: ['guard', '우렁 껍데기', 'wet', '#7fd6e6'],
+  18: ['cmd', '오작교', 'mark', '#e0d8ff'], 19: ['ride', '산군 호랑이', 'wind', '#e8a040'], 20: ['cmd', '역신 쫓기', 'mark', '#ffd76a'], 21: ['cmd', '일월 광채', 'fire', '#ffb060'], 22: ['guard', '저승길 열기', 'bolt', '#fff08a'] });
+Object.assign(CO_SAY, { 13: ['넋이 빠질 뻔했군.', '명부를 펼친다.', '같이 데려가자.', '이름을 적어라!'], 14: ['다쳤어요? 생명수를!', '꽃이 피어나요.', '손을 잡아요.', '다시 일어서요!'], 15: ['뜨겁지? 내가 먹어 줄게.', '불을 삼킨다!', '들이받자!', '옳고 그름을 가린다!'],
+  16: ['어이쿠, 조심!', '동에 번쩍!', '분신 준비!', '서에 번쩍!'], 17: ['껍데기 안으로!', '물이 차올라요.', '함께 감싸요.', '조금만 더!'], 18: ['실이 엉켰어요?', '은하수가 흘러요.', '오작교를 놓아요.', '마지막 한 올!'],
+  19: ['물러서지 마라.', '산이 울린다!', '함께 달린다!', '포효하라!'], 20: ['역신이 붙었군.', '춤을 시작하지.', '장단 맞춰!', '물러가라 역신아!'], 21: ['눈부시죠?', '해가 떠요!', '비단을 펼쳐요.', '빛이 모자라지 않아요!'], 22: ['저승길은 아직 멀었다.', '번개가 친다!', '오랏줄 준비!', '데려가겠다!'] });
+// 얻는 곳(출시판): 조건을 채우면 동료가 됨. 달조각으로 바로 데려오기도 됨
+const NEWGET = { 13: () => (SAVE.tower || 0) >= 10, 14: () => dexSeen() >= 40, 15: () => SAVE.mfirst.includes('1-9'), 16: () => (SAVE.guestN || 0) >= 10, 19: () => (SAVE.tower || 0) >= 30,
+  20: () => !!(SAVE.mem && SAVE.mem.st && [1, 2, 3].every(i => SAVE.mem.st[i] >= 1)), 22: () => oathScore() >= 15 };
+{ const a = checkRewards; checkRewards = function () { a(); for (const k in NEWGET) { const c = +k; let okc = false; try { okc = NEWGET[k](); } catch (_) {} if (!SAVE.owned.includes(c) && okc) { SAVE.owned.push(c); saveGame(); toast(CH[c].name + '이(가) 동료가 되었다! (' + CH[c].get + ')'); } } }; }
+{ const a = evStart; evStart = function (id) { if (id === 'guest') { SAVE.guestN = (SAVE.guestN || 0) + 1; saveGame(); } return a(id); }; }
+{ const a = charSkill; charSkill = function (ch) { const r = a(ch); const x = P.x, y = P.y;
+  if (ch === 14) for (const c of [P.ch, P.co]) if (c >= 0) hpHeal(c, 15, true);
+  if (ch === 15) { const n0 = bullets.length; bullets = bullets.filter(b => !(b.x > x && b.x < x + 170 && Math.abs(b.y - y) < 80)); const n = n0 - bullets.length; for (let i = 0; i < Math.min(12, n); i++) { const a2 = (i - 5) * 0.08; ps(x + 20, y, Math.cos(a2) * 520, Math.sin(a2) * 520, 5, 3, 20, { kc: 15, el: 'fire', src: 'sk' }); } if (n) float('불 삼킴 ×' + n, x, y - 60, '#ff8a4a'); }
+  if (ch === 19) { bullets = bullets.filter(b => !(b.x > x && b.x < x + 220 && Math.abs(b.y - y) < 110)); ring(x + 90, y, 130, '#e8a040', 0.35); G.shake = Math.max(G.shake, 0.4); }
+  return r; }; }
+{ const a = entryStrike; entryStrike = function (ch) { if (ch < 13) return a(ch); const x = P.x, y = P.y, el = SKEL[ch] === 'heavy' ? null : SKEL[ch], col = CH[ch].col; float(ENNAME[ch], x, y - 48, '#ffe9a0'); G.shake = Math.max(G.shake, 0.3);
+  withSrc('entry', () => { fx2({ k: 'arc', x, y, d: 0.25, col }); for (const e of inFront(x - 20, x + 170, y, 90)) hitEl(e, 18, el, { heavy: 1 }); }); }; }
+/* ---------- 기획 15-5: 동료 스킨(대장 출신 10명에게 하나씩, 그림은 지금 그림의 색을 바꾼 임시판) ---------- */
+SKINS = {}; { const NM = { 3: '달밤 탈', 4: '청동 껍질', 5: '은여우 옷', 6: '달밤 장승', 7: '분홍 눈꽃', 8: '붉은 비늘', 9: '금빛 갑주', 10: '푸른 쇠', 11: '새벽 그림자', 12: '보랏빛 여왕' };
+  for (let c = 3; c <= 12; c++) SKINS[c] = { s1: { name: NM[c], img: CH[c].img + '_s1', cut: CH[c].cut + '_s1', cutv: null, desc: '달밤에 물든 다른 빛깔의 옷', get: '달조각 150', moon: 150 } }; }
+{ const a = INFTAB.skin; INFTAB.skin = c => { let h = a(c); const S = SKINS[c]; if (!S) return h; const on = SAVE.skinOn && SAVE.skinOn[c];
+  h += '<h4>동료 스킨</h4><div class="inf-cards">' + Object.entries(S).map(([k, v]) => { const has = TEST_UNLOCK || (SAVE.skin && SAVE.skin[c + ':' + k]); return '<div class="inf-card' + (has ? '' : ' lock') + (on === k ? ' on' : '') + '"><img src="assets/' + v.img + '.webp" alt=""><b>' + v.name + (on === k ? ' ♥' : '') + '</b><br><small>' + v.desc + '</small><br>' + (has ? '<button type="button" data-skin="' + k + '">' + (on === k ? '벗기' : '입기') + '</button>' : '<button type="button" data-skbuy="' + k + '"' + (SAVE.moon >= v.moon ? '' : ' disabled') + '>달조각 ' + v.moon + '</button>') + '</div>'; }).join('') + '</div><p class="muted">임시 그림(색만 바뀜) · 진짜 그림이 들어오면 바뀝니다</p>'; return h; }; }
+$('infBody').addEventListener('click', e => { const c = infC, b = e.target.closest('[data-skin],[data-skbuy]'); if (!b) return; SAVE.skinOn = SAVE.skinOn || {}; SAVE.skin = SAVE.skin || {};
+  if (b.dataset.skbuy) { const k = b.dataset.skbuy, v = SKINS[c][k]; if (SAVE.moon < v.moon) return; SAVE.moon -= v.moon; SAVE.skin[c + ':' + k] = 1; SAVE.skinOn[c] = k; toast(v.name + ' 스킨을 얻었다!'); }
+  else { const k = b.dataset.skin; SAVE.skinOn[c] = SAVE.skinOn[c] === k ? null : k; } saveGame(); needImg(look(c).img); const pb = $('pick' + c); if (pb) pb.querySelector('img').src = 'assets/' + look(c).img + '.webp'; renderInfo(); });
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],
@@ -3776,7 +3849,7 @@ function grantProduct(id) {
   if (!$('ovShop').hidden) renderShop(); if (!$('ovOver').hidden) reviveUI(); refreshShop();
 }
 /* 상점 */
-const moonPriceOf = ch => 120 + 30 * (CH[ch].from || 0); // 달조각으로 바로 데려오기(대장을 아직 못 이겨도 된다)
+const moonPriceOf = ch => CH[ch].from < 0 ? 400 : 120 + 30 * (CH[ch].from || 0); // 달조각으로 바로 데려오기(대장을 아직 못 이겨도 된다)
 let shopTab = 'moon';
 const card = (cls, img, title, sub, btn) => '<div class="card ' + cls + '"><img src="' + img + '" alt=""><b>' + title + '</b><small>' + sub + '</small>' + btn + '</div>';
 function openShop(tab) { if (tab) shopTab = tab; $('ovShop').hidden = false; renderShop(); }
@@ -4174,7 +4247,7 @@ function pkShow(c) { pkSel = c; const d = $('pkDetail'); { const a = $('d2Art'),
   else { if (beat) h += '<button type="button" class="buy" data-pk="gold"' + (SAVE.gold >= priceOf(c) ? '' : ' disabled') + '>골드로 데려오기 · ' + won(priceOf(c)) + '</button>';
     if (uiOpen('moon')) h += '<button type="button" data-pk="moon"' + (SAVE.moon >= moonPriceOf(c) ? '' : ' disabled') + '>달조각으로 데려오기 · ' + moonPriceOf(c) + '</button>';
     if (beat && !SAVE.tried.includes(c)) h += '<button type="button" data-pk="try">한 판 써 보기</button>';
-    if (!beat) h += '<small>' + (CH[c].from + 1) + '층 대장을 이기면 골드로 데려올 수 있습니다</small>'; }
+    if (!beat) h += '<small>' + (CH[c].from < 0 ? '얻는 곳: ' + CH[c].get : (CH[c].from + 1) + '층 대장을 이기면 골드로 데려올 수 있습니다') + '</small>'; }
   $('pkBtns').innerHTML = h; }
 for (const b of picks) b.addEventListener('click', () => { const c = +b.dataset.ch; if (pkMode === 'co') { if (c === sel) return; picks.forEach(o => o.setAttribute('aria-pressed', String(o === b))); if (owns(c)) { G.co = c; SAVE.co = c; saveGame(); coRender(); toast(CH[c].name + '이(가) 같이 갑니다'); picks.forEach(o => { o.dataset.tag = +o.dataset.ch === sel ? '조종' : ''; }); } pkShow(c); return; } select(c); pkShow(c); });
 $('pkBtns').addEventListener('click', ev => { const b = ev.target.closest('[data-pk]'); if (!b || b.disabled) return; const k = b.dataset.pk, c = pkSel;
