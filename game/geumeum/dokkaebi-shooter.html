@@ -1796,7 +1796,7 @@ function rogueFire(n0) { // 그믐의 탑 축복: 기본 공격
 function fire0() {
   const p = P.power, x = P.x + 14, y = P.y; sfx.shot(); P.muz = 0.07;
   if (P.ch >= 6) { kitFire(P.ch, p, x, y, 1); P.fcd = CH[P.ch].kit.rate; return; }
-  if (P.ch === 0) { const n = p + 1; for (let i = 0; i < n; i++) { const a = (i - (n - 1) / 2) * 0.09; ps(x, y, Math.cos(a) * 560, Math.sin(a) * 560, 4, 1, 0); } P.fcd = 0.11; }
+  if (P.ch === 0) { const n = p + 1; for (let i = 0; i < n; i++) { const a = (i - (n - 1) / 2) * 0.09; ps(x + 8, y - 13, Math.cos(a) * 560, Math.sin(a) * 560, 4, 1, 0); } P.fcd = 0.11; }
   else if (P.ch === 1) { for (let i = 0; i < p; i++) ps(x, y + (i - (p - 1) / 2) * 7, 760, 0, 3, 1.5, 1); P.fcd = 0.09; }
   else if (P.ch === 2) { ps(x, y, 430, 0, 7, 2.2 + p * 1.4, 2); if (p >= 3) { ps(x, y, 400, -90, 4, 1.5, 0); ps(x, y, 400, 90, 4, 1.5, 0); } P.fcd = 0.16; }
   else if (P.ch === 4) { ps(x, y, 400, 0, 8, 2.6 + p * 1.5, 5); if (p >= 2) { ps(x, y, 380, -70, 5, 1.2, 5); ps(x, y, 380, 70, 5, 1.2, 5); } P.fcd = 0.19; } // 불가사리: 쇠공
@@ -2626,7 +2626,7 @@ function draw() {
     if (P.power >= 4 && P.deadT <= 0) { ctx.globalCompositeOperation = 'lighter'; glow(CH[P.ch].glow || 'gold', P.x, P.y, 34 + Math.sin(G.time * 5) * 4, 0.35); ctx.globalCompositeOperation = 'source-over'; } // 힘 최대: 은은한 기운
     if (G.awake > 0) drawAwakeP();
     else if (!(P.inv > 0 && Math.floor(G.time * 16) % 2)) drawPlayer(P.x, P.y, P.ch);
-    if (P.muz > 0) { ctx.globalCompositeOperation = 'lighter'; glow(CH[P.ch].glow, P.x + 24, P.y, 14 + P.muz * 220, 0.9); ctx.globalCompositeOperation = 'source-over'; }
+    if (P.muz > 0) { ctx.globalCompositeOperation = 'lighter'; glow(CH[P.ch].glow, P.x + (P.ch === 0 ? 26 : 24), P.y - (P.ch === 0 ? 13 : 0), 14 + P.muz * 220, 0.9); ctx.globalCompositeOperation = 'source-over'; }
     { const g = Math.max(0, P.graze || 0) / 0.25; ctx.globalCompositeOperation = 'lighter'; glow('jade', P.x, P.y, 9 + g * 8, 0.5); ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = '#fff'; circ(P.x, P.y, 3 + g * 2); } // 맞는 곳(흰 점): 테두리 없이 작은 빛점
     if (P.charge > 0.12) { const full = P.charge >= chgT(); ctx.globalCompositeOperation = 'lighter'; glow(CH[P.ch].glow, P.x, P.y, 24 + P.charge * 34, 0.55); ctx.globalCompositeOperation = 'source-over'; ctx.strokeStyle = full ? '#ffe27a' : 'rgba(255,255,255,.7)'; ctx.lineWidth = full ? 3 : 2; ctx.beginPath(); ctx.arc(P.x, P.y, full ? 20 + Math.sin(G.time * 20) * 2 : 30 - P.charge * 16, -Math.PI / 2, -Math.PI / 2 + TAU * Math.min(1, P.charge / 0.6)); ctx.stroke(); }
   }
