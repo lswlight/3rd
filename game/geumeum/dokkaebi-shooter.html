@@ -1794,7 +1794,7 @@ function rogueFire(n0) { // 그믐의 탑 축복: 기본 공격
   if (rb('b_fast')) P.fcd /= Math.pow(1.15, rb('b_fast'));
 }
 const MUZ = { 22: [30, -50] }; // 기본 탄이 나가는 자리(그림의 무기 끝): 강림도령 창끝
-const MUZA = { 22: -0.5 }; // 기본 탄이 날아가는 각도(라디안, 위가 -): 강림도령 창 기울기 약 29도
+const MUZA = { 22: -0.25 }; // 기본 탄이 날아가는 각도(라디안, 위가 -): 강림도령은 할버드 각도 약 14도(사용자 11/23)
 function fire0() { const n0 = shots.length; fire0b(); const an = MUZA[P.ch]; if (an) for (let i = n0; i < shots.length; i++) { const s = shots[i], c = Math.cos(an), sn = Math.sin(an), vx = s.vx, vy = s.vy; s.vx = vx * c - vy * sn; s.vy = vx * sn + vy * c; } }
 function fire0b() {
   const p = P.power, mo = MUZ[P.ch] || [0, 0], x = P.x + 14 + mo[0], y = P.y + mo[1]; sfx.shot(); P.muz = 0.07;
