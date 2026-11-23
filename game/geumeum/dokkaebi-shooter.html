@@ -1868,7 +1868,7 @@ function updateBuddy(dt) { // 따라다니는 동료: 자동 지원 사격, 고�
   if (G.forceSwap || (swapReq && P.swapcd <= 0 && hpOf(P.co).hp > 0)) { G.forceSwap = false; tipDone('swap'); // 교대: 자리를 바꾸고 잠깐 무적, 주변 탄을 지우며 충격파
     const a = P.ch; P.ch = P.co; P.co = a; const ox = P.x, oy = P.y; P.x = P.cx; P.y = P.cy; P.cx = ox; P.cy = oy;
     P.x = Math.max(32, Math.min(W - 24, P.x)); P.y = Math.max(26, Math.min(GY - 20, P.y));
-    P.swapcd = rb('b_swap') ? 3 : SWAPCD; P.inv = Math.max(P.inv, 0.9); P.charge = 0; P.guard = Math.max(P.guard, 0);
+    P.swapcd = rb('b_swap') ? 3 : SWAPCD; P.inv = Math.max(P.inv, 1.5); P.charge = 0; P.guard = Math.max(P.guard, 0);
     bullets = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) > 95);
     for (const e of enemies) if (Math.hypot(e.x - P.x, e.y - P.y) < 120 + e.r) damage(e, 12 * (rb('b_shock') ? 3 : 1));
     parts.push({ x: P.x, y: P.y, vx: 0, vy: 0, life: 0.35, max: 0.35, ring: 110, col: CH[P.ch].robe, r: 0 }); burst(P.x, P.y, 22, CH[P.ch].robe, 240); fireball(P.x, P.y, 26);
@@ -2009,7 +2009,7 @@ function updatePlayer(dt) {
   if (comboReq && comboOK()) { combo2Begin(comboOf()); bombReq = false; } comboReq = false; // 합체(기획 13): 부적 2개, 4막 연출
   if (bombReq && P.bombs > 0 && G.bombT <= 0) { tipDone('bomb'); G.bombUsed = true; P.bombs--; if (eqStat(P.ch).boltB) for (const e of enemies) if (!e.dead && e.x < W + 10) { applyEl(e, 'bolt'); fx2({ k: 'bolt', tx: e.x, ty: e.y, d: 0.3 }); } mis('bomb'); G.bombT = BD; G.bfx = 0; P.inv = Math.max(P.inv, BD + 1.2); G.flash = 0; G.cut = { t: 0 }; G.bombHit = false; sfx.bomb(); if (G.comboGo) { G.cut = { t: 0, vs: 1, combo: G.comboGo[0] }; comboStart(G.comboGo); G.comboGo = null; }
     if (rb('b_return') && !G.R.rbUsed) { G.R.rbUsed = 1; G.pend.push({ t: G.st + 10, f: () => { P.bombs++; float('부적이 돌아왔다', P.x, P.y - 30, '#ffe9a0'); sfx.item(); } }); }
-    if (rb('u_galaxy') && !G.R.gal) { G.R.gal = 1; hpHeal(P.ch, 40, true); } }
+    if (rb('u_galaxy') && !G.R.gal) { G.R.gal = 1; hpHeal(P.ch, 52, true); } }
   bombReq = false;
   updateBuddy(dt);
 }
@@ -2062,12 +2062,12 @@ function update(dt) {
     if (e.burn > 0) { e.burn -= dt; if ((e.bt = (e.bt || 0) - dt) <= 0) { e.bt = 0.3; damage(e, 0.7); burst(e.x + rnd(-10, 10), e.y + rnd(-14, 6), 3, '#7fc8ff', 50); } } // 푸른 불
     let edt = dt; if (e.slowT > 0) { e.slowT -= dt; edt *= 0.5; } // 얼어 느려짐
     if (e.frozen > 0) { e.frozen -= dt; edt = 0; } else if (e.st) { if (e.st.bind > 0) edt *= e.type === 'boss' ? 0.6 : BATTLE.bindK; else if (e.st.ice > 0) edt *= e.type === 'boss' ? 0.8 : BATTLE.iceK; } // 묶임·얼림
-    G.shooter = e.type === 'boss' || e.type === 'mid' || e.type === 'mini' ? e.type : 'mob';
+    G.shooter = e.type === 'boss' || e.type === 'mid' || e.type === 'mini' ? e.type : e.elite ? 'mini' : 'mob';
     if (e.charm > 0 && e.type !== 'boss') { e.charm -= dt; e.x -= 20 * dt; } else ET[e.type].up(e, (e.weakBroken ? edt * FUN.weakSlow : edt) * (e.rage ? FUN2.rageSpd : 1)); // 홀림: 잠깐 공격을 멈춘다
     if (e.type === 'boss') shieldUpd(e, dt);
     if (e.type === 'mini' || e.type === 'mid' || e.type === 'boss') { const hb = SPH[e.type] * (e.type === 'boss' ? SZ.b : SZ.e) * 0.42; e.y = Math.max(hb, Math.min(GY - hb * 0.7, e.y)); } // 커진 적이 위아래로 잘리지 않게
     if (e.x < -60 || e.y < -80 || e.y > H + 80) e.gone = true;
-    if (!e.dead && !e.inv && P.deadT <= 0 && e.type !== 'lan' && e.type !== 'gob' && !G.ride && (ehb(e) ? hitE(e, P.x, P.y, 6, 0.75) : Math.hypot(e.x - P.x, e.y - P.y) < e.r * 0.7 + 3)) playerHit(BATTLE.dmg.body);
+    if (!e.dead && !e.inv && P.deadT <= 0 && e.type !== 'lan' && e.type !== 'gob' && !G.ride && (ehb(e) ? hitE(e, P.x, P.y, 6, 0.75) : Math.hypot(e.x - P.x, e.y - P.y) < e.r * 0.7 + 3)) { G.hitKind = e.type === 'boss' ? '대장 몸' : '몸 부딪힘'; playerHit(e.type === 'boss' ? BATTLE.dmg.bossBody : BATTLE.dmg.body); }
   }
   // 내 탄
   for (const s of shots) {
@@ -2794,7 +2794,7 @@ const EQ = [ // 장비: 무기(화력), 부적(필살기 피해·시작 부적),
   { id: 't9', slot: 't', g: 1, name: '수정 부적', bomb: 12, rxShard: 3, need: '속성 연계 7종 모두 터뜨리기', cond: () => Object.keys(SAVE.reacts || {}).length >= 7 },
   { id: 't5', slot: 't', g: 2, name: '일월 부적', bomb: 30, bombs: 1, cost: { moon: 380 } },
   { id: 't6', slot: 't', g: 2, name: '그믐 부적', bomb: 36, bombs: 2, need: '악몽 3층 대장 처치', cond: () => SAVE.mfirst.includes('2-2') },
-  { id: 't10', slot: 't', g: 2, name: '저승 명부 부적', bomb: 20, revive: 30, cost: { moon: 420 } },
+  { id: 't10', slot: 't', g: 2, name: '저승 명부 부적', bomb: 20, revive: 26, cost: { moon: 420 } },
   { id: 'a1', slot: 'a', g: 0, name: '비단 복주머니', gold: 10, cost: { gold: 3000 } },
   { id: 'a2', slot: 'a', g: 0, name: '나무 염주', shield: 1, gold: 3, cost: { gold: 5000 } },
   { id: 'a7', slot: 'a', g: 0, name: '짚신 노리개', spd: 6, cost: { gold: 4000 } },
@@ -2829,14 +2829,14 @@ function eqStat(ch) { // 그 캐릭터가 낀 장비 효과의 합
   const r = { ...ZS }, d = SAVE.eqd[ch] || {};
   for (const sl of 'wtao') { const e = eqById(d[sl]); if (!e || !SAVE.eq[e.id]) continue; const k = eqK(SAVE.eq[e.id]);
     for (const p of ['atk', 'bomb', 'gold', 'spd', 'chg', 'salt', 'skCd', 'coCd', 'awk', 'heal', 'def']) r[p] += (e[p] || 0) * k; for (const p of ['bombs', 'lives', 'shield', 'hp', 'awkSec', 'rxShard', 'revive', 'boltB']) r[p] += e[p] || 0; }
-  r.chg = Math.min(r.chg, 40); r.salt = Math.min(r.salt, 45); r.def = Math.min(r.def, 25); r.skCd = Math.min(r.skCd, 30); r.coCd = Math.min(r.coCd, 30); return (EQC[ch] = r);
+  r.chg = Math.min(r.chg, 40); r.salt = Math.min(r.salt, 30); r.def = Math.min(r.def, 15); r.skCd = Math.min(r.skCd, 30); r.coCd = Math.min(r.coCd, 30); return (EQC[ch] = r);
 }
 function eqDesc(e, lv = 1) { const k = eqK(lv), o = [];
   if (e.slot === 'w' && WPSK[e.id]) o.push('무기 스킬 「' + WPSK[e.id][0] + '」');
   if (e.atk) o.push('화력 +' + Math.round(e.atk * k) + '%'); if (e.bomb) o.push('부적 피해 +' + Math.round(e.bomb * k) + '%'); if (e.bombs) o.push('시작 부적 +' + e.bombs);
   if (e.lives) o.push('최대 체력 +' + e.lives * BATTLE.eqLife); if (e.shield) o.push('구간마다 방패 ' + e.shield); if (e.gold) o.push('골드 +' + Math.round(e.gold * k) + '%');
   if (e.spd) o.push('이동 +' + Math.round(e.spd * k) + '%'); if (e.chg) o.push('스킬 쿨 -' + Math.round(e.chg * k) + '%');
-  if (e.hp) o.push('최대 체력 +' + e.hp); if (e.salt) o.push('맞으면 ' + Math.round(Math.min(45, e.salt * k)) + '% 확률로 피해 절반'); if (e.boltB) o.push('부적을 쓰면 화면 적 모두 번개'); if (e.rxShard) o.push('연계 때 부적 조각 +' + e.rxShard);
+  if (e.hp) o.push('최대 체력 +' + e.hp); if (e.salt) o.push('맞으면 ' + Math.round(Math.min(30, e.salt * k)) + '% 확률로 피해 절반'); if (e.boltB) o.push('부적을 쓰면 화면 적 모두 번개'); if (e.rxShard) o.push('연계 때 부적 조각 +' + e.rxShard);
   if (e.revive) o.push('쓰러질 때 한 번 체력 ' + e.revive + '으로 버팀(판당 1번)'); if (e.skCd) o.push('캐릭터 스킬 쿨 -' + Math.round(e.skCd * k) + '%'); if (e.coCd) o.push('협력 스킬 쿨 -' + Math.round(e.coCd * k) + '%');
   if (e.awk) o.push('달빛 게이지 +' + Math.round(e.awk * k) + '% 빨리'); if (e.awkSec) o.push('각성 +' + e.awkSec + '초'); if (e.heal) o.push('회복 +' + Math.round(e.heal * k) + '%'); if (e.def) o.push('받는 피해 -' + Math.round(Math.min(25, e.def * k)) + '%'); return o.join(' · ') || (e.base ? '능력 없음 · 기본옷' : ''); }
 let toastT = 0;
@@ -3117,16 +3117,17 @@ function drawBossIntro() { const k = G.bossIntro.t, D = FUN2.bossIntro, S = STAG
   ctx.restore(); }
 /* ---------- 기획 14: 전투 개편 — 슈팅 + 액션 스킬. 수치는 BATTLE 한곳에 ---------- */
 const BATTLE = {
-  hp: [100, 85, 110, 95, 130, 90, 125, 90, 100, 115, 105, 95, 100, 105, 100, 125, 90, 95, 90, 120, 100, 95, 95], // 캐릭터 23명 체력
-  dmg: { mob: 8, mini: 10, mid: 12, boss: 12, big: 25, body: 15, def: 10 }, bigR: 9, // 받는 피해: 잔챙이·문지기·수문장/대장 탄, 대장 큰 탄(반지름 9 이상), 몸 부딪힘
-  invuln: 0.8, heal: { H: 20, L: 35 }, rest: 0.002, segHeal: 0.3, dropH: 0.06, // 맞은 뒤 무적, 떡·곶감 회복, 쉬는 동료 초당 0.2%(거의 안 참), 구간 사이 30%, 잔챙이 떡 확률
-  eqLife: 20, lv7Life: 15, star: [30, 80], // 「목숨 +1」 장비 = 최대 체력 +20, Lv7 = +15, 별: 받은 피해 30 이하 셋·80 이하 둘
+  hp: [100, 90, 100, 100, 115, 90, 115, 90, 100, 115, 100, 100, 100, 100, 100, 115, 90, 100, 90, 115, 100, 100, 100], // 캐릭터 23명 체력(기획 22: 가벼움 90·보통 100·튼튼 115)
+  dmg: { mob: 26, mini: 30, mid: 36, boss: 52, big: 52, body: 26, def: 26, bossBody: 52 }, bigR: 9, // 기획 22: 체력 100 기준 잔챙이 4방·대장 2방 // 받는 피해: 잔챙이·문지기·수문장/대장 탄, 대장 큰 탄(반지름 9 이상), 몸 부딪힘
+  invuln: 1.3, heal: { H: 26, L: 52 }, rest: 0.002, segHeal: 0.3, dropH: 0.06, // 맞은 뒤 무적, 떡·곶감 회복, 쉬는 동료 초당 0.2%(거의 안 참), 구간 사이 30%, 잔챙이 떡 확률
+  eqLife: 26, lv7Life: 13, star: [30, 80], // 「목숨 +1」 장비 = 최대 체력 +20, Lv7 = +15, 별: 받은 피해 30 이하 셋·80 이하 둘
 };
 function hpMax(ch) { const es = eqStat(ch); return (BATTLE.hp[ch] || 100) + (es.lives || 0) * BATTLE.eqLife + (es.hp || 0) + (lvOf(ch) >= 7 ? BATTLE.lv7Life : 0) + (G.hpBonus || 0); }
 function hpOf(ch) { P.hpm = P.hpm || {}; if (!P.hpm[ch]) { const m = hpMax(ch); P.hpm[ch] = { hp: m, max: m }; } return P.hpm[ch]; }
 function hpHeal(ch, n, show) { if (ch < 0) return; n *= 1 + eqStat(ch).heal / 100; const h = hpOf(ch), b = h.hp; h.hp = Math.min(h.max, h.hp + n); if (show && h.hp > b) float('+' + Math.round(h.hp - b), ch === P.ch ? P.x : P.cx, (ch === P.ch ? P.y : P.cy) - 30, '#7dffa0'); }
 const hpAll = k => { for (const ch of [P.ch, P.co]) if (ch >= 0) hpHeal(ch, hpOf(ch).max * k); };
-function bulletDmg(b) { const D = BATTLE.dmg, t = b.dmgT || (G.boss ? 'boss' : 'def'), k = G.endless ? 1 : BALANCE2.dmgK; if (b.r >= BATTLE.bigR && (t === 'boss' || t === 'mid')) return Math.round(D.big * k); return Math.round((D[t] || D.def) * k); }
+const HITN = { mob: '잔챙이 탄', mini: '문지기 탄', mid: '수문장 탄', boss: '대장 탄', def: '그 밖의 탄' };
+function bulletDmg(b) { const D = BATTLE.dmg, t = b.dmgT || (G.boss ? 'boss' : 'def'), k = G.endless ? 1 : BALANCE2.dmgK; if (b.r >= BATTLE.bigR && (t === 'boss' || t === 'mid')) { G.hitKind = '대장 큰 공격'; G.hitBig = 1; return Math.round(D.big * k); } G.hitKind = HITN[t] || '그 밖의 탄'; return Math.round((D[t] || D.def) * k); }
 function drawHpHud() { // 왼쪽 위: 얼굴 + 체력바(빨강) + 달빛, 그 아래 동료 얼굴 + 체력바(파랑)
   const h = hpOf(P.ch), k = Math.max(0, h.hp / h.max);
   ctx.fillStyle = 'rgba(10,12,22,.75)'; circ(24, 24, 17); ctx.save(); ctx.beginPath(); ctx.arc(24, 24, 15, 0, TAU); ctx.clip(); spr(look(P.ch).img, 24, 30, 40, { flip: CH[P.ch].flip }); ctx.restore(); ctx.strokeStyle = '#e8b84a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(24, 24, 16, 0, TAU); ctx.stroke();
@@ -3407,7 +3408,7 @@ function drawCoCut() { const q = G.coCut; if (!q) return; q.t += 1 / 60; const D
 G.wpPrev = 0;
 function wpReadyPing() { const c = P.cd ? P.cd.wp || 0 : 0; if (G.wpPrev > 0 && c <= 0 && G.mode === 'play') { tone(2637, 0.06, 'triangle', 0.06); tone(3520, 0.18, 'sine', 0.05, 0, 0.04); const b = $('padWeapon'); b.classList.remove('ping'); void b.offsetWidth; b.classList.add('ping'); } G.wpPrev = c; }
 /* ---------- 기획 16-3: 난이도 상향(BALANCE2)·한 층 3구간을 이어서 한 판 ---------- */
-const BALANCE2 = { seqK: 1.5, hpK: 1.6, bulletK: 1.3, dmgK: 1.3, dropH: 0.03, segHeal: 0.2, elite: [1, 2], eliteHp: 3, eliteAfter: 3, eliteP: 0.08, eliteGold: 200 };
+const BALANCE2 = { seqK: 1.5, hpK: 1.6, bulletK: 1.3, dmgK: 1, dropH: 0.04, segHeal: 0.35, elite: [1, 2], eliteHp: 3, eliteAfter: 3, eliteP: 0.08, eliteGold: 200 };
 Object.assign(BATTLE, { dropH: BALANCE2.dropH, segHeal: BALANCE2.segHeal });
 function segLong(q, p) { // 잔챙이 무리 ×1.5, 문지기 3→4, 수문장 1→2 (대장 구간은 무리만 늘림). 늘 같은 결과가 나오게 순서대로 고름
   const L = q.replace(/[12]/g, '').split(''), n = Math.round(L.length * (BALANCE2.seqK - 1)), X = []; for (let i = 0; i < n; i++) X.push(L[(i * 3 + 1) % L.length]); const h = Math.ceil(n / 2);
@@ -3447,7 +3448,7 @@ function drawAwkCut() { const q = G.awkCut; if (!q) return; const t = q.t, D = A
   ctx.restore(); }
 /* ---------- 기획 17-6: 검토판 개발 도구(일시정지 화면, 출시판에는 없음) ---------- */
 const DEV = (() => { let o = {}; if (TEST_UNLOCK) try { o = JSON.parse(localStorage.getItem('geumeum-dev') || '{}') || {}; } catch (_) {} return o; })();
-const DEVN = [['awk', '각성 무한'], ['cd0', '쿨타임 0'], ['inv', '무적'], ['bomb', '부적 무한'], ['seal', '봉인 100%(체력 조건 없음)'], ['dps', '대장 처치 때 공격별 피해 표']];
+const DEVN = [['hitlog', '받은 피해 기록(일시정지 화면에 표시)'], ['awk', '각성 무한'], ['cd0', '쿨타임 0'], ['inv', '무적'], ['bomb', '부적 무한'], ['seal', '봉인 100%(체력 조건 없음)'], ['dps', '대장 처치 때 공격별 피해 표']];
 function devSave() { try { localStorage.setItem('geumeum-dev', JSON.stringify(DEV)); } catch (_) {} }
 function devTick() { if (!TEST_UNLOCK || G.mode !== 'play') return; if (DEV.awk && !(G.awake > 0)) P.moonG = FUN2.awakeNeed; if (DEV.cd0 && P.cd) for (const k in P.cd) P.cd[k] = 0; if (DEV.bomb) P.bombs = Math.max(P.bombs, 5); }
 { const a = cdTick; cdTick = function (dt) { a(dt); devTick(); }; }
@@ -4314,6 +4315,20 @@ function drawDk() { const M = G.dk; if (!M || G.mode !== 'play') return; ctx.sav
   if (M.split > 0 && M.split < 0.3) { const k = 1 - M.split / 0.3; glow('purple', P.x + 20, P.y, 20 + 60 * k, 1 - k); }
   ctx.restore(); }
 { const a = drawWpFx; drawWpFx = function () { a(); drawDk(); }; }
+/* ---------- 기획 22: 체력 밸런스(잔챙이 4방·대장 2방) — 맞은 뒤 처리·위험 표시·쉬움 설정·받은 피해 기록 ---------- */
+const HP22 = { clearR: 60, lowK: 0.25, easyK: 0.6, bigPush: 46 };
+SEAL2.hp = 13;
+{ const a = playerHit; playerHit = function (dmg) { const kind = G.hitKind || '그 밖의 것', big = G.hitBig; G.hitKind = null; G.hitBig = 0; const ch = P.ch, h0 = hpOf(ch).hp, inv0 = P.inv;
+  if (SAVE.easy && dmg) dmg *= HP22.easyK; a(dmg); const took = h0 - (hpOf(ch).hp || 0);
+  if (took > 0 || (P.ch !== ch)) { G.hitLog = G.hitLog || {}; const r = G.hitLog[kind] = G.hitLog[kind] || { n: 0, d: 0 }; r.n++; r.d += Math.max(0, took);
+    bullets = bullets.filter(b => Math.hypot(b.x - P.x, b.y - P.y) > HP22.clearR); ring(P.x, P.y, HP22.clearR, '#ff9a8a', 0.25);
+    if (big) { P.x = Math.max(32, P.x - HP22.bigPush); G.shake = Math.max(G.shake, 0.7); } } }; }
+{ let hb = 0; const a = drawHpHud; drawHpHud = function () { a(); if (G.mode !== 'play' || G.arc) return; const h = hpOf(P.ch); if (h.hp > 0 && h.hp / h.max < HP22.lowK) { const p = 0.5 + 0.5 * Math.sin(G.time * 7); const g = ctx.createRadialGradient(W / 2, H / 2, H * 0.35, W / 2, H / 2, W * 0.65); g.addColorStop(0, 'rgba(255,0,0,0)'); g.addColorStop(1, 'rgba(220,20,30,' + (0.18 + 0.22 * p) + ')'); ctx.save(); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.restore();
+    if (G.time - hb > 0.9) { hb = G.time; tone(70, 0.09, 'sine', 0.09, -10); tone(62, 0.09, 'sine', 0.07, -10, 0.16); } } }; }
+{ const a = addScore; addScore = function (n) { if (!SAVE.easy) return a(n); G.score += n; if (G.score > (SAVE.hiEasy || 0)) SAVE.hiEasy = G.score; }; }
+function hitLogText() { const L = G.hitLog || {}; const ks = Object.keys(L); if (!ks.length) return '받은 피해 없음'; return ks.map(k => k + ' ' + L[k].n + '번(' + Math.round(L[k].d) + ')').join(' · '); }
+{ const a = newGame; newGame = function (...x) { G.hitLog = {}; return a(...x); }; }
+{ const a = renderBtnSet; renderBtnSet = function () { a(); const el = $('btnSet'); el.insertAdjacentHTML('beforeend', ' · <label><input type="checkbox" id="optEasy"' + (SAVE.easy ? ' checked' : '') + '> 쉬움: 받는 피해 ×0.6 (점수 기록 따로)</label>' + (TEST_UNLOCK && DEV.hitlog ? '<div style="margin-top:4px;font-size:12px;opacity:.85">받은 피해 기록 · ' + hitLogText() + '</div>' : '')); $('optEasy').onchange = e => { SAVE.easy = e.target.checked; saveGame(); }; }; }
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],
@@ -4360,18 +4375,18 @@ const BOONS = [ // [id, 분류, 이름, 한 줄 효과, 최대 겹침, 아이콘
   ['b_cd', 'chg', '스킬 장인', '캐릭터·협력·무기 스킬 쿨 -20%', 2, 'w4'],
   ['b_rx', 'atk', '연계 달인', '연계 피해 +50%', 1, 'w5'],
   ['b_magnet', 'eco', '엽전 자석', '엽전을 멀리서도 끌어옴 · 골드 +20%', 1, 'a1'],
-  ['b_deal', 'risk', '도깨비와의 거래', '피해 +40%, 대신 최대 체력 -30%', 1, 'w6'],
+  ['b_deal', 'risk', '도깨비와의 거래', '피해 +40%, 대신 최대 체력 -26', 1, 'w6'],
   ['b_shadow', 'risk', '그믐의 그림자', '대장 체력 +25%, 대신 대장 보상(기억·골드) 2배', 1, 'a6'],
   ['b_bare', 'risk', '맨손', '부적을 못 씀, 대신 스킬 쿨 -50%', 1, 't6'],
   // 탑의 기억으로 사서 풀에 넣는 것
   ['u_gold', 'eco', '황금 손', '골드 +50%', 1, 'a1', { mem: 150 }],
-  ['u_heart', 'def', '질긴 목숨', '최대 체력 +25 (바로 받음)', 1, 'a3', { mem: 200 }],
+  ['u_heart', 'def', '질긴 목숨', '최대 체력 +26 (바로 받음)', 1, 'a3', { mem: 200 }],
   ['u_storm', 'bomb', '부적 폭풍', '부적(필살기) 피해 +40%', 1, 't4', { mem: 250 }],
   // 조건을 채우면 풀에 들어가는 것
   ['u_wolf', 'atk', '외로운 늑대', '동료가 없을 때 피해 +30%', 1, 'w4', { need: '동료 없이 10층', ok: R => R.solo >= 10 }],
   ['u_white', 'chg', '백야의 화살', '캐릭터 스킬이 한 번 더 나감', 1, 'o3', { need: '달래로 15층', ok: R => (R.ch[1] || 0) >= 15 }],
   ['u_wind', 'atk', '월광풍', '기본 공격 갈래 +1 (갈래 하나 더와 따로 겹침)', 1, 'w5', { need: '한별로 15층', ok: R => (R.ch[0] || 0) >= 15 }],
-  ['u_galaxy', 'bomb', '은하수 축복', '처음 쓰는 필살기에 체력 40 회복', 1, 't5', { need: '나린으로 15층', ok: R => (R.ch[2] || 0) >= 15 }],
+  ['u_galaxy', 'bomb', '은하수 축복', '처음 쓰는 필살기에 체력 52 회복', 1, 't5', { need: '나린으로 15층', ok: R => (R.ch[2] || 0) >= 15 }],
 ];
 const BOON = id => BOONS.find(b => b[0] === id);
 const ROGUE_VARS = [['dark', '그믐밤', '화면 가장자리가 어두움'], ['wind', '맞바람', '계속 약한 바람'], ['gate', '성난 문지기', '문지기가 둘씩 나옴'], ['fast', '빠른 탄', '적 탄 속도 +25%'], ['gold', '황금 층', '엽전 3배, 대신 적 체력 +30%']];
@@ -4418,7 +4433,7 @@ function rogueTake(i) { const R = G.R, o = rOffer, b = o && o.cards[i]; $('ovBoo
   if (b) { const id = b[0];
     if (id === 'r_life') hpAll(0.5); else if (id === 'r_bomb') P.bombs = Math.min(9, P.bombs + 2);
     else { R.b[id] = (R.b[id] || 0) + 1; sfx.life();
-      if (id === 'b_pouch') P.bombs++; if (id === 'u_heart') { for (const ch of [P.ch, P.co]) if (ch >= 0) { const h = hpOf(ch); h.max += 25; h.hp += 25; } } if (id === 'b_deal') { for (const ch of [P.ch, P.co]) if (ch >= 0) { const h = hpOf(ch); h.max = Math.round(h.max * 0.7); h.hp = Math.min(h.hp, h.max); } } } }
+      if (id === 'b_pouch') P.bombs++; if (id === 'u_heart') { for (const ch of [P.ch, P.co]) if (ch >= 0) { const h = hpOf(ch); h.max += 26; h.hp += 26; } } if (id === 'b_deal') { for (const ch of [P.ch, P.co]) if (ch >= 0) { const h = hpOf(ch); h.max = Math.max(26, h.max - 26); h.hp = Math.min(h.hp, h.max); } } } }
   if (o.kind === 'start') { R.startPick = false; G.offer = false; stageEl.classList.add('playing'); rogueFloor(); return; }
   if (o.kind === 'boon' && R.extra > 0) { R.extra--; rogueOffer('boon'); return; }
   if (o.kind === 'boon' && R.rest) { R.rest = false; rogueOffer('rest'); return; }
@@ -4977,7 +4992,7 @@ function start() {
   if (window.ResizeObserver) new ResizeObserver(() => resize()).observe(cv); else addEventListener('resize', () => resize());
   requestAnimationFrame(frame);
 }
-window.__game = { segSeq, showD, hideD, openMem, mem, openArcade, get shots() { return shots; }, releaseCharge: () => releaseCharge(), openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, hpOf, ykSealUse, ykSummon, openYk, get yks() { return G.yks; }, REACTS, shieldOn, spawn: (t, x, y) => spawn(t, x, y), hitEl, damage: (e, d) => damage(e, d), applyEl, charSkill, coSkill, entryStrike, get fx2() { return G.fx2; }, skillUse, weaponUse, coSkillUse, get cd() { return P.cd; }, BATTLE, awakeStart, coSay, evStart, get items() { return items; }, openRoad, get cmb() { return G.cmb; }, weakPos, COMBOS, comboOK, FUN, spawnLan, openOath, oathScore, openTop, rogueNext, rogueOffer, rogueTake, RSAVE, BOONS, get R() { return G.R; }, openDex, DEX, dexSeen, segMedals, medalCount, showResult, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
+window.__game = { get playerHit() { return playerHit; }, get bulletDmg() { return bulletDmg; }, get hpOf() { return hpOf; }, segSeq, showD, hideD, openMem, mem, openArcade, get shots() { return shots; }, releaseCharge: () => releaseCharge(), openPick, darken, spawnBoss: () => spawnBoss(),  get bullets() { return bullets; }, LOGS, recOf, recText, loseHelp, tut, tipShow, look, newOutfit, checkRewards, chgT, openMap, EQ, eqStat, grantProduct, openShop, openEq, towerNext, addMoon, G, P, newGame, SZ, CH, mobSkin, startArc, ARC, mis, daily, showEnding, SAVE, saveGame, get enemies() { return enemies; }, STAGES, hpOf, ykSealUse, ykSummon, openYk, get yks() { return G.yks; }, REACTS, shieldOn, spawn: (t, x, y) => spawn(t, x, y), hitEl, damage: (e, d) => damage(e, d), applyEl, charSkill, coSkill, entryStrike, get fx2() { return G.fx2; }, skillUse, weaponUse, coSkillUse, get cd() { return P.cd; }, BATTLE, awakeStart, coSay, evStart, get items() { return items; }, openRoad, get cmb() { return G.cmb; }, weakPos, COMBOS, comboOK, FUN, spawnLan, openOath, oathScore, openTop, rogueNext, rogueOffer, rogueTake, RSAVE, BOONS, get R() { return G.R; }, openDex, DEX, dexSeen, segMedals, medalCount, showResult, pickStage, get counts() { return { e: enemies.length, b: bullets.length, s: shots.length }; } };
 if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start); else start();
 })();
 </script>
