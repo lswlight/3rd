@@ -1794,7 +1794,9 @@ function rogueFire(n0) { // 그믐의 탑 축복: 기본 공격
   if (rb('b_fast')) P.fcd /= Math.pow(1.15, rb('b_fast'));
 }
 const MUZ = { 22: [30, -50] }; // 기본 탄이 나가는 자리(그림의 무기 끝): 강림도령 창끝
-function fire0() {
+const MUZA = { 22: -0.5 }; // 기본 탄이 날아가는 각도(라디안, 위가 -): 강림도령 창 기울기 약 29도
+function fire0() { const n0 = shots.length; fire0b(); const an = MUZA[P.ch]; if (an) for (let i = n0; i < shots.length; i++) { const s = shots[i], c = Math.cos(an), sn = Math.sin(an), vx = s.vx, vy = s.vy; s.vx = vx * c - vy * sn; s.vy = vx * sn + vy * c; } }
+function fire0b() {
   const p = P.power, mo = MUZ[P.ch] || [0, 0], x = P.x + 14 + mo[0], y = P.y + mo[1]; sfx.shot(); P.muz = 0.07;
   if (P.ch >= 6) { kitFire(P.ch, p, x, y, 1); P.fcd = CH[P.ch].kit.rate; return; }
   if (P.ch === 0) { const n = p + 1; for (let i = 0; i < n; i++) { const a = (i - (n - 1) / 2) * 0.09; ps(x + 8, y - 13, Math.cos(a) * 560, Math.sin(a) * 560, 4, 1, 0); } P.fcd = 0.11; }
@@ -4140,19 +4142,19 @@ function drawCy() { const M = G.cy; if (!M || G.mode !== 'play') return; ctx.sav
   ctx.restore(); }
 { const a = drawWpFx; drawWpFx = function () { a(); drawCy(); }; }
 /* ---------- 강림도령 각성 「번개 할버드」 (기획 20 강림도령 행) — 할버드 찌르기 번개 줄기·1.5초 도끼날 번개 반달·저승길 열기(6초 번개 연쇄)·끝 할버드 던져 번개 기둥 ---------- */
-const AWK_KR = { tip: [40, -30], gap: 0.3, sp: 760, dmg: 2.4, moonGap: 1.5, moonSp: 520, moonDmg: 6, roadT: 6, zapR: 220, zapDmg: 2.2, throwSp: 700, pillarR: 70, pillarDmg: 22, sideDmg: 12, col: '#ffe066' };
+const AWK_KR = { tip: [40, -30], ang: -0.25, gap: 0.3, sp: 760, dmg: 2.4, moonGap: 1.5, moonSp: 520, moonDmg: 6, roadT: 6, zapR: 220, zapDmg: 2.2, throwSp: 700, pillarR: 70, pillarDmg: 22, sideDmg: 12, col: '#ffe066' };
 AWK.line[22] = AWK.line[22] || '저승길을 연다, 번개여 내려라!';
 const krOn = () => G.awake > 0 && P.ch === 22 && G.mode === 'play';
 { const a = fire; fire = function () { const n0 = shots.length; a(); if (krOn()) shots.splice(n0); }; }
-function drawKrw(s) { ctx.save(); ctx.translate(s.x, s.y); ctx.globalCompositeOperation = 'lighter'; if (s.moon) { ctx.strokeStyle = 'rgba(255,235,140,.95)'; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(-10, 0, 24, -1.2, 1.2); ctx.stroke(); glow('gold', 0, 0, 20, 0.5); } else { ctx.strokeStyle = 'rgba(255,240,150,.95)'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(-30, 0); for (let i = 1; i <= 5; i++) ctx.lineTo(-30 + i * 8, ((i * 37 + Math.floor(s.t * 30)) % 7) - 3); ctx.stroke(); glow('gold', 6, 0, 9, 0.6); } ctx.restore(); }
+function drawKrw(s) { ctx.save(); ctx.translate(s.x, s.y); ctx.rotate(Math.atan2(s.vy, s.vx)); ctx.globalCompositeOperation = 'lighter'; if (s.moon) { ctx.strokeStyle = 'rgba(255,235,140,.95)'; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(-10, 0, 24, -1.2, 1.2); ctx.stroke(); glow('gold', 0, 0, 20, 0.5); } else { ctx.strokeStyle = 'rgba(255,240,150,.95)'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(-30, 0); for (let i = 1; i <= 5; i++) ctx.lineTo(-30 + i * 8, ((i * 37 + Math.floor(s.t * 30)) % 7) - 3); ctx.stroke(); glow('gold', 6, 0, 9, 0.6); } ctx.restore(); }
 function krZap(x0, y0, x1, y1) { G.kr.zaps.push({ x0, y0, x1, y1, t: 0 }); }
 function krUpd(dt) { const M = G.kr = G.kr || { cd: 0, mcd: 0.6, road: 0, zaps: [], fx: [] }; if (M.split > 0) M.split -= dt; for (const f of M.fx) f.t += dt; M.fx = M.fx.filter(f => f.t < f.T); for (const z of M.zaps) z.t += dt; M.zaps = M.zaps.filter(z => z.t < 0.15); if (M.road > 0) M.road -= dt;
   const T = M.thr; if (T) { T.x += AWK_KR.throwSp * dt; T.a += dt * 12; if (T.x >= T.tx) { M.thr = null; const pts = [[T.tx, AWK_KR.pillarR, AWK_KR.pillarDmg], [T.tx - 120, AWK_KR.pillarR * 0.6, AWK_KR.sideDmg], [T.tx + 120, AWK_KR.pillarR * 0.6, AWK_KR.sideDmg]];
       withSrc('awk', () => { for (const e of enemies) if (!e.dead) { const p = pts.find(q => Math.abs(e.x - q[0]) < q[1] + e.r * 0.5); if (p) hitEl(e, p[2], 'bolt', { heavy: 1 }); } }); bullets = bullets.filter(b => !pts.some(q => Math.abs(b.x - q[0]) < q[1])); for (const q of pts) M.fx.push({ x: q[0], r: q[1], t: 0, T: 0.7, pillar: 1 }); G.shake = 0.55; G.flash = Math.max(G.flash, 0.35); tone(70, 0.6, 'sawtooth', 0.09, 30); } }
   if (!krOn()) return; const firing = keys.fire || touch.down || touch.auto, tx = P.x + AWK_KR.tip[0], ty = P.y + AWK_KR.tip[1];
-  if (firing && (M.cd -= dt) <= 0) { M.cd = AWK_KR.gap; withSrc('awk', () => ps(tx, ty, AWK_KR.sp, 0, 8, AWK_KR.dmg, 20, { kc: 22, krw: 1, el: 'bolt', pierce: 1, cd: 0.3, hit: new Map() }));
+  if (firing && (M.cd -= dt) <= 0) { M.cd = AWK_KR.gap; withSrc('awk', () => ps(tx, ty, AWK_KR.sp * Math.cos(AWK_KR.ang), AWK_KR.sp * Math.sin(AWK_KR.ang), 8, AWK_KR.dmg, 20, { kc: 22, krw: 1, el: 'bolt', pierce: 1, cd: 0.3, hit: new Map() }));
     if (M.road > 0) { const t = enemies.filter(e => !e.dead && Math.hypot(e.x - tx, e.y - ty) < AWK_KR.zapR).sort((a, b) => Math.hypot(a.x - tx, a.y - ty) - Math.hypot(b.x - tx, b.y - ty))[0]; if (t) { withSrc('sk', () => hitEl(t, AWK_KR.zapDmg, 'bolt')); krZap(tx, ty, t.x, t.y); } } }
-  if ((M.mcd -= dt) <= 0) { M.mcd = AWK_KR.moonGap; withSrc('awk', () => ps(tx, ty, AWK_KR.moonSp, 0, 24, AWK_KR.moonDmg, 20, { kc: 22, krw: 1, moon: 1, el: 'bolt', pierce: 1, cd: 0.4, hit: new Map() })); tone(880, 0.1, 'square', 0.04, -300); } }
+  if ((M.mcd -= dt) <= 0) { M.mcd = AWK_KR.moonGap; withSrc('awk', () => ps(tx, ty, AWK_KR.moonSp * Math.cos(AWK_KR.ang), AWK_KR.moonSp * Math.sin(AWK_KR.ang), 24, AWK_KR.moonDmg, 20, { kc: 22, krw: 1, moon: 1, el: 'bolt', pierce: 1, cd: 0.4, hit: new Map() })); tone(880, 0.1, 'square', 0.04, -300); } }
 { const a = charSkill; charSkill = function (ch) { if (!(ch === 22 && krOn())) return a(ch); G.kr.road = AWK_KR.roadT; float('저승길 열기 · 번개 6초', P.x, P.y - 50, AWK_KR.col); tone(196, 0.4, 'sawtooth', 0.06, 400); }; }
 { const a = awakeStart; awakeStart = function () { const was = G.awake > 0; a(); if (!was && G.awake > 0 && P.ch === 22) G.kr = { cd: 0, mcd: 0.6, road: 0, zaps: [], fx: [], split: AWK.dur + 0.3 }; }; }
 { const a = awakeUpd; awakeUpd = function (dt) { const was = G.awake > 0 && P.ch === 22; a(dt); if (G.mode === 'play') krUpd(dt); if (was && !(G.awake > 0)) krEnd(); }; }
