@@ -1793,7 +1793,7 @@ function rogueFire(n0) { // 그믐의 탑 축복: 기본 공격
   const c = nw[Math.floor(nw.length / 2)]; for (let j = 0; j < 0; j++) { const a = Math.atan2(c.vy, c.vx) + (j % 2 ? -1 : 1) * (0.16 + 0.08 * (j >> 1)), sp = Math.hypot(c.vx, c.vy); shots.push(Object.assign({}, c, { vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, hit: c.hit ? new Map() : c.hit })); }
   if (rb('b_fast')) P.fcd /= Math.pow(1.15, rb('b_fast'));
 }
-const MUZ = { 9: [26, -36], 22: [30, -50] }; // 기본 탄이 나가는 자리(그림의 무기 끝): 강림도령 창끝
+const MUZ = { 2: [30, -40], 9: [26, -36], 14: [44, -38], 22: [30, -50] }; // 기본 탄이 나가는 자리(그림의 무기 끝): 강림도령 창끝
 const MUZA = { 9: -0.3, 22: -0.25 }; // 기본 탄이 날아가는 각도(라디안, 위가 -): 강림도령은 할버드 각도 약 14도(사용자 11/23)
 function fire0() { const n0 = shots.length; fire0b(); const an = MUZA[P.ch]; if (an) for (let i = n0; i < shots.length; i++) { const s = shots[i], c = Math.cos(an), sn = Math.sin(an), vx = s.vx, vy = s.vy; s.vx = vx * c - vy * sn; s.vy = vx * sn + vy * c; } }
 function fire0b() {
