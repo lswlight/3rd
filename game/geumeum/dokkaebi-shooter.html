@@ -2621,7 +2621,7 @@ function draw() {
     for (const f of P.fam) { glow('blue', f.x, f.y, 16, 0.6); if (!spr('wisp', f.x, f.y + Math.sin(G.time * 8) * 1.5, 15, { flip: 1 })) { ctx.fillStyle = '#bfeaff'; circ(f.x, f.y, 4.5); } }
     if (P.co >= 0) { // 동료와 교대 대기 표시
       const c = CH[P.co], rdy = P.swapcd <= 0;
-      ctx.globalAlpha = 0.92; spr(look(P.co).img, P.cx, P.cy + Math.sin(G.time * 4 + 1) * 2, c.h * 0.72 * SZ.p, { flip: c.flip }); ctx.globalAlpha = 1;
+      ctx.globalAlpha = 0.92; coDrawMate(c); ctx.globalAlpha = 1;
       if (rdy) { ctx.globalCompositeOperation = 'lighter'; glow(c.glow, P.cx, P.cy, 30 + 4 * Math.sin(G.time * 6), 0.35); ctx.globalCompositeOperation = 'source-over'; } // 교대 준비: 은은한 빛만
       if (P.co === 4 && P.coeat > 0) { ctx.globalCompositeOperation = 'lighter'; glow('fire', P.cx, P.cy, 34, 0.5); ctx.globalCompositeOperation = 'source-over'; }
       if (P.co === 5 && P.cloneT <= 0) { ctx.globalAlpha = 0.4; for (const dy of [-44, 44]) spr(look(P.ch).img, P.x + 2, P.y + dy, CH[P.ch].h, { flip: CH[P.ch].flip }); ctx.globalAlpha = 1; }
@@ -4329,6 +4329,128 @@ SEAL2.hp = 13;
 function hitLogText() { const L = G.hitLog || {}; const ks = Object.keys(L); if (!ks.length) return '받은 피해 없음'; return ks.map(k => k + ' ' + L[k].n + '번(' + Math.round(L[k].d) + ')').join(' · '); }
 { const a = newGame; newGame = function (...x) { G.hitLog = {}; return a(...x); }; }
 { const a = renderBtnSet; renderBtnSet = function () { a(); const el = $('btnSet'); el.insertAdjacentHTML('beforeend', ' · <label><input type="checkbox" id="optEasy"' + (SAVE.easy ? ' checked' : '') + '> 쉬움: 받는 피해 ×0.6 (점수 기록 따로)</label>' + (TEST_UNLOCK && DEV.hitlog ? '<div style="margin-top:4px;font-size:12px;opacity:.85">받은 피해 기록 · ' + hitLogText() + '</div>' : '')); $('optEasy').onchange = e => { SAVE.easy = e.target.checked; saveGame(); }; }; }
+/* ---------- 기획 23-1: 속성 이펙트 8종 — 맞을 때 모양·남는 것·소리를 속성마다 다르게(기본 탄·스킬·협력·소환 공통) ---------- */
+const ELC = { wind: '#9fffe0', mark: '#ff5a5a', wet: '#7fc8ff', fire: '#ff8a3a', ice: '#cfefff', bolt: '#fff08a', bind: '#c8c8d8', heavy: '#c8a070' };
+const ELG = { wind: 'jade', mark: 'red', wet: 'blue', fire: 'fire', ice: 'blue', bolt: 'gold', bind: 'purple', heavy: 'orange' };
+const ELX = { gap: 0.05, resMax: 40 };
+function elSound(el, v) { v = v || 1; if (el === 'wind') noise(0.12, 0.06 * v, { f: 3200, q: 2 }); else if (el === 'mark') tone(1900, 0.05, 'square', 0.04 * v); else if (el === 'wet') noise(0.18, 0.07 * v, { f: 700, q: 1 }); else if (el === 'fire') noise(0.16, 0.08 * v, { f: 420 });
+  else if (el === 'ice') tone(2700, 0.09, 'triangle', 0.045 * v, 400); else if (el === 'bolt') { noise(0.1, 0.07 * v, { f: 3600, q: 4 }); tone(120, 0.08, 'sawtooth', 0.03 * v); } else if (el === 'bind') { tone(330, 0.06, 'square', 0.04 * v); tone(260, 0.06, 'square', 0.035 * v, 0, 0.06); } else if (el === 'heavy') tone(62, 0.18, 'sine', 0.09 * v, -20); }
+// 맞을 때 모양 + 남는 것(짧게). big = 협력·소환·스킬처럼 크게
+function elFx(el, x, y, big) { if (!el) return; const c = ELC[el] || '#fff', s = big ? 1.8 : 1; if (!big && G.time - (G.elFxT || 0) < ELX.gap) return; G.elFxT = G.time;
+  const L = (G.elRes = G.elRes || []); if (L.length > ELX.resMax) L.shift();
+  if (el === 'wind') { L.push({ k: 'x', x, y, s, t: 0, T: 0.25, c }); for (let i = 0; i < 4 * s; i++) parts.push({ x, y, vx: rnd(-90, 90), vy: rnd(-90, 30), life: 0.6, max: 0.6, col: i % 2 ? '#9fffe0' : '#6ad08a', r: 2.2, leaf: 1 }); if (big) L.push({ k: 'whirl', x, y, s, t: 0, T: 1, c }); }
+  else if (el === 'mark') L.push({ k: 'tgt', x, y: y - 16, s, t: 0, T: big ? 1.2 : 0.5, c });
+  else if (el === 'wet') { burst(x, y, Math.round(6 * s), '#9fd8ff', 160); L.push({ k: 'pool', x, y: y + 10, s, t: 0, T: big ? 2 : 0.6, c }); }
+  else if (el === 'fire') { burst(x, y, Math.round(8 * s), '#ff8a3a', 200); for (let i = 0; i < 3 * s; i++) parts.push({ x, y, vx: rnd(-40, 40), vy: rnd(-120, -40), life: 0.7, max: 0.7, col: '#ffd070', r: 1.8 }); L.push({ k: 'flame', x, y: y + 8, s, t: 0, T: big ? 2 : 0.5, c }); }
+  else if (el === 'ice') { L.push({ k: 'shard', x, y, s, t: 0, T: 0.4, c }); if (big) L.push({ k: 'frost', x, y: y + 10, s, t: 0, T: 2, c }); }
+  else if (el === 'bolt') { L.push({ k: 'zap', x, y, s, t: 0, T: 0.2, c }); if (big) G.flash = Math.max(G.flash, 0.12); }
+  else if (el === 'bind') L.push({ k: 'chain', x, y, s, t: 0, T: big ? 1 : 0.4, c });
+  else if (el === 'heavy') { L.push({ k: 'crack', x, y: y + 10, s, t: 0, T: big ? 1.5 : 0.5, c }); if (big) G.shake = Math.max(G.shake, 0.35); }
+  elSound(el, big ? 1.4 : 0.6); }
+{ const a = hitEl; hitEl = function (e, d, el, o) { const alive = e && !e.dead && !e.inv; a(e, d, el, o); if (alive && el) elFx(el, e.x, e.y, G.srcCtx === 'co' || G.srcCtx === 'yk'); }; }
+{ const a = hitFx; hitFx = function (s) { a(s); if (s && s.basic && s.el) elFx(s.el, s.x, s.y, false); }; }
+function drawElRes() { const L = G.elRes; if (!L || G.mode !== 'play') return; ctx.save();
+  for (const f of L) { f.t += 1 / 60; const k = f.t / f.T, a = 1 - k, s = f.s; ctx.globalAlpha = Math.max(0, a); ctx.strokeStyle = f.c; ctx.fillStyle = f.c;
+    if (f.k === 'x') { ctx.lineWidth = 2.5 * s; const r = 12 * s * (0.5 + k); ctx.beginPath(); ctx.moveTo(f.x - r, f.y - r); ctx.lineTo(f.x + r, f.y + r); ctx.moveTo(f.x + r, f.y - r); ctx.lineTo(f.x - r, f.y + r); ctx.stroke(); }
+    else if (f.k === 'whirl') { ctx.lineWidth = 2; for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.ellipse(f.x, f.y - i * 10, 22 * s - i * 5, 7, 0, G.time * 8 + i, G.time * 8 + i + 4); ctx.stroke(); } }
+    else if (f.k === 'tgt') { ctx.lineWidth = 2; const r = 9 * s; ctx.beginPath(); ctx.arc(f.x, f.y, r, 0, TAU); ctx.moveTo(f.x - r - 4, f.y); ctx.lineTo(f.x + r + 4, f.y); ctx.moveTo(f.x, f.y - r - 4); ctx.lineTo(f.x, f.y + r + 4); ctx.stroke(); }
+    else if (f.k === 'pool') { ctx.globalAlpha = 0.35 * a; ctx.beginPath(); ctx.ellipse(f.x, f.y, 22 * s, 6 * s, 0, 0, TAU); ctx.fill(); }
+    else if (f.k === 'flame') { ctx.globalCompositeOperation = 'lighter'; for (let i = 0; i < 4; i++) glow('fire', f.x + (i - 1.5) * 9 * s, f.y - 6 - Math.abs(Math.sin(G.time * 9 + i)) * 10 * s, 9 * s, 0.5 * a); ctx.globalCompositeOperation = 'source-over'; }
+    else if (f.k === 'shard') { ctx.lineWidth = 2; for (let i = 0; i < 6; i++) { const an = i * TAU / 6, r = 6 + 16 * k * s; ctx.beginPath(); ctx.moveTo(f.x + Math.cos(an) * r * 0.4, f.y + Math.sin(an) * r * 0.4); ctx.lineTo(f.x + Math.cos(an) * r, f.y + Math.sin(an) * r); ctx.stroke(); } }
+    else if (f.k === 'frost') { ctx.globalAlpha = 0.3 * a; ctx.fillStyle = '#cfefff'; ctx.beginPath(); ctx.ellipse(f.x, f.y, 40 * s, 9 * s, 0, 0, TAU); ctx.fill(); }
+    else if (f.k === 'zap') { ctx.globalCompositeOperation = 'lighter'; ctx.lineWidth = 2; for (let j = 0; j < 3; j++) { ctx.beginPath(); ctx.moveTo(f.x, f.y); let px = f.x, py = f.y; for (let i = 0; i < 4; i++) { px += rnd(-10, 10) * s; py += rnd(-10, 10) * s; ctx.lineTo(px, py); } ctx.stroke(); } ctx.globalCompositeOperation = 'source-over'; }
+    else if (f.k === 'chain') { ctx.lineWidth = 3; ctx.setLineDash([6, 4]); ctx.beginPath(); ctx.ellipse(f.x, f.y, 16 * s, 6 * s, Math.sin(G.time * 3) * 0.3, 0, TAU); ctx.stroke(); ctx.setLineDash([]); }
+    else if (f.k === 'crack') { ctx.lineWidth = 2; ctx.strokeStyle = '#6a5030'; for (let i = 0; i < 5; i++) { const an = Math.PI + i * Math.PI / 4; ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.lineTo(f.x + Math.cos(an) * 22 * s, f.y + Math.sin(an) * 6 * s + 4); ctx.stroke(); } } }
+  ctx.restore(); G.elRes = L.filter(f => f.t < f.T); }
+// 속성 탄 모양(협력·소환에서 날아가는 탄)
+function drawElShot(el, x, y, ang, sz) { const c = ELC[el] || '#fff'; ctx.save(); ctx.translate(x, y); ctx.rotate(ang); ctx.globalCompositeOperation = 'lighter'; glow(ELG[el] || 'gold', 0, 0, sz * 1.4, 0.7); ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = c; ctx.strokeStyle = c;
+  if (el === 'wind') { ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(-sz * 0.4, 0, sz, -1.2, 1.2); ctx.stroke(); }
+  else if (el === 'mark') { ctx.beginPath(); ctx.moveTo(sz, 0); ctx.lineTo(-sz, -sz * 0.3); ctx.lineTo(-sz, sz * 0.3); ctx.fill(); }
+  else if (el === 'wet') { ctx.beginPath(); ctx.arc(0, 0, sz * 0.6, 0, TAU); ctx.fill(); ctx.globalAlpha = 0.5; ctx.beginPath(); ctx.arc(-sz * 0.8, 0, sz * 0.4, 0, TAU); ctx.fill(); }
+  else if (el === 'fire') { ctx.beginPath(); ctx.arc(0, 0, sz * 0.7, 0, TAU); ctx.fill(); ctx.fillStyle = '#ffe080'; ctx.beginPath(); ctx.arc(sz * 0.15, 0, sz * 0.35, 0, TAU); ctx.fill(); }
+  else if (el === 'ice') { ctx.beginPath(); ctx.moveTo(sz * 1.1, 0); ctx.lineTo(-sz * 0.6, -sz * 0.35); ctx.lineTo(-sz * 0.6, sz * 0.35); ctx.fill(); }
+  else if (el === 'bolt') { ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(-sz, 0); ctx.lineTo(-sz * 0.3, -sz * 0.4); ctx.lineTo(sz * 0.2, sz * 0.3); ctx.lineTo(sz, -sz * 0.2); ctx.stroke(); }
+  else if (el === 'bind') { ctx.lineWidth = 2.5; for (let i = -1; i <= 1; i++) { ctx.beginPath(); ctx.ellipse(i * sz * 0.6, 0, sz * 0.35, sz * 0.22, 0, 0, TAU); ctx.stroke(); } }
+  else { ctx.fillStyle = '#7a5a3a'; ctx.beginPath(); ctx.arc(0, 0, sz * 0.9, 0, TAU); ctx.fill(); ctx.strokeStyle = '#c8a070'; ctx.lineWidth = 2; ctx.stroke(); }
+  ctx.restore(); }
+{ const a = drawWpFx; drawWpFx = function () { a(); drawElRes(); }; }
+/* ---------- 기획 18-2 + 23-1: 협력 발동 연출(맞손 컷인 · 나란히 · 따로 쏘고 합쳐짐 · 「合」 · 협력 ×n) + 연계 24종 ---------- */
+const CO23 = { hand: 0.5, handShort: 0.3, side: 0.3, fly: 0.2, merge: 0.3, hit: 40, hitSide: 0.5, R: 80, resDps: 10, resT: 2 };
+const HEROEL = { 0: 'wind', 1: 'mark', 2: 'wet' };
+const mainEl = ch => HEROEL[ch] || (['wind', 'mark', 'wet'].includes(coTy(ch)[2]) ? coTy(ch)[2] : 'wind');
+// [이름, 남는 효과, 특수] — 주인공 속성 × 동료 속성
+const COMBO24 = {
+  wind: { fire: ['불 회오리', 'fire', 'pull'], ice: ['눈보라', 'frost', 'slowB'], bolt: ['번개 폭풍', 'bolt', 'chain4'], wet: ['물 회오리', 'wet', 'clearB'], wind: ['쌍회오리', 'wind', 'sweep'], mark: ['칼바람 과녁', 'mark', 'markHit'], bind: ['모래 사슬', 'bind', 'bindAll'], heavy: ['모래 폭풍', 'heavy', 'stun'] },
+  mark: { fire: ['불화살 과녁', 'fire', 'markBoom'], ice: ['얼음 화살', 'frost', 'markFreeze'], bolt: ['벼락 과녁', 'bolt', 'markBolt'], wet: ['물화살 비', 'wet', 'rainWet'], wind: ['바람 화살', 'wind', 'pierceLine'], mark: ['쌍과녁', 'mark', 'markAll'], bind: ['사슬 과녁', 'bind', 'markBind'], heavy: ['쇠 화살', 'heavy', 'bigOne'] },
+  wet: { fire: ['증기 폭발', 'fire', 'steam'], ice: ['결빙', 'frost', 'wetFreeze'], bolt: ['감전 연쇄', 'bolt', 'wetChain'], wet: ['해일', 'wet', 'wave'], wind: ['물보라 바람', 'wind', 'pushB'], mark: ['물 과녁', 'wet', 'markPillar'], bind: ['진흙 늪', 'bind', 'swamp'], heavy: ['물대포', 'heavy', 'bigOne'] } };
+const coComboOf = (ch, c) => { const h = mainEl(ch), p = coTy(c)[2] || 'wind'; const T = COMBO24[h] || COMBO24.wind; return Object.assign({ h, p }, { name: (T[p] || T.wind)[0], res: (T[p] || T.wind)[1], sp: (T[p] || T.wind)[2] }); };
+function coSeqStart(c, tx, ty) { const cb = coComboOf(P.ch, c); G.coUse = (G.coUse || 0) + 1; const hand = G.coUse >= 3 ? CO23.handShort : CO23.hand;
+  G.coSeq = { c, t: 0, hand, tx, ty, cb, n: 0, aw: G.awake > 0 }; G.coCut = null; G.hstop = Math.max(G.hstop || 0, hand); needImg(look(P.ch).cut); needImg(look(c).cut);
+  tone(523, 0.35, 'triangle', 0.06); tone(659, 0.35, 'triangle', 0.05); }
+function coMerge(q) { const { tx, ty, cb } = q, k = q.k || 1; let n = 0; G.coMerge = { x: tx, y: ty, t: 0, cb };
+  withSrc('co', () => { const ts = enemies.filter(e => !e.dead && !e.inv && Math.hypot(e.x - tx, e.y - ty) < CO23.R * k + e.r * 0.5).sort((a, b) => Math.hypot(a.x - tx, a.y - ty) - Math.hypot(b.x - tx, b.y - ty));
+    ts.forEach((e, i) => { hitEl(e, CO23.hit * k * (i ? CO23.hitSide : 1), cb.p === 'heavy' ? null : cb.p, { heavy: 1 }); n++; });
+    coSpecial(cb.sp, tx, ty, k, (m) => { n += m; }); });
+  elFx(cb.h, tx, ty, true); elFx(cb.p, tx, ty, true); (G.coRes = G.coRes || []).push({ x: tx, y: ty, R: CO23.R * k, t: 0, T: CO23.resT, el: cb.res, nt: 0 });
+  G.coNum = { n: Math.max(1, n), t: 0, x: tx, y: ty }; G.shake = Math.max(G.shake, 0.4); tone(98, 0.25, 'sine', 0.1, -20); noise(0.2, 0.1, { f: 200 }); }
+function coSpecial(sp, x, y, k, add) { const near = (r) => enemies.filter(e => !e.dead && !e.inv && Math.hypot(e.x - x, e.y - y) < r * k + e.r * 0.5), all = () => enemies.filter(e => !e.dead && !e.inv && e.x < W + 10), marked = () => all().filter(e => e.st && e.st.mark > 0);
+  const hit = (e, d, el, o) => { hitEl(e, d * k, el, o); add(1); };
+  if (sp === 'pull') for (const e of near(160)) if (e.type !== 'boss') { e.x += (x - e.x) * 0.5; e.y += (y - e.y) * 0.5; }
+  else if (sp === 'slowB') { for (const b of bullets) { b.vx *= 0.5; b.vy *= 0.5; } for (const e of near(160)) { e.st = e.st || {}; e.st.ice = 2; } }
+  else if (sp === 'chain4' || sp === 'wetChain') { let from = { x, y }; const done = new Set(); const pool = sp === 'wetChain' ? all().filter(e => e.st && e.st.wet > 0) : all(); for (let i = 0; i < (sp === 'chain4' ? 4 : 12); i++) { const t = pool.filter(e => !done.has(e)).sort((a, b) => Math.hypot(a.x - from.x, a.y - from.y) - Math.hypot(b.x - from.x, b.y - from.y))[0]; if (!t) break; done.add(t); fx2({ k: 'line', x: from.x, y: from.y, tx: t.x, ty: t.y, d: 0.25, col: '#fff08a' }); hit(t, 8, 'bolt'); from = t; } }
+  else if (sp === 'clearB') bullets = bullets.filter(b => Math.hypot(b.x - x, b.y - y) > 130 * k);
+  else if (sp === 'sweep') for (const e of all()) if (Math.abs(e.y - y) < 70) hit(e, 10, 'wind');
+  else if (sp === 'markHit') for (const e of marked()) hit(e, 12, 'wind');
+  else if (sp === 'bindAll') for (const e of near(150)) { e.st = e.st || {}; e.st.bind = 2; }
+  else if (sp === 'stun') for (const e of near(150)) { if (e.type !== 'boss') e.x += 60; e.frozen = Math.max(e.frozen || 0, 1); }
+  else if (sp === 'markBoom') for (const e of marked()) { hit(e, 12, 'fire'); elFx('fire', e.x, e.y, true); }
+  else if (sp === 'markFreeze') for (const e of marked()) { e.frozen = Math.max(e.frozen || 0, 1.2); hit(e, 12, 'ice'); }
+  else if (sp === 'markBolt') for (const e of marked()) { fx2({ k: 'line', x: e.x, y: 0, tx: e.x, ty: e.y, d: 0.25, col: '#fff08a' }); hit(e, 14, 'bolt'); }
+  else if (sp === 'rainWet') for (const e of near(170)) hit(e, 6, 'wet');
+  else if (sp === 'pierceLine') for (const e of all()) if (e.x > P.x && Math.abs(e.y - y) < 26 + e.r * 0.5) hit(e, 18, 'wind');
+  else if (sp === 'markAll') for (const e of all()) { e.st = e.st || {}; e.st.mark = 4; }
+  else if (sp === 'markBind') for (const e of marked()) { e.st.bind = 2; hit(e, 8, 'bind'); }
+  else if (sp === 'bigOne') { const t = near(200).sort((a, b) => b.hp - a.hp)[0]; if (t) { hit(t, 30, null, { heavy: 1 }); t.frozen = Math.max(t.frozen || 0, 1); G.shake = 0.6; } }
+  else if (sp === 'steam') for (const e of near(200)) { e.slowT = Math.max(e.slowT || 0, 2); e.fcd = (e.fcd || 0) + 1.2; }
+  else if (sp === 'wetFreeze') for (const e of all()) if (e.st && e.st.wet > 0) { e.frozen = Math.max(e.frozen || 0, 1.5); add(1); }
+  else if (sp === 'wave') { G.coWave = { x: 0, t: 0 }; for (const e of all()) hit(e, 10, 'wet'); }
+  else if (sp === 'pushB') for (const b of bullets) { const d = Math.hypot(b.x - x, b.y - y); if (d < 180 * k) { b.vx += (b.x - x) / (d || 1) * 300; b.vy += (b.y - y) / (d || 1) * 300; } }
+  else if (sp === 'markPillar') for (const e of marked()) { fx2({ k: 'line', x: e.x, y: GY, tx: e.x, ty: e.y - 40, d: 0.3, col: '#7fc8ff' }); hit(e, 12, 'wet'); }
+  else if (sp === 'swamp') for (const e of near(160)) { e.slowT = Math.max(e.slowT || 0, 2.5); e.st = e.st || {}; e.st.bind = 1.5; } }
+function coSeqUpd() { const q = G.coSeq; if (!q) return; q.t += 1 / 60; const t = q.t - q.hand;
+  if (t > 0 && t < CO23.side) { const k = t / CO23.side; P.cx += (P.x + 52 - P.cx) * 0.3 * (1 + k); P.cy += (P.y - 2 - P.cy) * 0.3; }
+  if (t >= CO23.side + CO23.fly && !q.merged) { q.merged = 1; q.k = q.aw ? 1.5 : 1; coMerge(q); }
+  if (t > CO23.side + CO23.fly + CO23.merge) G.coSeq = null; }
+function coResUpd(dt) { const L = G.coRes; if (!L) return; for (const r of L) { r.t += dt; if ((r.nt -= dt) <= 0) { r.nt = 0.25; withSrc('co', () => { for (const e of enemies) if (!e.dead && !e.inv && Math.hypot(e.x - r.x, e.y - r.y) < r.R + e.r * 0.5) hitEl(e, CO23.resDps * 0.25, r.el === 'frost' ? 'ice' : r.el === 'heavy' ? null : r.el); }); } } G.coRes = L.filter(r => r.t < r.T); if (G.coWave) { G.coWave.x += 900 * dt; G.coWave.t += dt; bullets = bullets.filter(b => Math.abs(b.x - G.coWave.x) > 40); if (G.coWave.x > W + 80) G.coWave = null; } }
+{ const a = updateBuddy; updateBuddy = function (dt) { a(dt); coResUpd(dt); }; }
+// 시작 지점: 지휘형 = 손가락 자리, 탑승형·수호형 = 자동 과녁
+{ const a = coCmd; coCmd = function (c, pt) { a(c, pt); coSeqStart(c, pt.x, pt.y); }; }
+{ const a = coRide; coRide = function (c) { a(c); const p = coAutoTarget(); coSeqStart(c, p.x, p.y); }; }
+{ const a = coGuard; coGuard = function (c) { a(c); const p = coAutoTarget(); coSeqStart(c, p.x, p.y); }; }
+function coDrawMate(c) { const q = G.coSeq, big = !!(q && q.t > q.hand) || !!G.coMateBig, awk = (q && q.aw) || G.coAwk; const img = awk && AWK2.spr[P.co] && ok(IMG[AWK2.spr[P.co]]) ? AWK2.spr[P.co] : look(P.co).img;
+  spr(img, P.cx, P.cy + Math.sin(G.time * 4 + 1) * 2, c.h * (big ? 1 : 0.72) * SZ.p, { flip: c.flip }); }
+function drawCoSeq() { const q = G.coSeq; if (!q || G.mode !== 'play') return; const t = q.t - q.hand, ca = coCol(P.ch), cb = coCol(q.c);
+  if (t > 0) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.lineWidth = 2.5; for (let j = 0; j < 2; j++) { ctx.strokeStyle = j ? cb : ca; ctx.beginPath(); for (let i = 0; i <= 12; i++) { const u = i / 12, x = P.x + (P.cx - P.x) * u, y = P.y + (P.cy - P.y) * u + Math.sin(u * 9 + G.time * 12 + j * Math.PI) * 6; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke(); } ctx.restore(); }
+  const f0 = CO23.side, f1 = CO23.side + CO23.fly; if (t > f0 && t < f1) { const u = (t - f0) / CO23.fly; for (const [sx, sy, el, ph] of [[P.x + 20, P.y, q.cb.h, 0], [P.cx + 20, P.cy, q.cb.p, Math.PI]]) { const x = sx + (q.tx - sx) * u, y = sy + (q.ty - sy) * u + Math.sin(u * 10 + ph) * 18 * (1 - u); drawElShot(el, x, y, Math.atan2(q.ty - sy, q.tx - sx), 9 * (q.k || 1)); } } }
+function drawCoMerge() { const m = G.coMerge; if (m) { m.t += 1 / 60; const k = m.t / 0.6; if (k >= 1) G.coMerge = null; else { ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.lineWidth = 5 * (1 - k) + 1; ctx.strokeStyle = ELC[m.cb.h]; ctx.beginPath(); ctx.arc(m.x, m.y, 20 + 80 * k, 0, TAU); ctx.stroke(); ctx.strokeStyle = ELC[m.cb.p]; ctx.beginPath(); ctx.arc(m.x, m.y, 10 + 60 * k, 0, TAU); ctx.stroke(); ctx.restore();
+      const sc = k < 0.2 ? 2 - 5 * k : 1; ctx.save(); ctx.globalAlpha = Math.min(1, (1 - k) * 2); ctx.translate(m.x, m.y - 50); ctx.rotate(-0.1); ctx.scale(sc, sc); ctx.fillStyle = 'rgba(190,30,25,.9)'; ctx.fillRect(-20, -20, 40, 40); ctx.strokeStyle = '#ffe0c0'; ctx.lineWidth = 2; ctx.strokeRect(-16, -16, 32, 32); ctx.font = '26px ' + FONT; ctx.textAlign = 'center'; ctx.fillStyle = '#fff2e0'; ctx.fillText('合', 0, 9); ctx.restore(); } }
+  const nn = G.coNum; if (nn) { nn.t += 1 / 60; if (nn.t > 1.2) G.coNum = null; else { const a = Math.min(1, (1.2 - nn.t) * 3), sc = nn.t < 0.12 ? 1.6 - 5 * nn.t : 1; ctx.save(); ctx.globalAlpha = a; ctx.translate(nn.x, nn.y - 90 - nn.t * 20); ctx.scale(sc, sc); ctx.textAlign = 'center'; ctx.font = '26px ' + FONT; ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(60,30,0,.9)'; const s = (G.coSeq && G.coSeq.aw ? '각성 ' : '') + '협력 ×' + nn.n; ctx.strokeText(s, 0, 0); ctx.fillStyle = '#ffd76a'; ctx.fillText(s, 0, 0); ctx.restore(); } }
+  const wv = G.coWave; if (wv) { ctx.save(); const g = ctx.createLinearGradient(wv.x - 80, 0, wv.x, 0); g.addColorStop(0, 'rgba(80,160,255,0)'); g.addColorStop(1, 'rgba(200,235,255,.7)'); ctx.fillStyle = g; ctx.fillRect(wv.x - 80, 0, 80, GY); ctx.restore(); }
+  const L = G.coRes || []; for (const r of L) { const a = Math.min(1, (r.T - r.t) * 2) * 0.5; ctx.save(); ctx.globalAlpha = a; ctx.strokeStyle = ELC[r.el === 'frost' ? 'ice' : r.el] || '#fff'; ctx.lineWidth = 2; ctx.setLineDash([5, 5]); ctx.lineDashOffset = -G.time * 20; ctx.beginPath(); ctx.arc(r.x, r.y, r.R, 0, TAU); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = a * 0.25; ctx.fillStyle = ctx.strokeStyle; ctx.fill(); ctx.restore(); if (Math.random() < 0.3) elFx(r.el === 'frost' ? 'ice' : r.el, r.x + rnd(-r.R, r.R) * 0.6, r.y + rnd(-r.R, r.R) * 0.4, false); } }
+// 맞손 컷인 0.5초: 화면이 대각선으로 갈라지며 두 일러스트 · 가운데 금빛 섬광 · 「협력!」 · 두 이름 · 연계 이름
+function drawCoHand() { const q = G.coSeq; if (!q || q.t > q.hand || G.mode !== 'play') return; const u = q.t / q.hand, k = Math.min(1, u * 4), out = u > 0.8 ? (1 - u) / 0.2 : 1;
+  const aw = q.aw, imA = IMG[aw && AWK.img[P.ch] ? AWK.img[P.ch] : look(P.ch).cut], imB = IMG[aw && AWK.img[q.c] ? AWK.img[q.c] : look(q.c).cut];
+  ctx.save(); ctx.globalAlpha = out; ctx.fillStyle = 'rgba(6,6,16,.82)'; ctx.fillRect(0, 0, W, H);
+  ctx.save(); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(W * 0.62, 0); ctx.lineTo(W * 0.38, H); ctx.lineTo(0, H); ctx.closePath(); ctx.clip(); if (ok(imA)) { const s = H * 1.15 / imA.height, w = imA.width * s; ctx.drawImage(imA, -w * 0.15 - 120 * (1 - k), -H * 0.05, w, imA.height * s); } ctx.fillStyle = coCol(P.ch); ctx.globalAlpha = 0.12 * out; ctx.fillRect(0, 0, W, H); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.moveTo(W * 0.62, 0); ctx.lineTo(W, 0); ctx.lineTo(W, H); ctx.lineTo(W * 0.38, H); ctx.closePath(); ctx.clip(); if (ok(imB)) { const s = H * 1.15 / imB.height, w = imB.width * s; ctx.save(); ctx.translate(W + w * 0.15 + 120 * (1 - k), -H * 0.05); ctx.scale(-1, 1); ctx.drawImage(imB, 0, 0, w, imB.height * s); ctx.restore(); } ctx.fillStyle = coCol(q.c); ctx.globalAlpha = 0.12 * out; ctx.fillRect(0, 0, W, H); ctx.restore();
+  ctx.globalCompositeOperation = 'lighter'; ctx.strokeStyle = '#ffd76a'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(W * 0.62, 0); ctx.lineTo(W * 0.38, H); ctx.stroke(); glow('gold', W / 2, H / 2, 60 + 90 * Math.sin(Math.min(1, u * 2) * Math.PI), 0.9); ctx.globalCompositeOperation = 'source-over';
+  ctx.textAlign = 'center'; ctx.lineWidth = 6; ctx.strokeStyle = 'rgba(0,0,0,.85)'; ctx.font = '44px ' + FONT; const T1 = aw ? '각성 협력!' : '협력!'; ctx.strokeText(T1, W / 2, H / 2 + 14); ctx.fillStyle = '#ffd76a'; ctx.fillText(T1, W / 2, H / 2 + 14);
+  ctx.font = '18px ' + FONT; ctx.lineWidth = 4; const nm = CH[P.ch].name + ' × ' + CH[q.c].name; ctx.strokeText(nm, W / 2, H / 2 + 44); ctx.fillStyle = '#fff2d8'; ctx.fillText(nm, W / 2, H / 2 + 44);
+  ctx.font = '22px ' + FONT; const cn = '「' + q.cb.name + '」'; ctx.strokeText(cn, W / 2, H / 2 + 74); ctx.fillStyle = ELC[q.cb.p] || '#fff'; ctx.fillText(cn, W / 2, H / 2 + 74); ctx.restore(); }
+{ const a = drawAwkCut; drawAwkCut = function () { a(); if (G.mode === 'play') { coSeqUpd(); drawCoHand(); } }; }
+{ const a = drawWpFx; drawWpFx = function () { a(); drawCoSeq(); drawCoMerge(); }; }
+// 18-5: 협력 연출 중 내 기본 탄 반투명 40%
+{ const a = drawShot; drawShot = function (s) { if (G.coSeq && s.basic) { const ga = ctx.globalAlpha; ctx.globalAlpha = ga * 0.4; const r = a(s); ctx.globalAlpha = ga; return r; } return a(s); }; }
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],
