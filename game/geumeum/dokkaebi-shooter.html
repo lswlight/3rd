@@ -1793,8 +1793,9 @@ function rogueFire(n0) { // 그믐의 탑 축복: 기본 공격
   const c = nw[Math.floor(nw.length / 2)]; for (let j = 0; j < 0; j++) { const a = Math.atan2(c.vy, c.vx) + (j % 2 ? -1 : 1) * (0.16 + 0.08 * (j >> 1)), sp = Math.hypot(c.vx, c.vy); shots.push(Object.assign({}, c, { vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, hit: c.hit ? new Map() : c.hit })); }
   if (rb('b_fast')) P.fcd /= Math.pow(1.15, rb('b_fast'));
 }
+const MUZ = { 22: [30, -50] }; // 기본 탄이 나가는 자리(그림의 무기 끝): 강림도령 창끝
 function fire0() {
-  const p = P.power, x = P.x + 14, y = P.y; sfx.shot(); P.muz = 0.07;
+  const p = P.power, mo = MUZ[P.ch] || [0, 0], x = P.x + 14 + mo[0], y = P.y + mo[1]; sfx.shot(); P.muz = 0.07;
   if (P.ch >= 6) { kitFire(P.ch, p, x, y, 1); P.fcd = CH[P.ch].kit.rate; return; }
   if (P.ch === 0) { const n = p + 1; for (let i = 0; i < n; i++) { const a = (i - (n - 1) / 2) * 0.09; ps(x + 8, y - 13, Math.cos(a) * 560, Math.sin(a) * 560, 4, 1, 0); } P.fcd = 0.11; }
   else if (P.ch === 1) { for (let i = 0; i < p; i++) ps(x, y + (i - (p - 1) / 2) * 7, 760, 0, 3, 1.5, 1); P.fcd = 0.09; }
@@ -2626,7 +2627,7 @@ function draw() {
     if (P.power >= 4 && P.deadT <= 0) { ctx.globalCompositeOperation = 'lighter'; glow(CH[P.ch].glow || 'gold', P.x, P.y, 34 + Math.sin(G.time * 5) * 4, 0.35); ctx.globalCompositeOperation = 'source-over'; } // 힘 최대: 은은한 기운
     if (G.awake > 0) drawAwakeP();
     else if (!(P.inv > 0 && Math.floor(G.time * 16) % 2)) drawPlayer(P.x, P.y, P.ch);
-    if (P.muz > 0) { ctx.globalCompositeOperation = 'lighter'; glow(CH[P.ch].glow, P.x + (P.ch === 0 ? 26 : 24), P.y - (P.ch === 0 ? 13 : 0), 14 + P.muz * 220, 0.9); ctx.globalCompositeOperation = 'source-over'; }
+    if (P.muz > 0) { ctx.globalCompositeOperation = 'lighter'; glow(CH[P.ch].glow, P.x + (P.ch === 0 ? 26 : 24) + ((typeof MUZ !== 'undefined' && MUZ[P.ch]) ? MUZ[P.ch][0] : 0), P.y - (P.ch === 0 ? 13 : 0) + ((typeof MUZ !== 'undefined' && MUZ[P.ch]) ? MUZ[P.ch][1] : 0), 14 + P.muz * 220, 0.9); ctx.globalCompositeOperation = 'source-over'; }
     { const g = Math.max(0, P.graze || 0) / 0.25; ctx.globalCompositeOperation = 'lighter'; glow('jade', P.x, P.y, 9 + g * 8, 0.5); ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = '#fff'; circ(P.x, P.y, 3 + g * 2); } // 맞는 곳(흰 점): 테두리 없이 작은 빛점
     if (P.charge > 0.12) { const full = P.charge >= chgT(); ctx.globalCompositeOperation = 'lighter'; glow(CH[P.ch].glow, P.x, P.y, 24 + P.charge * 34, 0.55); ctx.globalCompositeOperation = 'source-over'; ctx.strokeStyle = full ? '#ffe27a' : 'rgba(255,255,255,.7)'; ctx.lineWidth = full ? 3 : 2; ctx.beginPath(); ctx.arc(P.x, P.y, full ? 20 + Math.sin(G.time * 20) * 2 : 30 - P.charge * 16, -Math.PI / 2, -Math.PI / 2 + TAU * Math.min(1, P.charge / 0.6)); ctx.stroke(); }
   }
