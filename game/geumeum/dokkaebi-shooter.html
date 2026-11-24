@@ -4929,17 +4929,18 @@ cv.addEventListener('pointerdown', jDown); window.addEventListener('pointermove'
 // --- 그리기 ---
 const JELI = { wind: '風', mark: '標', wet: '水', fire: '火', ice: '氷', bolt: '雷', bind: '鎖', heavy: '重' };
 const JELC = { wind: '#4fe08a', mark: '#ff4a6a', wet: '#3a8dff', fire: '#ff7a1a', ice: '#7fe0ff', bolt: '#ffd51a', bind: '#a86aff', heavy: '#c8803a' }; // 카드 구분용 속성 색(서로 잘 갈리게)
-function jCard(ch, x, y, w, h, cost) { const el = SKEL[ch] || 'heavy', ec = JELC[el] || '#c8a070', im = IMG[look(ch).cut], rc = JROOTC[jRootOf(ch)] || '#fff', sw0 = 15; ctx.save(); ctx.fillStyle = 'rgba(20,14,10,.94)'; ctx.fillRect(x, y, w, h);
-  if (ok(im)) { ctx.save(); ctx.beginPath(); ctx.rect(x + sw0, y + 2, w - sw0 - 2, h - 18); ctx.clip(); const sw = im.width * 0.42 / 1.3, sh = sw * (h - 18) / (w - sw0 - 2); ctx.drawImage(im, im.width * 0.5 - sw / 2, im.height * 0.06, sw, sh, x + sw0, y + 2, w - sw0 - 2, h - 18); ctx.restore(); }
-  // 왼쪽 속성 띠: 속성 색 + 한자 + 이름 세로
-  ctx.fillStyle = ec; ctx.globalAlpha = 0.9; ctx.fillRect(x + 1, y + 1, sw0 - 1, h - 17); ctx.globalAlpha = 1; ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(x + sw0 - 1, y + 1, 1, h - 17);
-  text(JELI[el], x + sw0 / 2 + 0.5, y + 16, 13, '#160c04', 'center'); ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.fillRect(x + 3, y + 22, sw0 - 5, 1);
-  ctx.fillStyle = rc; ctx.beginPath(); ctx.arc(x + sw0 / 2, y + h - 22, 3, 0, TAU); ctx.fill();
+function jCard(ch, x, y, w, h, cost) { const el = SKEL[ch] || 'heavy', ec = JELC[el] || '#c8a070', im = IMG[look(ch).cut], rc = JROOTC[jRootOf(ch)] || '#fff'; ctx.save(); ctx.fillStyle = 'rgba(20,14,10,.94)'; ctx.fillRect(x, y, w, h);
+  if (ok(im)) { ctx.save(); ctx.beginPath(); ctx.rect(x + 2, y + 2, w - 4, h - 18); ctx.clip(); const sw = im.width * 0.42 / 1.3, sh = sw * (h - 18) / (w - 4); ctx.drawImage(im, im.width * 0.5 - sw / 2, im.height * 0.06, sw, sh, x + 2, y + 2, w - 4, h - 18); ctx.restore(); }
   // 테두리 = 속성 색
   ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.shadowColor = ec; ctx.shadowBlur = 6; ctx.strokeStyle = ec; ctx.lineWidth = 2.5; ctx.strokeRect(x + 1.2, y + 1.2, w - 2.4, h - 2.4); ctx.restore();
-  ctx.fillStyle = 'rgba(0,0,0,.8)'; ctx.fillRect(x + 2, y + h - 17, w - 4, 15); text(CH[ch].name.slice(0, 4), x + w / 2, y + h - 4, 10, '#fff6e0', 'center');
-  // 값(오른쪽 위 엽전, 비쌀수록 색이 다름)
-  ctx.fillStyle = ['#c8c8c8', '#9fe08a', '#7fc8ff', '#c9a8ff', '#ffd76a'][cost - 1] || '#ffd76a'; ctx.beginPath(); ctx.arc(x + w - 9, y + 9, 8, 0, TAU); ctx.fill(); ctx.strokeStyle = 'rgba(0,0,0,.5)'; ctx.lineWidth = 1; ctx.stroke(); text(cost + '', x + w - 9, y + 13, 11, '#2a1a00', 'center'); ctx.restore(); }
+  const thin = (str, tx, ty, size, col, al) => { ctx.save(); ctx.font = '500 ' + size + 'px "Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif'; ctx.textAlign = al || 'left'; ctx.lineJoin = 'round'; ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,.85)'; ctx.strokeText(str, tx, ty); ctx.fillStyle = col; ctx.fillText(str, tx, ty); ctx.restore(); };
+  // 왼쪽 위 속성(한글, 배경 없이 글자만)
+  thin(JELN[el] || '', x + 4, y + 13, 9, ec);
+  // 왼쪽 아래 뿌리 점(작게)
+  ctx.fillStyle = rc; ctx.strokeStyle = 'rgba(0,0,0,.7)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x + 7, y + h - 23, 2.6, 0, TAU); ctx.fill(); ctx.stroke();
+  // 오른쪽 위 값: 배경 없이 숫자만, 값에 따라 글자색
+  thin(cost + '', x + w - 5, y + 15, 14, ['#e8e8e8', '#8af07a', '#6ab8ff', '#c99aff', '#ffd23a'][cost - 1] || '#ffd23a', 'right');
+  ctx.fillStyle = 'rgba(0,0,0,.8)'; ctx.fillRect(x + 2, y + h - 17, w - 4, 15); text(CH[ch].name.slice(0, 4), x + w / 2, y + h - 4, 10, '#fff6e0', 'center'); ctx.restore(); }
 function jUnitSpr(u, x, y, sc, a) { if (u.yk) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; glow('blue', x, y - 14 * sc, 30 * sc, 0.5); ctx.restore(); ctx.save(); ctx.globalAlpha = 0.9; spr(u.img, x, y - 20 * sc, 44 * sc * JINK.spr, { flip: 1 }); ctx.restore(); text('封', x + 16 * sc, y + 12 * sc, 11, '#9fd8ff', 'center'); return; } ctx.save(); ctx.globalAlpha = (a == null ? 1 : a) * 0.55; ctx.fillStyle = '#000'; ctx.beginPath(); ctx.ellipse(x, y + 7 * sc, 17 * sc, 5 * sc, 0, 0, TAU); ctx.fill(); ctx.globalAlpha = (a == null ? 1 : a) * 0.9; ctx.strokeStyle = u.star === 3 ? '#ffd76a' : u.star === 2 ? '#9fd0ff' : 'rgba(255,240,210,.5)'; ctx.lineWidth = 1.5; ctx.stroke(); ctx.restore(); const img = u.star === 3 && AWK2.spr[u.ch] && ok(IMG[AWK2.spr[u.ch]]) ? AWK2.spr[u.ch] : look(u.ch).img; ctx.save(); if (a != null) ctx.globalAlpha = a; if (u.star === 3) { ctx.globalCompositeOperation = 'lighter'; glow('gold', x, y, 22 * sc, 0.5); ctx.globalCompositeOperation = 'source-over'; } { const v = (y - JB.tl[1]) / (JB.bl[1] - JB.tl[1]); if (v >= -0.1 && v <= 1.1 && !(J && J.hlU === u)) ctx.filter = 'brightness(' + (0.68 + 0.32 * Math.max(0, Math.min(1, v))).toFixed(2) + ')'; } spr(img, x, y - 18 * sc * (J && J.big === 0 ? 0.6 : 1), (u.star === 3 ? 62 : u.star === 2 ? 54 : 48) * sc * JINK.spr, { flip: CH[u.ch].flip }); ctx.restore(); text('★'.repeat(u.star), x, y + 14 * sc, 8, u.star === 3 ? '#ffd76a' : u.star === 2 ? '#bfe4ff' : '#ddd', 'center'); }
 function jMoon(x, y, r, n) { ctx.save(); ctx.fillStyle = '#fff3c0'; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); const k = n <= 8 ? n / 8 : (15 - n) / 7, side = n <= 8 ? -1 : 1; if (k < 0.98) { ctx.fillStyle = 'rgba(10,14,40,.95)'; ctx.beginPath(); ctx.arc(x + side * r * 2 * k, y, r * 1.02, 0, TAU); ctx.fill(); } ctx.restore(); }
 // 배경 정리(사용자 11/24): 마을·하늘은 흐리고 어둡게, 진판 두 곳만 또렷하게 — 한 번만 만들어 둠
