@@ -4809,7 +4809,7 @@ const JEN = ['mini0a', 'mh0', 'mini0c', 'mini1a', 'mh1', 'mini1c', 'mini2a', 'mh
 // 진판 좌표(배경 1344×752 기준 꼭짓점을 640×360으로)
 const JB = { tl: [61, 144], tr: [263, 144], bl: [7, 275], br: [313, 275], rows: 5, cols: 3, uiY: 279 };
 const JBE = { tl: [379, 144], tr: [566, 144], bl: [333, 275], br: [623, 275] }; // 요괴 진(돌판), c=0 이 가운데(앞) 쪽
-function jTileQ(Q, c, r) { const v = (r + 0.5) / JB.rows, y = Q.tl[1] + (Q.bl[1] - Q.tl[1]) * v, xl = Q.tl[0] + (Q.bl[0] - Q.tl[0]) * v, xr = Q.tr[0] + (Q.br[0] - Q.tr[0]) * v; return { x: xl + (xr - xl) * (c + 0.5) / JB.cols + (JB.noStag ? 0 : (r % 2 ? 1 : -1) * (xr - xl) / JB.cols * 0.16), y, s: 0.8 + 0.35 * v, w: (xr - xl) / JB.cols, h: (Q.bl[1] - Q.tl[1]) / JB.rows }; }
+function jTileQ(Q, c, r) { if (Q.pts && Q.pts[r] && Q.pts[r][c]) { const P = Q.pts, p = P[r][c], row = P[r], w = Math.abs(row[2][0] - row[0][0]) / 2, h = (P[Math.min(4, r + 1)][0][1] - P[Math.max(0, r - 1)][0][1]) / (r > 0 && r < 4 ? 2 : 1); return { x: p[0], y: p[1], s: 0.8 + 0.35 * (r + 0.5) / 5, w, h }; } /* 달빛 돌마당: 칸 원 가운데를 잰 표(원근이라 칸 크기가 줄마다 다름) */ const v = (r + 0.5) / JB.rows, y = Q.tl[1] + (Q.bl[1] - Q.tl[1]) * v, xl = Q.tl[0] + (Q.bl[0] - Q.tl[0]) * v, xr = Q.tr[0] + (Q.br[0] - Q.tr[0]) * v; return { x: xl + (xr - xl) * (c + 0.5) / JB.cols + (JB.noStag ? 0 : (r % 2 ? 1 : -1) * (xr - xl) / JB.cols * 0.16), y, s: 0.8 + 0.35 * v, w: (xr - xl) / JB.cols, h: (Q.bl[1] - Q.tl[1]) / JB.rows }; }
 const jTile = (c, r) => jTileQ(JB, c, r), jTileE = (c, r) => jTileQ(JBE, c, r);
 function jHitTile(x, y) { for (let r = 0; r < JB.rows; r++) for (let c = 0; c < JB.cols; c++) { const t = jTile(c, r); if (Math.abs(x - t.x) < t.w / 2 && Math.abs(y - t.y) < t.h / 2) return { c, r }; } return null; }
 const jRowOf = y => Math.max(0, Math.min(4, Math.floor((y - JB.tl[1]) / ((JB.bl[1] - JB.tl[1]) / 5))));
@@ -5437,7 +5437,11 @@ function jDrawInfo(q) { const u = q.u, ch = u.ch, P = JPAN, v = jSellVal(u); ctx
 /* ---------- 기획 26 25-1: 새 진판 배경 「달빛 돌마당」(jin_board_bg2, 1344×752) — 칸 좌표 = 돌판 안쪽 네 모서리(그림 좌표 × 640/1344, 360/(752×0.995)) ---------- */
 needImg('jin_board_bg2');
 { const kx = 640 / 1344, ky = 360 / (752 * 0.995), P = (x, y) => [Math.round(x * kx * 10) / 10, Math.round(y * ky * 10) / 10];
-  Object.assign(JB, { tl: P(266, 252), tr: P(628, 252), bl: P(44, 578), br: P(634, 578), noStag: 1 }); Object.assign(JBE, { tl: P(734, 252), tr: P(1088, 252), bl: P(730, 578), br: P(1324, 578) }); }
+  Object.assign(JB, { tl: P(266, 252), tr: P(628, 252), bl: P(44, 578), br: P(634, 578), noStag: 1 }); Object.assign(JBE, { tl: P(734, 252), tr: P(1088, 252), bl: P(730, 578), br: P(1324, 578) });
+  // 칸마다 새겨진 원의 가운데(그림 좌표, 개발방이 확대해 잼) — 양 끝만 맞고 가운데가 어긋나던 것(사용자 11/25) 고침
+  const LY = [270, 319, 378, 449, 536];
+  JB.pts = [[321, 441, 564], [292, 425, 560], [258, 406, 555], [216, 382, 550], [166, 355, 539]].map((xs, r) => xs.map(x => P(x, LY[r])));
+  JBE.pts = [[796, 922, 1043], [801, 937, 1071], [806, 957, 1106], [813, 980, 1146], [821, 1007, 1195]].map((xs, r) => xs.map(x => P(x, LY[r]))); }
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],
