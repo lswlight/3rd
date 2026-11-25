@@ -20,7 +20,7 @@ for f in sorted(os.listdir('assets')):
     if ext=='webm': continue
     if base in names or base.startswith('cutv') and base in s or base.endswith('_s1') and base[:-3] in names: # _s1 = 동료 스킨(이름을 코드에서 만들어 씀)
         shutil.copy('assets/'+f,'release/www/assets/'+f); n+=1
-shutil.copytree('assets/fonts','release/www/assets/fonts'); shutil.copytree('assets/eq','release/www/assets/eq')
+shutil.copytree('assets/fonts','release/www/assets/fonts'); shutil.copytree('assets/eq','release/www/assets/eq'); shutil.copytree('assets/fx','release/www/assets/fx')  # 기획 29·30 공격 이펙트 그림
 print('copied',n)
 # 안 쓰는 예전 컷인 영상은 빼기(새 이름 cutv*x 로 바뀜)
 import re as _re
