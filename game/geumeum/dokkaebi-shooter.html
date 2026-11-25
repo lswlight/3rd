@@ -5231,21 +5231,20 @@ function jLinkFx(el, t2, D) { const near = (x, y, R0) => J.en.filter(e => !e.dea
 { const a = jStart; jStart = function () { if (J) J.burn = []; return a(); }; }
 needImg('jcard6');
 /* ---------- 기획 30: 메인 게임 = 달밤 진법 — ④ 진판 공격 이펙트(기획 29) · ① 구조 · ② 장 10개 · ③ 성장 · ⑤ 손맛 ---------- */
-const J30 = { cap: 40, lenN: 0.4, lenA: 0.55, sp: 520, fan: 0.2, swing: 0.2 };
+const J30 = { cap: 40, lenN: 0.8, lenA: 1.2, min: 36, sp: 300, spF: 380, fan: 0.2, swing: 0.4, swN: 1.0, swA: 1.2, glow: 0.25, glowA: 0.3, hit: 0.7 }; // 기획 30 §4 개정: 크게·느리게·빛은 약하게
 // ④ 기본 공격: 무기 끝에서 fx/cNNn(평소·짝) · fx/cNNa(각성 4장), 종류별 움직임
 function jMuz(u) { const ch = u.u.ch, aw = u.u.star === 3, Hs = (aw ? 62 : u.u.star === 2 ? 54 : 48) * u.sc * JINK.spr, k = Hs / 112, m = (aw && AWK2.spr[ch] ? MUZW[ch] : MUZ[ch]) || [0, -30]; return { x: u.x + (m[0] + 12) * k * (CH[ch].flip ? -1 : 1), y: u.y - 18 * u.sc + (m[1] + 3) * k, Hs }; }
-function jPrPush(u, p) { if (!u || !u.u || !p.basic) return J.pr.push(p); const ch = u.u.ch, aw = u.u.star === 3, kd = fxKind(ch, aw), T = FXT[kd], key = fxKey(ch, aw), M = jMuz(u), len = M.Hs * (aw ? J30.lenA : J30.lenN), col = coCol(ch), tg = p.tgt; if (!tg) return;
+function jPrPush(u, p) { if (!u || !u.u || !p.basic) return J.pr.push(p); const ch = u.u.ch, aw = u.u.star === 3, kd = fxKind(ch, aw), T = FXT[kd], key = fxKey(ch, aw), M = jMuz(u), len = Math.max(J30.min, M.Hs * (aw ? J30.lenA : J30.lenN)), col = coCol(ch), tg = p.tgt; if (!tg) return;
   const L = (J.fxp = J.fxp || []); const add = o => { L.push(Object.assign({ x: M.x, y: M.y, d: p.d, el: p.el, kd, key, len, col, t: 0, ch }, o)); while (L.length > J30.cap) L.shift(); };
-  J.fx.push({ k: 'muz', x: M.x, y: M.y, t: 0, col: ELC[SKEL[ch]] || '#fff' });
-  if ((JROLE[ch] || 'ranged') !== 'ranged') { add({ sw: 1, x: tg.x - tg.sz * 0.35, y: tg.y - tg.sz * 0.25, tgt: tg, T: J30.swing, ang: Math.atan2(tg.y - M.y, tg.x - M.x), dash: [M.x, M.y] }); return; }
-  const an = Math.atan2(tg.y - tg.sz * 0.25 - M.y, tg.x - M.x), sp = J30.sp * T.sp;
+  if ((JROLE[ch] || 'ranged') !== 'ranged') { const ang = Math.atan2(tg.y - tg.sz * 0.25 - M.y, tg.x - M.x); add({ sw: 1, x0: M.x + Math.cos(ang) * 10, y0: M.y + Math.sin(ang) * 10, x: M.x, y: M.y, tgt: tg, T: J30.swing, ang, len: M.Hs * (aw ? J30.swA : J30.swN), blade: 'ADHN'.includes(kd) }); return; }
+  const an = Math.atan2(tg.y - tg.sz * 0.25 - M.y, tg.x - M.x), sp = ('ABDHN'.includes(kd) ? J30.spF : J30.sp);
   if (kd === 'E') { for (const da of [-J30.fan, 0, J30.fan]) add({ vx: Math.cos(an + da) * sp, vy: Math.sin(an + da) * sp, d: p.d * (da ? 0.45 : 0.6), hitS: new Set() }); return; }
   if (kd === 'B' || T.pl) { add({ vx: Math.cos(an) * sp, vy: Math.sin(an) * sp, pierce: 1, hitS: new Set() }); return; }
   add({ tgt: tg, sp, home: kd === 'F', chain: !!T.chain, spin: !!T.spin, ang: an }); }
 function jFxHit(x, y, kd, col, sz) { (J.fxh = J.fxh || []).push({ x, y, kd, col, sz, t: 0 }); J.kick = Math.max(J.kick || 0, 0.012); }
-function jFxUpd(dt) { const L = J.fxp; if (!L || !L.length) return; const hitE = (o, e, d) => { jHit(e, d, o.el); jFxHit(e.x + rnd(-4, 4), e.y - e.sz * 0.3, o.kd, o.col, o.len * 0.9); };
+function jFxUpd(dt) { const L = J.fxp; if (!L || !L.length) return; const hitE = (o, e, d) => { jHit(e, d, o.el); jFxHit(e.x + rnd(-4, 4), e.y - e.sz * 0.3, o.kd, o.col, Math.min(o.len, 60) * J30.hit); };
   for (const o of L) { o.t += dt;
-    if (o.sw) { if (!o.hit && o.t >= 0.05) { o.hit = 1; if (o.tgt && !o.tgt.dead) { hitE(o, o.tgt, o.d); if (FXT[o.kd].push && !o.tgt.boss) o.tgt.x = Math.min(JBE.br[0] - 10, o.tgt.x + 10); } } if (o.t >= o.T) o.done = 1; continue; }
+    if (o.sw) { const su = Math.min(1, o.t / o.T); o.x = o.x0 + Math.cos(o.ang) * 70 * su; o.y = o.y0 + Math.sin(o.ang) * 70 * su; if (!o.hit && o.t >= 0.15) { o.hit = 1; if (o.tgt && !o.tgt.dead) { hitE(o, o.tgt, o.d); if (FXT[o.kd].push && !o.tgt.boss) o.tgt.x = Math.min(JBE.br[0] - 10, o.tgt.x + 10); } } if (o.t >= o.T) o.done = 1; continue; }
     if (o.vx != null) { o.x += o.vx * dt; o.y += o.vy * dt; for (const e of J.en) if (!e.dead && !o.hitS.has(e) && Math.hypot(e.x - o.x, e.y - e.sz * 0.3 - o.y) < e.sz * 0.45 + 6) { o.hitS.add(e); hitE(o, e, o.d); if (!o.pierce) { o.done = 1; break; } } if (o.x > W + 40 || o.x < -40 || o.y < 0 || o.y > JB.uiY) o.done = 1; continue; }
     let t = o.tgt; if (!t || t.dead) { t = o.tgt = J.en.filter(e => !e.dead).sort((a, b) => Math.hypot(a.x - o.x, a.y - o.y) - Math.hypot(b.x - o.x, b.y - o.y))[0]; if (!t) { o.done = 1; continue; } }
     const ty = t.y - t.sz * 0.3, a = Math.atan2(ty - o.y, t.x - o.x), d = Math.hypot(t.x - o.x, ty - o.y); o.ang = o.home ? o.ang + Math.max(-0.2, Math.min(0.2, ((a - o.ang + Math.PI * 3) % TAU) - Math.PI)) : a;
@@ -5254,8 +5253,11 @@ function jFxUpd(dt) { const L = J.fxp; if (!L || !L.length) return; const hitE =
   J.fxp = L.filter(o => !o.done); }
 function jDrawFxp() { if (!J) return; const L = J.fxp || []; ctx.save();
   for (const o of L) { const im = IMG[o.key]; if (!ok(im)) continue; const g = Math.min(1, o.t / 0.07);
-    if (o.sw) { const u = o.t / o.T, len = o.len * 1.25 * (0.6 + 0.6 * u); ctx.globalAlpha = 1 - Math.max(0, u - 0.5) * 2; ctx.globalCompositeOperation = 'lighter'; glow(ELG[o.el || 'heavy'] || 'gold', o.x, o.y, len * 0.45, 0.5); ctx.globalCompositeOperation = 'source-over'; if (u < 0.35) { ctx.strokeStyle = o.col; ctx.globalAlpha = 0.5 * (1 - u / 0.35); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(o.dash[0], o.dash[1]); ctx.lineTo(o.x, o.y); ctx.stroke(); ctx.globalAlpha = 1 - Math.max(0, u - 0.5) * 2; } sprRot(o.key, o.x, o.y, len, o.ang + (u - 0.5) * 1.2); continue; }
-    const ang = o.vx != null ? Math.atan2(o.vy, o.vx) : o.ang, len = o.len * (0.5 + 0.5 * g); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'lighter'; glow(ELG[o.el || 'heavy'] || 'gold', o.x, o.y, len * 0.42, 0.55); ctx.globalCompositeOperation = 'source-over';
+    if (o.sw) { const u = o.t / o.T, e = 1 - (1 - u) * (1 - u), fa = u < 0.7 ? 1 : (1 - u) / 0.3; ctx.globalAlpha = fa;
+      if (o.blade) { const len = o.len * (0.7 + 0.4 * e); ctx.globalCompositeOperation = 'lighter'; ctx.strokeStyle = o.col; ctx.lineWidth = 3; ctx.globalAlpha = fa * 0.5; ctx.beginPath(); ctx.arc(o.x0, o.y0, len * 0.55, o.ang - 1.3 + e * 0.4, o.ang - 1.3 + e * 2.6); ctx.stroke(); ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = fa; sprRot(o.key, o.x, o.y, len, o.ang - 1.0 + e * 2.0); }
+      else { const len = o.len * (0.55 + 0.6 * e); ctx.globalCompositeOperation = 'lighter'; glow(ELG[o.el || 'heavy'] || 'gold', o.x, o.y, len * J30.glow, J30.glowA * fa); ctx.globalCompositeOperation = 'source-over'; sprRot(o.key, o.x, o.y, len, o.ang); }
+      continue; }
+    const ang = o.vx != null ? Math.atan2(o.vy, o.vx) : o.ang, len = o.len * (0.5 + 0.5 * g); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'lighter'; glow(ELG[o.el || 'heavy'] || 'gold', o.x, o.y, len * J30.glow, J30.glowA); ctx.globalCompositeOperation = 'source-over';
     if (o.kd === 'A' || o.kd === 'D' || o.kd === 'H' || o.kd === 'N') { ctx.globalAlpha = 0.3; sprRot(o.key, o.x - Math.cos(ang) * len * 0.35, o.y - Math.sin(ang) * len * 0.35, len * 0.9, ang); ctx.globalAlpha = 1; }
     sprRot(o.key, o.x, o.y, len, o.spin ? o.t * 18 : ang); }
   ctx.globalCompositeOperation = 'lighter'; for (const f of J.fxh || []) { f.t += 1 / 60; const u = Math.min(1, f.t / (f.big ? 0.4 : 0.2)), c = fxTint(f.kd, f.col); if (!c) continue; const sz = f.sz * (0.6 + 0.8 * u); ctx.globalAlpha = 1 - u; ctx.drawImage(c, f.x - sz / 2, f.y - sz / 2, sz, sz * c.height / c.width); } J.fxh = (J.fxh || []).filter(f => f.t < (f.big ? 0.4 : 0.2));
