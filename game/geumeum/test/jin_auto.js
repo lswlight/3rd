@@ -11,7 +11,7 @@ const { chromium } = require('playwright');
   let W2; const seq = (process.argv[3] || 'c1,c1,c1').split(',');
   for (let run = 0; run < seq.length; run++) {
     await p.evaluate(() => { const o = document.getElementById('ovTitle'); if (!o.hidden) document.getElementById('btnJin').click(); }); await p.waitForTimeout(300);
-    await p.click(seq[run] === 'long' ? '[data-j="new"]' : '[data-chap="' + seq[run].slice(1) + '"]'); await p.waitForTimeout(700);
+    { const idx = seq[run] === 'long' ? 10 : +seq[run].slice(1) - 1; await p.evaluate(() => { const S = __game.jin.JS(); S.chap = Object.assign({ 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1, 10: 1 }, S.chap || {}); }); /* 시험용: 모든 Stage 열기 */ await p.evaluate(i => { const g = document.querySelector('#ovJin [data-s="go"]'); if (!g) __game.jin.jinMenu(); }, idx); for (let k = 0; k < 12; k++) await p.evaluate(() => { const b = document.querySelector('#ovJin [data-s="prev"]'); b && b.click(); }); for (let k = 0; k < idx; k++) await p.evaluate(() => document.querySelector('#ovJin [data-s="next"]').click()); await p.evaluate(() => document.querySelector('#ovJin [data-s="go"]').click()); await p.waitForTimeout(300); await p.evaluate(() => document.querySelector('#ovJin [data-c="start"]').click()); } await p.waitForTimeout(700); // Stage 고르기 → 출진 준비 → 싸움 시작
     let last = '', same = 0, merged = 0;
     for (let step = 0; step < 200; step++) {
       const s = await p.evaluate(() => { const J = __game.jin.J; return J ? { ph: J.phase, n: J.night, ft: +(J.ft || 0).toFixed(1), slow: +(J.slowmo || 0).toFixed(2), cut: !!J.cut, mode: __game.G.mode } : null; });
