@@ -5957,7 +5957,11 @@ try { if (document.fonts) for (const f of ['16px "Black Han Sans"', '16px "Gowun
 let SC = 1, last = 0;
 let boosted = false; // 기획 7 4-B: 컷인 동안만 캔버스를 기기 해상도(최대 4배)까지
 function resize(b = boosted) { const r = cv.getBoundingClientRect(); const coarse = window.matchMedia && matchMedia('(pointer:coarse)').matches; const s = Math.min(b ? 4 : coarse ? 2.5 : 3, Math.max(1, r.width * (window.devicePixelRatio || 1) / W)); cv.width = Math.round(W * s); cv.height = Math.round(H * s); SC = cv.width / W; }
-function frame(t) {
+let frameErr = null;
+window.addEventListener('error', e => { frameErr = frameErr || String(e.message || e).slice(0, 120); });
+function frame(t) { try { frame0(t); } catch (e) { frameErr = frameErr || (String(e && e.message || e) + ' @' + String((e && e.stack || '').split('\n')[1] || '').trim().replace(/^.*\//, '')).slice(0, 140); console.error(e); requestAnimationFrame(frame); }
+  if (frameErr) { try { ctx.setTransform(SC, 0, 0, SC, 0, 0); ctx.fillStyle = 'rgba(120,0,0,.85)'; ctx.fillRect(0, H - 14, W, 14); ctx.fillStyle = '#fff'; ctx.font = '9px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('오류(스크린샷 보내 주세요): ' + frameErr, 4, H - 4); } catch (_) {} } } // 임시 디버그 표시: 멈춤 원인 확인용
+function frame0(t) {
   const dt = Math.min(1 / 30, (t - last) / 1000 || 0); last = t;
   if (!G.paused) { let ts = 1; if (G.bossIntro) { G.bossIntro.t += dt; ts = FUN2.bossIntroTs; if (G.bossIntro.t > FUN2.bossIntro) G.bossIntro = null; } if (G.cmb) ts = combo2Upd(dt); else if (G.cut) { const c = G.cut; c.t += dt; const E = cutEnd(); if (c.t >= 0.25 && !c.vs) { c.vs = 1; const v = VID[look(P.ch).cutv]; if (v) { try { if (v.currentTime > 0.05) v.currentTime = 0; const pr = v.play(); if (pr && pr.catch) pr.catch(() => {}); } catch (_) {} } } if (c.t < E) ts = 0.04; if (c.t >= E && !c.fl) { c.fl = 1; G.flash = 0.55; } if (c.t > E + 0.15) { const v = VID[look(P.ch).cutv]; if (v) { try { v.pause(); v.currentTime = 0; } catch (_) {} } G.cut = null; } } if (G.awkCut) { const q = G.awkCut; q.t += dt; if (q.t < AWK.dur) ts = 0; else { G.awkCut = null; G.flash = Math.max(G.flash, 0.3); } } if (G.hstop > 0) { G.hstop -= dt; ts = Math.min(ts, 0.05); } if (G.slowmo > 0) { G.slowmo -= dt; ts = Math.min(ts, FUN.slowmoK); } if (G.coRamp) ts = Math.min(ts, G.coRamp); update(dt * ts); }
   { const want = !!G.cut || !!G.cmb; if (want !== boosted) { boosted = want; resize(); } for (const k in VID) VID[k].classList.toggle('on', !!(G.cut && G.cut.vOn === k)); }
