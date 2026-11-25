@@ -5445,6 +5445,21 @@ needImg('jin_board_bg2');
   JB.pts = [[321, 441, 564], [292, 425, 560], [258, 406, 555], [216, 382, 550], [166, 355, 539]].map((xs, r) => xs.map(x => P(x, LY[r])));
   JBE.pts = [[796, 922, 1043], [801, 937, 1071], [806, 957, 1106], [813, 980, 1146], [821, 1007, 1195]].map((xs, r) => xs.map(x => P(x, LY[r]))); }
 { const a = jNext; jNext = function () { if (J) { J.fxp = []; J.fxh = []; J.cp = []; J.burn = []; J.dbl = []; J.fin = null; J.pr = []; J.epr = []; } return a(); }; } // 다음 밤으로 넘어갈 때 싸움 효과 비움
+/* ---------- 진동(사용자 11/25): 강한 공격 순간에 휴대폰 진동 — 길이·박자로 구분, 최소 0.3초 간격, 설정에서 끄기 ---------- */
+const VIB = { fin: [140, 60, 40, 40, 40], link: [35, 50, 35], boss: [90], merge: [30], bomb: [80], awake: [110], gap: 300 };
+let vibLast = 0;
+function vib(k) { try { if (SAVE.vibOff || !navigator.vibrate) return; const n = performance.now(); if (n - vibLast < VIB.gap) return; vibLast = n; navigator.vibrate(VIB[k] || [40]); } catch (_) {} }
+// 진법: 끝기술 · 연계 일격 · 대장 큰 피해/처치 · 짝·각성 합쳐짐
+{ const a = jDrawFin; jDrawFin = function () { const f = J && J.fin; if (f && f.hit && !f.vib) { f.vib = 1; vib('fin'); } return a(); }; }
+{ const a = jFxLinkBig; jFxLinkBig = function (ch, t2) { vib('link'); return a(ch, t2); }; }
+{ const a = jHit; jHit = function (e, d, el, src) { const was = e && !e.dead; a(e, d, el, src); if (was && e.boss && J && J.phase === 'fight' && (e.dead || d >= e.mhp * 0.06)) vib('boss'); }; }
+{ const a = jMerge; jMerge = function (ch) { const c0 = J && J.cut; a(ch); if (J && J.cut && J.cut !== c0) vib('merge'); }; }
+// 슈팅: 필살기 · 각성 · 대장 처치
+{ let b0 = 0; const a = update; update = function (dt) { const pb = typeof P !== 'undefined' ? P.bombs : 0; a(dt); if (G.mode === 'play' && typeof P !== 'undefined' && P.bombs < pb && G.bombT > 0) vib('bomb'); }; }
+{ const a = awakeStart; awakeStart = function () { const was = G.awake > 0; a(); if (!was && G.awake > 0) vib('awake'); }; }
+{ const a = kill; kill = function (e) { const boss = e && e.type === 'boss' && !e.dead; const r = a(e); if (boss) vib('boss'); return r; }; }
+// 설정
+{ const a = renderBtnSet; renderBtnSet = function () { a(); const el = $('btnSet'); if (!el) return; const d = document.createElement('div'); d.innerHTML = '진동 ' + [['on', '켜기'], ['off', '끄기']].map(([k, n]) => '<button type="button" data-vib="' + k + '"' + ((SAVE.vibOff ? 'off' : 'on') === k ? ' class="on"' : '') + '>' + n + '</button>').join(''); el.appendChild(d); d.querySelectorAll('[data-vib]').forEach(x => x.onclick = () => { SAVE.vibOff = x.dataset.vib === 'off'; saveGame(); if (!SAVE.vibOff) { vibLast = 0; vib('merge'); } renderBtnSet(); }); }; }
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],
