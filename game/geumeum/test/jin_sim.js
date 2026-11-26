@@ -4,12 +4,12 @@ const { chromium } = require('playwright');
 (async () => { const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 640, height: 360 } });
   const errs = []; p.on('pageerror', e => errs.push(e.message + ' ' + (e.stack || '').split('\n')[1]));
   await p.addInitScript(() => { sessionStorage.setItem('geumeum-picked', '1'); localStorage.setItem('dokkaebi-save', JSON.stringify({ gold: 70, stars: {0:3}, tut: { all: 1, prologue: 1, r11: 3, arc13: 1, weak: 1, awake: 1, shield: 1, coRdy: 1 }, jin: { best: 0, runs: 0, tut: 1, clear: 0, got5: 0, free: { d: '', n: 0 }, use: {}, spd: 3 } })); });
-  await p.goto('file:///home/user/3rd/game/geumeum/dokkaebi-shooter.html'); await p.waitForTimeout(1500);
+  await p.goto(process.env.URL || 'file:///home/user/3rd/game/geumeum/dokkaebi-shooter.html'); await p.waitForTimeout(1500);
   const N = +(process.argv[2] || 20), P = process.argv[3] ? JSON.parse(process.argv[3]) : null;
   if (process.env.DBG) await p.evaluate(() => { window.DBG = 1; }); const r = await p.evaluate(({ N, P }) => { const g = __game.jin; document.getElementById('ovCover').hidden = true; window.tone = () => {}; if (P) Object.assign(g.J13, P);
     const MUL = [0, 1, 1.8, 3.2, 5.5, 7.5, 10];
     const pow = u => (1 + (g.JCOST[u.ch] || 1) * 0.35) * MUL[u.star];
-    function prep() { const J = __game.jin.J; J.guestPick = null; J.sealPick = null; J.askOpen = null;
+    function prep() { const J = __game.jin.J; J.guestPick = null; J.sealPick = null; J.askOpen = null; if (J.bagOpen && window.__jBagPick) { window.__bagN = (window.__bagN || 0) + 1; window.__jBagPick(J.lan <= 5 ? ['life', 'copy', 'root', 'lv', 'buff', 'coin'] : ['copy', 'root', 'lv', 'buff', 'coin', 'bind', 'roll', 'life']); }
       for (let loop = 0; loop < 30; loop++) { const c0 = J.coin; const own = {}; for (const u of [...Object.values(J.board), ...J.bench.filter(Boolean)]) own[u.ch] = (own[u.ch] || 0) + 1;
         const benchFree = J.bench.some(x => !x);
         let i = J.shop.findIndex(c => c != null && own[c] && J.coin >= g.JCOST[c] && (benchFree || J.bench.some(u => u && u.ch === c && u.star === 1) || Object.values(J.board).some(u => u.ch === c && u.star === 1)));
@@ -31,6 +31,6 @@ const { chromium } = require('playwright');
     for (let k = 1; k <= 15; k++) { let w = 0, bl = 0, bn = 0; for (let n = 0; n < N; n++) { g.jNewChap(k); const res = playStage(); if (res.clear) w++; bl += res.bossLost; bn += res.bossN; } out.fresh.push([k, Math.round(w / N * 100), bn ? Math.round(bl / bn * 100) : 0]); }
     // 이어가기: 1부터 연속, 각 Stage 도달 판에서 깬 비율
     const reach = Array(16).fill(0), win = Array(16).fill(0); for (let n = 0; n < N; n++) { g.jNewChap(1); for (let k = 1; k <= 15; k++) { reach[k]++; const res = playStage(); if (!res.clear) break; win[k]++; if (k < 15) g.jContinue(); } }
-    for (let k = 1; k <= 15; k++) out.cont.push([k, reach[k], reach[k] ? Math.round(win[k] / reach[k] * 100) : 0]); return out; }, { N, P });
+    for (let k = 1; k <= 15; k++) out.cont.push([k, reach[k], reach[k] ? Math.round(win[k] / reach[k] * 100) : 0]); out.bags = window.__bagN || 0; return out; }, { N, P });
   if (process.env.DBG) { console.log(r.map(x => x.join(' ')).join('\n')); await b.close(); return; } console.log('Stage | 새로 시작 깸% | 보스 패배% || 이어가기 도달 | 깸%'); for (let i = 0; i < 15; i++) console.log((i + 1) + ' | ' + r.fresh[i][1] + ' | ' + r.fresh[i][2] + ' || ' + r.cont[i][1] + ' | ' + r.cont[i][2]);
-  console.log('errors', errs.slice(0, 3)); await b.close(); })();
+  console.log('bags opened', r.bags); console.log('errors', errs.slice(0, 3)); await b.close(); })();
