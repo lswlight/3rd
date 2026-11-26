@@ -5609,7 +5609,7 @@ function jFresh() { const k = J.chap + 1; addMoon(10, '새로 시작'); jNewChap
 /* ---------- 기획 30 §16: 봉인 요괴 → 「요괴 보따리」(사용자 11/26 확정) — Round마다 금테 봉인 요괴 1마리, 잡으면 보따리 · 대장은 금 보따리 → 다음 준비 화면에서 3장 중 1장 ---------- */
 const JBAGR = ['도깨비', '저승', '용궁', '산', '하늘', '마을'], JBAGK = { 도깨비: 'coin', 저승: 'life', 용궁: 'copy', 산: 'buff', 하늘: 'roll', 마을: 'root' };
 const JBAGT = ['coin', 'roll', 'root', 'copy', 'lv', 'buff', 'life', 'bind'], JBAGI = { coin: '🪙', roll: '🔄', root: '🎴', copy: '📜', lv: '➕', buff: '💪', life: '🏮', bind: '⛓' };
-const JBAG = { coin: [4, 10], roll: [2, 4], root: [[1, 3], [4, 5]], copy: [2, 99], xp: 4, buff: [0.15, 0.3], life: [1, 3], bind: [2, 4] };
+const JBAG = { coin: [3, 10], roll: [2, 4], root: [[1, 3], [4, 5]], copy: [2, 99], xp: 4, buff: [0.1, 0.3], life: [1, 3], bind: [1.5, 4], sealHp: 1.6, back: 0.9, bossK: 1.1 }; /* 균형 조정(사용자 「조정해」 11/26) */
 const jShuf = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 function jBagUnits() { return J.bench.filter(Boolean).concat(Object.values(J.board)).filter(u => u && !u.yk && CH[u.ch]); }
 function jBagMake(k, g, root, force) { const N = CH.length;
@@ -5628,7 +5628,7 @@ function jBagApply(c) { if (c.k === 'coin') J.coin += c.v; else if (c.k === 'rol
 window.__jBagPick = pref => { if (!J || !J.bagOpen) return null; const C = J.bagOpen.cards; let i = 0; if (pref) { const o = pref.map(k => C.findIndex(c => c.k === k)).filter(x => x >= 0); i = o.length ? o[0] : 0; } const c = C[i]; J.bagOpen = null; jBagApply(c); return c.k; }; /* 자동 시험용 */
 const JBAGC = i => ({ x: W / 2 - 186 + i * 128, y: 96, w: 116, h: 156 });
 // 요괴 진에 봉인 요괴 1마리(뒤쪽 칸일수록 잘 뽑힘)
-{ const a = jFoeGen; jFoeGen = function () { a(); if (!J || !J.chap || J.tut || !J.foe) return; const L = J.foe.filter(f => !f.boss); if (!L.length) return; const mc = Math.max(...L.map(f => f.c)), back = L.filter(f => f.c === mc), pick = (Math.random() < 0.75 ? back : L)[Math.floor(Math.random() * (Math.random() < 0.75 ? back : L).length)] || back[0]; pick.seal = JBAGR[Math.floor(Math.random() * JBAGR.length)]; }; }
+{ const a = jFoeGen; jFoeGen = function () { a(); if (!J || !J.chap || J.tut || !J.foe) return; const L = J.foe.filter(f => !f.boss); if (!L.length) return; const mc = Math.max(...L.map(f => f.c)), back = L.filter(f => f.c === mc), src = Math.random() < JBAG.back ? back : L, pick = src[Math.floor(Math.random() * src.length)] || back[0]; pick.seal = JBAGR[Math.floor(Math.random() * JBAGR.length)]; pick.hp = Math.round(pick.hp * JBAG.sealHp); for (const f of J.foe) if (f.boss) { f.hp = Math.round(f.hp * JBAG.bossK); f.atk *= JBAG.bossK; } }; }
 { const a = jStart; jStart = function () { if (J) J.yk = null; a(); if (!J || J.phase !== 'fight') return; (J.en || []).forEach((e, i) => { const f = J.foe && J.foe[i]; if (f && f.seal) e.seal = f.seal; }); J.bagE = (J.en || []).find(e => e.seal) || null; J.bossE = (J.en || []).find(e => e.boss) || null; J.bagNew = null;
   const B = J.bagBuff; if (B) { for (const u of J.us) { if (B.w === 'atk') u.atk *= 1 + B.v; else { u.hp *= 1 + B.v; u.mhp = u.hp; } } jToast('보따리 기운: 우리 진 ' + (B.w === 'atk' ? '공격' : '체력') + ' +' + Math.round(B.v * 100) + '%'); J.bagBuff = null; }
   const T = J.bagBind; if (T) { for (const e of J.en) e.stun = Math.max(e.stun || 0, T.t); J.bagDblT = T.dbl ? T.t : 0; J.fx.push({ k: 'skname', x: W * 0.72, y: 120, s: '⛓ 묶기 ' + T.t + '초', t: 0, col: '#ffd76a' }); J.bagBind = null; } else J.bagDblT = 0; }; }
