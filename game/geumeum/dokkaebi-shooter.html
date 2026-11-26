@@ -5594,6 +5594,9 @@ function jFresh() { const k = J.chap + 1; addMoon(10, '새로 시작'); jNewChap
 { const a = jinMenu; jinMenu = function (sub) { a(sub); if (sub === 'rec') { const d = jinOv.querySelector('div'); if (d) d.insertAdjacentHTML('beforeend', '<br>연속 Stage 최고(이어가기): <b>' + (JS().streakBest || 0) + '</b>'); } }; }
 // 10명 넘으면 가볍게: 작은 불꽃 줄임
 { const a = jFight; jFight = function (dt) { a(dt); if (J && J.us && J.us.length > 10 && J.fx.length > 30) J.fx = J.fx.filter((f, i) => f.k !== 'spark' || i % 2); }; }
+/* ---------- 개발자 모드: 도깨비체스 받는 피해 줄이기(0~90%, 사용자 11/26) ---------- */
+{ const a = jHurt; jHurt = function (u, d) { const k = TEST_UNLOCK ? Math.max(0, Math.min(90, DEV.jinDmgCut || 0)) : 0; return a(u, k ? d * (1 - k / 100) : d); }; }
+{ const a = renderBtnSet; renderBtnSet = function () { a(); if (!TEST_UNLOCK) return; const el = $('btnSet'); if (!el || $('jdc')) return; const v = DEV.jinDmgCut || 0, d = document.createElement('div'); d.style.cssText = 'margin:.6cqw 0'; d.innerHTML = '도깨비체스 받는 피해 줄이기 <b id="jdcV">' + (v ? v + '% 감소' : '기본') + '</b><br><input type="range" id="jdc" min="0" max="90" step="10" value="' + v + '" style="width:60%;accent-color:#ffd76a">'; el.appendChild(d); $('jdc').oninput = e => { DEV.jinDmgCut = +e.target.value; $('jdcV').textContent = DEV.jinDmgCut ? DEV.jinDmgCut + '% 감소' : '기본'; devSave(); }; }; }
 /* ---------- 그믐의 맹세 (기획 8의 3): 스스로 고르는 어려움. 일반 층과 그믐의 탑 모두에 걸린다. 첫 결말 뒤에 열린다 ---------- */
 const OATHS = [ // [id, 이름, 최대 단계, 단계당 점수, 효과]
   ['hp', '단단한 요괴', 3, 1, '적 체력 +20%씩'],
