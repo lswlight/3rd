@@ -13,3 +13,16 @@
 - 다래 얼굴 문장: bright cheerful hazel eyes, a big playful grin, brown hair tied in a single high ponytail decorated with small wildflowers.
 - 월향 얼굴 문장: narrow alluring eyes with a small red makeup mark at the outer corners, red lips, black hair in a high updo with a large peony crown and golden binyeo.
 - 금화 얼굴 문장: playful upturned eyes, one eye winking, a confident teasing grin, a sharp red bob haircut with gold coin earrings.
+
+## 게임 그림 · 각성 · 각성2 (11/27, 사용자 「다 그려서 한 번에 보여줘」 → 한 번에 생성, 수정은 사용자 요청 때)
+게임 그림은 투명 배경으로 바로 뽑음(`_hi` = 높이 1024, 그냥 = 높이 280, 그림 둘레로 자름). 각성2는 688×1024 그대로.
+
+| # | 이름 | 게임 그림 | 각성 일러스트 | 각성 게임 그림 | 각성2 |
+|---|---|---|---|---|---|
+| 31 | 연화 | `p31` 4d0b696a (비율 고침, 약 8.1머리) | `aw31` 4c885e19 「저승 꽃 큰무당」 신칼 + 떠 있는 방울 고리 | `aw31p` 844a845c | `awb31p` ace1e3d7 「서천꽃밭 꽃무녀」 은발 땋은 머리·금 생명 지팡이 |
+| 36 | 다래 | `p36` 15b7ede2 약초 낫 + 인삼 다발 | `aw36` fc292683 「백두산 인삼 정령」 긴 옥빛 낫 지팡이(몸의 약 1.3배) | `aw36p` befd2b82 (1:1) | `awb36p` 9848ab33 「가을 단풍 산지기」 구릿빛 붉은 땋은 머리·떠 있는 금 인삼 구슬 |
+| 38 | 월향 | `p38` 85ad51a9 쌍검 + 짧은 비단 치마 | `aw38` 8b04cc33 「달빛 검무 장군」 전립·긴 쌍검 | `aw38p` e8216577 | `awb38p` f1184f96 「은달 비단 검객」 은발·긴 은 쌍검 |
+| 34 | 금화 | `p34` 3eb7e7cf 엽전 던지기 + 떠 있는 주사위 | `aw34` 9c0549cd 「황금 도깨비 노름 여왕」 떠 있는 큰 엽전 원반 + 주사위 | `aw34p` f4c30939 | — (3엽전이라 없음, 빛 효과) |
+
+- 탄이 나오는 곳(개발방 전달용): 연화 = 방울/신칼 끝(오른쪽), 다래 = 낫 끝·각성은 낫 날, 월향 = 앞 칼끝, 금화 = 앞손 엽전·각성은 날아가는 엽전 원반. 각성2: 연화 = 지팡이 꽃, 다래 = 손 위 인삼 구슬, 월향 = 교차한 칼끝.
+- 비율은 눈으로 재 확인(넓게 벌린 공격 자세라 가랑이 높이는 대략). 사용자 확인 전.
