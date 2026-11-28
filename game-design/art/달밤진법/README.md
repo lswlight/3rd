@@ -31,3 +31,7 @@
 - `게임용/bgS11~15.jpg`(1344×576) + `bgS11h~15h.jpg`(2520×1080), gpt_image_2_6 21:9, 참고 T3_front·S4(그림체만)
 - job: 11 feedc0e2-5ee3-4bb8-8c7c-3ca0393b6e91 · 12 b55ea187-d766-4f9d-8384-94aae81fdf3b · 13 bb7f03fc-0925-4bcc-ac66-5218a6c4e065 · 14 1d36fb85-71d6-47e8-bf4a-bad8afc4f7cf · 15 1821afdd-7dac-406f-a414-7b646bab7141
 - 시안: `stage_select_시안2.png`(15칸에 넣은 모습)
+
+## 새 Stage 16~25 배경 (11/28, 기획 33)
+- `게임용/bgS16~25.jpg`(1344×576) + `bgS16h~25h.jpg`(2520×1080, 같은 그림을 늘림), gpt_image_2_6 21:9, 참고 T3_front·S4(그림체만), 인물 없음, 아래 1/3은 진판용 빈 땅.
+- job: 16 2aa40eb8-83db-404e-a71d-c37deb8803df · 17 596e67b3-810d-4b34-a2ae-cd5237b3f5c6 · 18 d9b47673-dac5-4163-aaec-d3f7bdf13273 · 19 4deb59b1-b883-4c0c-8fce-68050cde59da · 20 2a4a68b4-2770-445f-9261-c7452a453c8b · 21 9697a78d-5045-42c6-86f0-e5e90c5911f4 · 22 2e8cf802-6389-4246-883e-fa574aaac9d2 · 23 dd11104c-682f-4ac7-b55c-b483a24965eb · 24 128491b5-423a-4b6c-b501-803b70324e69 · 25 af7b2011-f3f7-4cb1-b5da-c4305022efbe
